@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:weightSum="1">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="114dp"
+            android:text="Paramètres"
+            android:id="@+id/menu_parametre"
+            android:layout_weight="0.93" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="178dp"
+            android:layout_height="116dp"
+            android:text="Facturation"
+            android:id="@+id/menu_facturation" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="114dp"
+            android:text="Retours"
+            android:id="@+id/menu_retours"
+            android:layout_weight="0.93" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="178dp"
+            android:layout_height="116dp"
+            android:text="Avaries"
+            android:id="@+id/menu_avaries" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1" >
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="114dp"
+            android:text="Etats"
+            android:id="@+id/menu_etats"
+            android:layout_weight="0.93" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="178dp"
+            android:layout_height="116dp"
+            android:text="recouvrement"
+            android:id="@+id/menu_recouvrement" />
+    </LinearLayout>
+</LinearLayout>
