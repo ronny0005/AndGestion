@@ -31,11 +31,12 @@
             android:text="Désignation"
             android:id="@+id/textView15" />
 
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/donnee_designation"
             android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout

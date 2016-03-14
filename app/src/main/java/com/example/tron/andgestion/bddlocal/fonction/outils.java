@@ -3,11 +3,14 @@ package com.example.tron.andgestion.bddlocal.fonction;
 import android.content.Context;
 import android.os.StrictMode;
 
+import com.example.tron.andgestion.bddlocal.affaire.Affaire;
+import com.example.tron.andgestion.bddlocal.article.Article;
 import com.example.tron.andgestion.bddlocal.depot.*;
 import com.example.tron.andgestion.bddlocal.client.Client;
 import com.example.tron.andgestion.bddlocal.client.ClientBDD;
 import com.example.tron.andgestion.bddlocal.facture.Donnee;
 import com.example.tron.andgestion.bddlocal.facture.DonneeBDD;
+import com.example.tron.andgestion.bddlocal.vehicule.Vehicule;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -94,11 +97,100 @@ public class outils {
         return ldep;
     }
 
+    public static ArrayList<Article> listeArticleServeur(){
+        JSONObject json = null;
+        ArrayList<Article> lart=null;
+        try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            json = new JSONObject(getJsonFromServer("http://192.168.1.14:8082/api/getAllArticle"));
+            JSONArray jArray = json.getJSONArray("data");
+            lart= new ArrayList<Article>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                lart.add(new Article(json_data.getInt("AR_Ref"),json_data.getString("AR_Design")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lart;
+    }
+
+    public static ArrayList<String> listeArticleServeurTexte(){
+        ArrayList<String> lart= new ArrayList<String>();
+        ArrayList<Article> art =listeArticleServeur();
+        for(int i=0;i<art.size();i++)
+            lart.add(art.get(i).getNom());
+        return lart;
+    }
+
     public static ArrayList<String> listeDepotServeurTexte(){
         ArrayList<String> ldep= new ArrayList<String>();
         ArrayList<Depot> dep =listeDepotServeur();
         for(int i=0;i<dep.size();i++)
             ldep.add(dep.get(i).getNom());
+        return ldep;
+    }
+
+    public static ArrayList<Affaire> listeAffaireServeur(){
+        JSONObject json = null;
+        ArrayList<Affaire> lart=null;
+        try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            json = new JSONObject(getJsonFromServer("http://192.168.1.14:8082/api/affaire"));
+            JSONArray jArray = json.getJSONArray("data");
+            lart= new ArrayList<Affaire>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                lart.add(new Affaire(json_data.getInt("CA_Num"),json_data.getString("CA_Intitule"),json_data.getInt("n_Analytique")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lart;
+    }
+
+    public static ArrayList<String> listeAffaireTexte(){
+        ArrayList<String> ldep= new ArrayList<String>();
+        ArrayList<Affaire> dep =listeAffaireServeur();
+        for(int i=0;i<dep.size();i++)
+            ldep.add(dep.get(i).getCa_intitule());
+        return ldep;
+    }
+
+    public static ArrayList<Vehicule> listeVehiculeServeur(){
+        JSONObject json = null;
+        ArrayList<Vehicule> lart=null;
+        try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            json = new JSONObject(getJsonFromServer("http://192.168.1.14:8082/api/vehicule"));
+            JSONArray jArray = json.getJSONArray("data");
+            lart= new ArrayList<Vehicule>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                lart.add(new Vehicule(json_data.getString("CA_Num"),json_data.getString("CA_Intitule"),json_data.getInt("n_Analytique")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lart;
+    }
+
+    public static ArrayList<String> listeVehiculeTexte(){
+        ArrayList<String> ldep= new ArrayList<String>();
+        ArrayList<Vehicule> dep =listeVehiculeServeur();
+        for(int i=0;i<dep.size();i++){
+            ldep.add(dep.get(i).getCa_intitule());
+            System.out.println(dep.get(i).getCa_intitule());
+        }
         return ldep;
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,17 +23,44 @@ import java.util.List;
  */
 public class DonneeActivity extends AppCompatActivity {
     Spinner spinner;
-    TextView designation;
+    AutoCompleteTextView designation;
     TextView qte;
     TextView pu ;
     TextView qtec;
     TextView total;
     Button ajouter;
     DonneeBDD donneeBDD;
+    ArrayList<Donnee> list;
+
+    protected void setLayout(){
+        Bundle b = getIntent().getExtras();
+        try{
+            int value = b.getInt("key");
+            donneeBDD = new DonneeBDD(this);
+            donneeBDD.open();
+            list = donneeBDD.Tout();
+            Donnee donnee = list.get(value);
+            designation = (AutoCompleteTextView) findViewById(R.id.donnee_designation);
+            qte = (TextView) findViewById(R.id.donnee_qte);
+            pu = (TextView) findViewById(R.id.donnee_pu);
+            qtec = (TextView) findViewById(R.id.donnee_qte_colisee);
+            total = (TextView) findViewById(R.id.donnee_total);
+            ajouter = (Button) findViewById(R.id.donnee_ajouter);
+
+            designation.setText(donnee.getDesignation());
+            qte.setText(String.valueOf(donnee.getQte()));
+            pu.setText(String.valueOf(donnee.getPu()));
+            qtec.setText(String.valueOf(donnee.getQteColissee()));
+            total.setText(String.valueOf(donnee.getTotal()));
+        }catch (NullPointerException e){
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.donnee);
+        setLayout();
         ArrayList<String> list = outils.listeDepotServeurTexte();
         spinner = (Spinner)findViewById(R.id.donnee_client);
         ArrayAdapter<String>adapter = new ArrayAdapter<String>(DonneeActivity.this,
@@ -40,7 +68,12 @@ public class DonneeActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        designation = (TextView) findViewById(R.id.donnee_designation);
+        ArrayList<String> lart = outils.listeArticleServeurTexte();
+        designation = (AutoCompleteTextView) findViewById(R.id.donnee_designation);
+        ArrayAdapter<String> adapterComplete = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, lart);
+        designation.setAdapter(adapterComplete);
+
         qte = (TextView) findViewById(R.id.donnee_qte);
         pu = (TextView) findViewById(R.id.donnee_pu);
         qtec = (TextView) findViewById(R.id.donnee_qte_colisee);
