@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.client;
+package com.example.tron.androidgestion.bddlocal.client;
 
 /**
  * Created by T.Ron$ on 09/03/2016.
@@ -8,7 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.tron.andgestion.bddlocal.client.*;
 
 import java.util.ArrayList;
 
@@ -46,11 +45,11 @@ public class ClientBDD {
         return bdd;
     }
 
-    public long insert(Client depot){
+    public long insert(Client item){
         //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
         //on lui ajoute une valeur associé à une clé (qui est le nom de la colonne dans laquelle on veut mettre la valeur)
-        values.put(COL_NOM, depot.getNom());
+        values.put(COL_NOM, item.getIntitule());
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_CLIENT, null, values);
     }
@@ -59,7 +58,7 @@ public class ClientBDD {
         //La mise à jour d'un livre dans la BDD fonctionne plus ou moins comme une insertion
         //il faut simple préciser quelle livre on doit mettre à jour grâce à l'ID
         ContentValues values = new ContentValues();
-        values.put(COL_NOM, client.getNom());
+        values.put(COL_NOM, client.getIntitule());
         return bdd.update(TABLE_CLIENT, values, COL_ID + " = " + id, null);
     }
 
@@ -83,10 +82,10 @@ public class ClientBDD {
         //Sinon on se place sur le premier élément
         //c.moveToFirst();
         //On créé un livre
-        Client client = new Client();
+        Client client = new Client("","");
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         client.setId(c.getInt(NUM_COL_ID));
-        client.setNom(c.getString(NUM_COL_NOM));
+       // client.getIntitule(c.getString(NUM_COL_NOM));
         //On ferme le cursor
         //c.close();
 

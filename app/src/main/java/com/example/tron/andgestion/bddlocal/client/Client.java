@@ -1,5 +1,6 @@
-package com.example.tron.andgestion.bddlocal.client;
+package com.example.tron.androidgestion.bddlocal.client;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,16 +8,27 @@ import java.util.Date;
 /**
  * Created by T.Ron$ on 09/03/2016.
  */
-public class Client {
+public class Client implements Serializable{
 
     private int id;
-    private String nom;
+    private String intitule;
+    private String num;
+    private String numprinc;
+    private int cattarif;
+    private int catcompta;
 
-    public Client(String nom) {
-        this.nom = nom;
+    public Client(String intitule, String num) {
+        this.intitule = intitule;
+        this.num = num;
     }
 
-    public Client(){}
+    public Client(String intitule, String num, String numprinc, int cattarif, int catcompta) {
+        this.intitule = intitule;
+        this.num = num;
+        this.numprinc = numprinc;
+        this.cattarif = cattarif;
+        this.catcompta = catcompta;
+    }
 
     public int getId() {
         return id;
@@ -26,15 +38,43 @@ public class Client {
         this.id = id;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public String getIntitule() {
+        return intitule;
     }
 
-    public String getNom() {
-        return nom;
+    public void setIntitule(String intitule) {
+        this.intitule = intitule;
     }
 
-    public String toString(){
-        return "Depot : Nom"+this.getNom();
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public String getNumprinc() {
+        return numprinc;
+    }
+
+    public void setNumprinc(String numprinc) {
+        this.numprinc = numprinc;
+    }
+
+    public int getCattarif() {
+        return cattarif;
+    }
+
+    public void setCattarif(int cattarif) {
+        this.cattarif = cattarif;
+    }
+
+    public int getCatcompta() {
+        return catcompta;
+    }
+
+    public void setCatcompta(int catcompta) {
+        this.catcompta = catcompta;
     }
 }

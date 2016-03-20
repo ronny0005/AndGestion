@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.depot;
+package com.example.tron.androidgestion.bddlocal.depot;
 
 /**
  * Created by T.Ron$ on 09/03/2016.
@@ -9,7 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.tron.andgestion.bddlocal.client.Client;
+import com.example.tron.androidgestion.bddlocal.client.Client;
 
 import java.util.ArrayList;
 
@@ -51,7 +51,7 @@ public class DepotBDD {
         //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
         //on lui ajoute une valeur associé à une clé (qui est le nom de la colonne dans laquelle on veut mettre la valeur)
-        values.put(COL_NOM, depot.getNom());
+        values.put(COL_NOM, depot.getIntitule());
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_DEPOT, null, values);
     }
@@ -60,7 +60,7 @@ public class DepotBDD {
         //La mise à jour d'un livre dans la BDD fonctionne plus ou moins comme une insertion
         //il faut simple préciser quelle livre on doit mettre à jour grâce à l'ID
         ContentValues values = new ContentValues();
-        values.put(COL_NOM, client.getNom());
+        values.put(COL_NOM, client.getIntitule());
         return bdd.update(TABLE_DEPOT, values, COL_ID + " = " + id, null);
     }
 
@@ -84,10 +84,10 @@ public class DepotBDD {
         //Sinon on se place sur le premier élément
         //c.moveToFirst();
         //On créé un livre
-        Client client = new Client();
+        Client client = new Client("","");
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         client.setId(c.getInt(NUM_COL_ID));
-        client.setNom(c.getString(NUM_COL_NOM));
+        client.setIntitule(c.getString(NUM_COL_NOM));
         //On ferme le cursor
         //c.close();
 
@@ -103,15 +103,11 @@ public class DepotBDD {
 
     public ArrayList<Client> Tout()
     {
-
         Cursor c = fetchAll();
         ArrayList<Client> ldep = new ArrayList<Client>();
-        c.moveToFirst();
-        while(!c.isLast()) {
+        for(c.moveToFirst();c.isLast();c.moveToNext())
             ldep.add(cursorToObj(c));
-        //c.close();
-            c.moveToNext();
-        }
+        c.moveToNext();
         return ldep;
     }
 }
