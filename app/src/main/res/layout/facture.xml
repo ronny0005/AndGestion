@@ -4,28 +4,150 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <ListView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="285dp"
-        android:id="@+id/facture_liste"
-        android:layout_weight="0.63"
-        android:choiceMode="singleChoice" />
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Caisse"
+            android:id="@+id/textView20"
+            android:layout_gravity="right" />
+
+        <EditText
+            android:layout_width="103dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/facture_caisse"
+            android:layout_gravity="right"
+            android:layout_weight="0.76" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:id="@+id/textView21" />
+
+        <EditText
+            android:layout_width="141dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/facture_date"
+            android:layout_weight="0.10" />
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="89dp">
+        android:layout_height="wrap_content" >
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ouvrir"
-            android:id="@+id/facture_ouvrir" />
+            android:text="Client"
+            android:id="@+id/textView13" />
 
-        <Button
+        <AutoCompleteTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="nouveau"
-            android:id="@+id/facture_nouveau" />
+            android:id="@+id/facture_client"
+            android:layout_weight="1" />
+
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Désignation"
+            android:id="@+id/textView25" />
+
+        <AutoCompleteTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/facture_designation"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantité"
+            android:id="@+id/textView22" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/facture_qte" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AJOUTER"
+            android:id="@+id/facture_ajouter"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="209dp"
+        android:id="@+id/facture_liste"
+        android:choiceMode="singleChoice"
+        android:longClickable="true"
+        android:layout_weight="1.06" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ANNULER"
+            android:id="@+id/facture_annuler" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="valider"
+            android:id="@+id/facture_valider" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crédit"
+            android:id="@+id/facture_credit"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comptant"
+            android:id="@+id/facture_comptant"
+            android:checked="false" />
+
+    </LinearLayout>
+
 </LinearLayout>

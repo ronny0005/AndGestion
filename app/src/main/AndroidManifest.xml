@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tron.andgestion">
+    package="com.example.tron.androidgestion">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
@@ -17,8 +17,9 @@
         </activity>
         <activity android:name=".MenuActivity"/>
         <activity android:name=".ParametresActivity"/>
-        <activity android:name=".DonneeActivity"/>
+        <activity android:name=".ValideActivity"/>
         <activity android:name=".FactureActivity"/>
+        <activity android:name=".LstFactureActivity"/>
     </application>
 
 </manifest>
