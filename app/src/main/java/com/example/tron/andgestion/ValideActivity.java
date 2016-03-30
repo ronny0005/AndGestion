@@ -182,8 +182,11 @@ public class ValideActivity extends AppCompatActivity {
 
         valider.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v) {
+               DecimalFormat decim = new DecimalFormat("#.##");
+               if(Double.compare(total_ttc,Double.parseDouble(mtt_avance.getText().toString()))>=0){
                if(comptant.isChecked() || credit.isChecked()) {
-                   if(credit.isChecked() && !mtt_avance.getText().toString().isEmpty()) {
+                   if(credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
+                           && Double.compare(total_ttc,Double.parseDouble(mtt_avance.getText().toString()))>=0 ) {
                        liste_facture.get(id_facture).setStatut("avance");
                        liste_facture.get(id_facture).setMtt_avance(Double.parseDouble(mtt_avance.getText().toString()));
                    }
@@ -200,6 +203,10 @@ public class ValideActivity extends AppCompatActivity {
                    startActivity(intent);
                }   else {
                    Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.",
+                           Toast.LENGTH_SHORT).show();
+               }
+           }else {
+                   Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
                            Toast.LENGTH_SHORT).show();
                }
            }

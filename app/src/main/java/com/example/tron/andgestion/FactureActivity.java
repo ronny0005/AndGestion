@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -163,6 +164,7 @@ public class FactureActivity extends AppCompatActivity {
         for(int i=0;i<lst_client.size();i++)
             lclient.add(lst_client.get(i).getIntitule());
         client = (AutoCompleteTextView)findViewById(R.id.facture_client);
+        client.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, lclient);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -175,7 +177,7 @@ public class FactureActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterComplete = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, lart);
         designation.setAdapter(adapterComplete);
-
+        designation.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         qte = (TextView) findViewById(R.id.facture_qte);
         ajouter = (Button) findViewById(R.id.facture_ajouter);
         valider = (Button) findViewById(R.id.facture_valider);
@@ -204,6 +206,7 @@ public class FactureActivity extends AppCompatActivity {
                 designation.setText(art.getAr_design());
                 qte.setText(String.valueOf(art.getQte_vendue()));
                 modif = true;
+                ajouter.setText("Modifier");
                 position_modif = position;
             }
         });
@@ -255,8 +258,7 @@ public class FactureActivity extends AppCompatActivity {
                             if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))
                                 id_article = i;
                         double qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
-                        System.out.println("qte art"+qteart );
-                        if (qteart > 0) {
+                        if (!qte.getText().toString().equals("0") && qteart > 0) {
                             String piece = "";
                             if (liste_facture.get(id_facture).getEntete().equals("")) {
                                 piece = ou.ajoutEnteteServeur(parametre.getCo_no(), lst_client.get(id_client).getNum(), liste_facture.get(id_facture).getRef(), "1");
@@ -264,11 +266,12 @@ public class FactureActivity extends AppCompatActivity {
                                 liste_facture.get(id_facture).setEntete(piece);
                             }
                             if (!modif) {
-                                ou.ajoutLigneServeur(liste_facture.get(id_facture).getEntete(), String.valueOf(liste_article.get(id_article).getAr_ref()), (position_article.size()+1) * 10000, Integer.parseInt(qte.getText().toString()), 0);
+                                ou.ajoutLigneServeur(liste_facture.get(id_facture).getEntete(), String.valueOf(liste_article.get(id_article).getAr_ref()), (position_article.size() + 1) * 10000, Integer.parseInt(qte.getText().toString()), 0);
                                 position_article.add(id_article);
                                 liste_article.get(id_article).setId(liste_article.size());
                             } else {
                                 modif = false;
+                                ajouter.setText("Ajouter");
                             }
                             liste_article.get(id_article).setQte_vendue(Integer.parseInt(qte.getText().toString()));
                             ou.getPrixclient(liste_article.get(id_article).getAr_ref(), liste_facture.get(id_facture).getId_client().getCattarif(), liste_facture.get(id_facture).getId_client().getCatcompta(), liste_article.get(id_article));
