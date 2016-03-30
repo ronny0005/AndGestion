@@ -1,4 +1,4 @@
-package com.example.tron.androidgestion.bddlocal.article;
+package com.example.tron.andgestion.bddlocal.article;
 
 import java.io.Serializable;
 
@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by T.Ron on 18/03/2016.
  */
 public class ArticleServeur implements Serializable {
+    private int id;
     private int ar_ref;
     private String ar_design;
     private float prix_vente;
@@ -36,6 +37,14 @@ public class ArticleServeur implements Serializable {
         this.ar_prixach = ar_prixach;
         this.fa_codefamille = fa_codefamille;
         this.ar_prixven = ar_prixven;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getTaxe1() {

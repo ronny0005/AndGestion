@@ -1,4 +1,4 @@
-package com.example.tron.androidgestion.bddlocal.client;
+package com.example.tron.andgestion.bddlocal.client;
 
 /**
  * Created by T.Ron$ on 09/03/2016.

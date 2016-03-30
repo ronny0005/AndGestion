@@ -1,4 +1,4 @@
-package com.example.tron.androidgestion.bddlocal.article;
+package com.example.tron.andgestion.bddlocal.article;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.example.tron.androidgestion.bddlocal.depot;
+package com.example.tron.andgestion.bddlocal.depot;
 
 /**
  * Created by T.Ron$ on 09/03/2016.
@@ -9,7 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.tron.androidgestion.bddlocal.client.Client;
+import com.example.tron.andgestion.bddlocal.client.Client;
 
 import java.util.ArrayList;
 

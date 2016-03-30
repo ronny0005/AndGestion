@@ -1,4 +1,4 @@
-package com.example.tron.androidgestion.bddlocal.article;
+package com.example.tron.andgestion.bddlocal.article;
 
 /**
  * Created by T.Ron$ on 11/03/2016.
