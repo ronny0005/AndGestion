@@ -126,6 +126,7 @@ public class FactureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facture);
+
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app=FactureActivity.this;
         parametre = (Parametre) getIntent().getSerializableExtra("parametre");
@@ -187,6 +188,7 @@ public class FactureActivity extends AppCompatActivity {
         articleBDD.open();
         ajoutListe();
         initialise();
+
 
         annuler.setOnClickListener(new View.OnClickListener() {
             @Override

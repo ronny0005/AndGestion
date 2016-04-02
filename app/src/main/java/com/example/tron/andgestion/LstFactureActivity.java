@@ -32,19 +32,26 @@ public class LstFactureActivity extends AppCompatActivity {
     ArrayList<String> lstr;
     ArrayList<ArticleServeur> liste_article;
     ArrayAdapter<String> arrayAdapter;
-    List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+    List<Map<String, String>> data;
     outils ou;
+    Map<String, String> datum;
+
+    private Map<String, ?> createRow(String value1, String value2) {
+        Map<String, String> row = new HashMap<String, String>();
+        row.put("value1", value1);
+        row.put("value2", value2);
+        return row;
+    }
 
     public void ajoutListe(){
-        lstr  = new ArrayList<String>();
-        Map<String, String> datum = new HashMap<String, String>(2);
+        data = new ArrayList<Map<String, String>>();
+        List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for(int i=0;i<liste_facture.size();i++) {
-            datum.put("First Line", liste_facture.get(i).getRef());
-            datum.put("Second Line","Client : "+ liste_facture.get(i).getId_client().getIntitule() );
-            data.add(datum);
+            data.add(createRow(liste_facture.get(i).getRef(), "Client : " + liste_facture.get(i).getId_client().getIntitule()));
         }
-        SimpleAdapter adapter = new SimpleAdapter(this, data,android.R.layout.simple_list_item_2,
-                new String[] {"First Line", "Second Line" },new int[] {android.R.id.text1, android.R.id.text2 });
+        String[] from = {"value1", "value2"};
+        int[] to = {android.R.id.text1, android.R.id.text2};
+        SimpleAdapter adapter = new SimpleAdapter(this, data,android.R.layout.simple_list_item_2, from, to);
         lst_fact.setAdapter(adapter);
     }
 
@@ -58,7 +65,6 @@ public class LstFactureActivity extends AppCompatActivity {
         nouveau = (Button) findViewById(R.id.lstfac_nouveau);
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         lst_fact = (ListView) findViewById(R.id.liste_facture);
-
         ajoutListe();
 
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {

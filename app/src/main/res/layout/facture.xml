@@ -17,8 +17,10 @@
             android:id="@+id/textView21" />
 
         <EditText
-            android:layout_width="127dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
             android:id="@+id/facture_date" />
 
         <TextView
@@ -44,6 +46,8 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
             android:id="@+id/facture_caisse"
             android:layout_weight="1" />
 

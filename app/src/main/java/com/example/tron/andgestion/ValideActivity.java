@@ -64,6 +64,7 @@ public class ValideActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.valide_facture);
+
         this.setTitle("Validation");
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         id_facture= Integer.parseInt(getIntent().getStringExtra("id_facture"));
@@ -102,7 +103,7 @@ public class ValideActivity extends AppCompatActivity {
         liste_facture.get(id_facture).setType_paiement("espece");
 
 
-            comptant.setOnClickListener(new View.OnClickListener() {
+        comptant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
@@ -183,12 +184,17 @@ public class ValideActivity extends AppCompatActivity {
         valider.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v) {
                DecimalFormat decim = new DecimalFormat("#.##");
-               if(Double.compare(total_ttc,Double.parseDouble(mtt_avance.getText().toString()))>=0){
+               Double d ;
+               if(mtt_avance.getText().toString().equals(""))
+                   d=Double.MIN_VALUE;
+               else d=Double.parseDouble(mtt_avance.getText().toString());
+
+               if(Double.compare(total_ttc,d)>=0){
                if(comptant.isChecked() || credit.isChecked()) {
                    if(credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
-                           && Double.compare(total_ttc,Double.parseDouble(mtt_avance.getText().toString()))>=0 ) {
+                           && Double.compare(total_ttc,d)>=0 ) {
                        liste_facture.get(id_facture).setStatut("avance");
-                       liste_facture.get(id_facture).setMtt_avance(Double.parseDouble(mtt_avance.getText().toString()));
+                       liste_facture.get(id_facture).setMtt_avance(d);
                    }
                    if(comptant.isChecked()){
                        ou.reglerEntete(liste_facture.get(id_facture).getEntete(),liste_facture.get(id_facture).getRef());
