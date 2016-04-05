@@ -22,6 +22,9 @@ public class Facture implements Serializable {
     private Boolean nouveau;
     private String entete;
     private double mtt_avance;
+    private double latitude;
+    private double longitude;
+    private int totalTTC;
 
     public Facture(String ref, Client id_client, int id_depot) {
         this.ref = ref;
@@ -31,6 +34,15 @@ public class Facture implements Serializable {
         this.setNouveau(true);
         this.id=0;
         this.entete="";
+        this.statut="";
+    }
+
+    public int getTotalTTC() {
+        return totalTTC;
+    }
+
+    public void setTotalTTC(int totalTTC) {
+        this.totalTTC = totalTTC;
     }
 
     public double getMtt_avance() {
@@ -47,6 +59,22 @@ public class Facture implements Serializable {
 
     public void setPosition_article(ArrayList<Integer> position_article) {
         this.position_article = position_article;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getStatut() {
@@ -69,6 +97,7 @@ public class Facture implements Serializable {
         this.id=0;
         this.setNouveau(true);
         this.entete="";
+        this.statut="";
     }
 
     public Facture() {

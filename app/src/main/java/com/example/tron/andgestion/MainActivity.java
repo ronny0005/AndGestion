@@ -1,6 +1,7 @@
 package com.example.tron.andgestion;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,10 +23,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final String PREFS_NAME = "compteur";
     Button connexion;
     Button facture;
     TextView login;
@@ -34,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Client> liste_client;
     ArrayList<ArticleServeur> liste_article;
     outils ou;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,38 +55,39 @@ public class MainActivity extends AppCompatActivity {
         facture = (Button) findViewById(R.id.menu_facturation);
         login =(TextView) findViewById(R.id.connexion_login);
         mdp =(TextView) findViewById(R.id.connexion_mdp);
+
         connexion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ArrayList<Depot> list = ou.listeDepotServeur();
-                // ! à enlever
-                Parametre parametre=null;
-                    if(!login.getText().toString().isEmpty() && !mdp.getText().toString().isEmpty()) {
-                        if(mdp.getText().toString().equals("borice") && mdp.getText().toString().equals("borice")) {
-                            try {
-                                parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }else {
-                            Toast.makeText(MainActivity.this, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
+            ArrayList<Depot> list = ou.listeDepotServeur();
+            // ! à enlever
+            Parametre parametre=null;
+                if(!login.getText().toString().isEmpty() && !mdp.getText().toString().isEmpty()) {
+                    if(mdp.getText().toString().equals("borice") && mdp.getText().toString().equals("borice")) {
+                        try {
+                            parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }else {
-                        Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
                     }
-                if(parametre != null){
-                    liste_client = ou.listeClientServeur("YDE");
-                    liste_article = ou.listeArticleServeur();
-                    Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-                    System.out.println("nombre article"+liste_article.size());
-                    intent.putExtra("liste_facture", liste_facture);
-                    intent.putExtra("parametre", parametre);
-                    intent.putExtra("outils", ou);
-                    intent.putExtra("liste_client", liste_client);
-                    intent.putExtra("liste_article", liste_article);
-                    startActivity(intent);
+                }else {
+                    Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
+            if(parametre != null){
+                liste_client = ou.listeClientServeur("YDE");
+                liste_article = ou.listeArticleServeur();
+                Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+                System.out.println("nombre article"+liste_article.size());
+                intent.putExtra("liste_facture", liste_facture);
+                intent.putExtra("parametre", parametre);
+                intent.putExtra("outils", ou);
+                intent.putExtra("liste_client", liste_client);
+                intent.putExtra("liste_article", liste_article);
+                startActivity(intent);
+            }
             }
         });
-
     }
+
 }

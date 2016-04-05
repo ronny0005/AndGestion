@@ -38,7 +38,7 @@ public class MenuActivity extends AppCompatActivity {
 
         etat.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this, StockActivity.class);
+                Intent intent = new Intent(MenuActivity.this, EquationActivity.class);
                 intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
                 intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                 intent.putExtra("outils", ou);

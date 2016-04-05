@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 
 import com.example.tron.andgestion.Stock.Stock;
+import com.example.tron.andgestion.Stock.StockEqVendeur;
 import com.example.tron.andgestion.bddlocal.affaire.Affaire;
 import com.example.tron.andgestion.bddlocal.article.Article;
 import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
@@ -99,6 +100,41 @@ public class outils implements Serializable{
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
+    public static ArrayList<StockEqVendeur> eqStkVendeur(String depot,String date_deb,String date_fin) {
+        Socket socket;
+        BufferedReader in;
+        PrintWriter out;
+        ArrayList<StockEqVendeur> ldep = null;
+        try {
+            socket = new Socket("192.168.1.19", 2009);
+            System.out.println("Demande de connexion");
+            out = new PrintWriter(socket.getOutputStream());
+            out.println("equation_stock_vendeur/"+depot+"/"+date_deb+"/"+date_fin);
+            System.out.println("equation_stock_vendeur/"+depot+"/"+date_deb+"/"+date_fin);
+            out.flush();
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String message_distant = in.readLine();
+            System.out.println(message_distant);
+            JSONObject json = null;
+            ldep = new ArrayList<StockEqVendeur>();
+            json = new JSONObject(message_distant);
+            JSONArray jArray = json.getJSONArray("data");
+
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject json_data = jArray.getJSONObject(i);
+                ldep.add(new StockEqVendeur(json_data.getString("AR_Design"), json_data.getInt("STOCKS"), json_data.getInt("ENTREES"), json_data.getInt("RETOURS"), json_data.getInt("AVARIS"), json_data.getInt("STOCK_FINAL"), json_data.getInt("QTE_VENDUES"), json_data.getInt("STOCK_RESTANTS")));
+            }
+            socket.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return ldep;

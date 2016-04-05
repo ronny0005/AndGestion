@@ -60,6 +60,18 @@ public class ValideActivity extends AppCompatActivity {
             mtt_avance.setClickable(false); // user navigates with wheel and selects widget
         }
     }
+
+
+    public void bloqueBox(){
+        if(!liste_facture.get(id_facture).getNouveau()) {
+            credit.setFocusableInTouchMode(false);
+            credit.setFocusable(false);
+            credit.setClickable(false);
+            comptant.setFocusableInTouchMode(false);
+            comptant.setFocusable(false);
+            comptant.setClickable(false);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,11 +99,9 @@ public class ValideActivity extends AppCompatActivity {
         lstr.add("Carte");
         lstr.add("Chèque");
         active_avance(false);
-        arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                lstr);
+        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lstr);
         mode_paiement.setAdapter(arrayAdapter);
+        System.out.println(liste_facture.get(id_facture).getStatut()+" statut");
         if(!liste_facture.get(id_facture).getNouveau()) {
             if (!liste_facture.get(id_facture).getStatut().isEmpty())
                 if (liste_facture.get(id_facture).getStatut().equals("credit"))
@@ -102,7 +112,7 @@ public class ValideActivity extends AppCompatActivity {
 
         liste_facture.get(id_facture).setType_paiement("espece");
 
-
+        bloqueBox();
         comptant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,11 +150,12 @@ public class ValideActivity extends AppCompatActivity {
         }
 
         DecimalFormat decim = new DecimalFormat("#.##");
+        DecimalFormat ttcformat = new DecimalFormat("#");
 
         total_ttc = total_ht + total_tva + total_precompte + total_marge;
         t_marge.setText(decim.format(total_marge));
         t_tva.setText(decim.format(total_tva));
-        t_ttc.setText(decim.format(total_ttc));
+        t_ttc.setText(ttcformat.format(total_ttc));
         t_ht.setText(decim.format(total_ht));
         t_precompte.setText(decim.format(total_precompte));
 
@@ -196,20 +207,21 @@ public class ValideActivity extends AppCompatActivity {
                        liste_facture.get(id_facture).setStatut("avance");
                        liste_facture.get(id_facture).setMtt_avance(d);
                    }
-                   if(comptant.isChecked()){
+                   if(comptant.isChecked() && liste_facture.get(id_facture).getNouveau()){
                        ou.reglerEntete(liste_facture.get(id_facture).getEntete(),liste_facture.get(id_facture).getRef());
                    }
                    liste_facture.get(id_facture).setNouveau(false);
+                   liste_facture.get(id_facture).setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
                    Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
                    intent.putExtra("liste_facture", liste_facture);
                    intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                    intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
                    intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                    intent.putExtra("outils", ou);
+                   intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                    startActivity(intent);
                }   else {
-                   Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.",
-                           Toast.LENGTH_SHORT).show();
+                   Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.",Toast.LENGTH_SHORT).show();
                }
            }else {
                    Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
