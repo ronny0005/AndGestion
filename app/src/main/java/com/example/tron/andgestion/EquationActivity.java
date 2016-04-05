@@ -22,9 +22,14 @@ import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class EquationActivity extends AppCompatActivity {
@@ -47,7 +52,7 @@ public class EquationActivity extends AppCompatActivity {
         return row;
     }
 
-    public void ajoutListe(){
+    public void ajoutListe(Date deb,Date fin){
         lstk = new ArrayList<StockEqVendeur> ();
         data = new ArrayList<Map<String, String>>();
         ArrayList<Depot> ldep  = ou.listeDepotServeur();
@@ -56,13 +61,15 @@ public class EquationActivity extends AppCompatActivity {
             if(ldep.get(i).getId()==param.getDe_no())
                 nomdep = ldep.get(i).getNom();
         }
-        lstk=ou.eqStkVendeur(nomdep, dt_deb.getText().toString(), dt_fin.getText().toString());
+        System.out.println("Suteprocess");
+
+        lstk=ou.eqStkVendeur(nomdep, new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for(int i=0;i<lstk.size();i++) {
-            data.add(createRow(lstk.get(i).getDesign(), "Stock : " + lstk.get(i).getStock()+"Entrées : " + lstk.get(i).getEntrees()
-            +"Retours : " + lstk.get(i).getRetours()+"Avaries : " + lstk.get(i).getAvaris()+"Avaries : " + lstk.get(i).getAvaris()
-            +"Stock final: " + lstk.get(i).getStock_final() +"Quantités vendues : " + lstk.get(i).getQte_vendues()
-            +"Stock restants: " + lstk.get(i).getStk_restants()));
+            data.add(createRow(lstk.get(i).getDesign(), " Stock : " + lstk.get(i).getStock()+"  Entrées : " + lstk.get(i).getEntrees()
+            +"\n Retours : " + lstk.get(i).getRetours()+"  Avaries : " + lstk.get(i).getAvaris()
+            +"\n Stock final : " + lstk.get(i).getStock_final() +" Quantités vendues : " + lstk.get(i).getQte_vendues()
+            +"\n Stock restants : " + lstk.get(i).getStk_restants()));
         }
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};
@@ -75,23 +82,29 @@ public class EquationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.equation_stock);
         this.setTitle("Equation stock");
-  //      ou = (outils) getIntent().getSerializableExtra("outils");
- //       param = (Parametre) getIntent().getSerializableExtra("parametre");
-        ou = new outils();
-        try {
-            param  = ou.connexion("borice","borice");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ou = (outils) getIntent().getSerializableExtra("outils");
+        param = (Parametre) getIntent().getSerializableExtra("parametre");
+
         ou.app=EquationActivity.this;
         afficher = (Button) findViewById(R.id.equation_afficher);
         dt_deb = (TextView) findViewById(R.id.equation_dt_deb);
         dt_fin = (TextView) findViewById(R.id.equation_dt_fin);
         lst_equation = (ListView) findViewById(R.id.equation_lv);
-
+        dt_deb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
+        dt_fin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         afficher.setOnClickListener(new View.OnClickListener(){
                public void onClick(View v) {
-               ajoutListe();
+               if(!dt_deb.getText().toString().isEmpty() && !dt_fin.getText().toString().isEmpty()) {
+                   try {
+
+                       DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
+                       Date deb = format.parse(dt_deb.getText().toString());
+                       Date fin = format.parse(dt_deb.getText().toString());
+                       ajoutListe(deb,fin);
+                   } catch (ParseException e) {
+                       e.printStackTrace();
+                   }
+               }
            }
         });
         }

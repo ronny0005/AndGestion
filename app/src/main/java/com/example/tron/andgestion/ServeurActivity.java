@@ -40,7 +40,7 @@ public class ServeurActivity extends AppCompatActivity {
         valide.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                ou.lien="http://"+adresse.getText().toString()+":8082/api/";
+                ou.lien=adresse.getText().toString();
                 System.out.println(ou.lien);
                 Intent intent = new Intent(ServeurActivity.this, MainActivity.class);
                 intent.putExtra("outils", ou);

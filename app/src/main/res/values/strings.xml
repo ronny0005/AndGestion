@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndGestion</string>
+    <string name="title_activity_liste__stock">Liste Stock</string>
 </resources>

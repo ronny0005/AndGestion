@@ -41,7 +41,7 @@ import java.util.ArrayList;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://192.168.1.14:8082/api/";
+    public static String lien="http://90.127.113.182:8082/api/";
     public static Parametre connexion(String login,String mdp) throws IOException{
         return getParametre(login,mdp);
     }
@@ -111,7 +111,7 @@ public class outils implements Serializable{
         PrintWriter out;
         ArrayList<StockEqVendeur> ldep = null;
         try {
-            socket = new Socket("192.168.1.19", 2009);
+            socket = new Socket("90.127.113.182", 8083);
             System.out.println("Demande de connexion");
             out = new PrintWriter(socket.getOutputStream());
             out.println("equation_stock_vendeur/"+depot+"/"+date_deb+"/"+date_fin);
