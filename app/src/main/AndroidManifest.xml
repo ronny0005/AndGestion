@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".LstStockActivity"></activity>
         <activity android:name=".EquationActivity"></activity>
+        <activity android:name=".StockActivity"></activity>
         <activity android:name=".FactureActivity" />
         <activity android:name=".LstFactureActivity" />
         <activity android:name=".MenuActivity" />
