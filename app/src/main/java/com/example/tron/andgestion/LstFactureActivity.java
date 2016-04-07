@@ -79,8 +79,8 @@ public class LstFactureActivity extends AppCompatActivity {
         data = new ArrayList<Map<String, String>>();
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for (int i = 0; i < liste_facture.size(); i++) {
-            data.add(createRow(liste_facture.get(i).getRef() + " - " + liste_facture.get(i).getEntete() + " - Total TTC : " + liste_facture.get(i).getTotalTTC(),
-                    "" + liste_facture.get(i).getStatut() + " - Client : " + liste_facture.get(i).getId_client().getIntitule()));
+            data.add(createRow(liste_facture.get(i).getRef() + " - " + liste_facture.get(i).getEntete()+" - " + liste_facture.get(i).getStatut() ,
+                    "Client : " + liste_facture.get(i).getId_client().getIntitule()+ "\nTotal TTC : " + liste_facture.get(i).getTotalTTC() ));
         }
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};
@@ -158,7 +158,8 @@ public class LstFactureActivity extends AppCompatActivity {
                 editor.commit();
                 editor.putString("datecmpt", new SimpleDateFormat("dd/mm/yyyy").format(datecmpt));
                 editor.commit();
-                fact.setListe_article(Ou.listeArticleServeur());
+                Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
+                //fact.setListe_article(lart);
                 liste_facture.add(fact);
                 Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
                 intent.putExtra("liste_facture", liste_facture);
@@ -186,5 +187,20 @@ public class LstFactureActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        outils Ou = new outils();
+        Ou.app = LstFactureActivity.this;
+        Intent intent = new Intent(LstFactureActivity.this, LstFactureActivity.class);
+        intent.putExtra("liste_facture", liste_facture);
+        intent.putExtra("outils", ou);
+        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        startActivity(intent);
+        super.onBackPressed();  // optional depending on your needs
     }
 }

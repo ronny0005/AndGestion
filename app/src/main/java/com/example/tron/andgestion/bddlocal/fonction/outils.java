@@ -41,7 +41,7 @@ import java.util.ArrayList;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://90.127.113.182:8082/api/";
+    public static String lien="http://192.168.1.14:8082/api/";
     public static Parametre connexion(String login,String mdp) throws IOException{
         return getParametre(login,mdp);
     }
@@ -104,6 +104,27 @@ public class outils implements Serializable{
         }
         return ldep;
     }
+
+    public static ArrayList<ArticleServeur> listeArticleDispo(String DE_No){
+        JSONObject json = null;
+        ArrayList<ArticleServeur> lart=null;
+        try {
+            String url = "getAllArticleDispoByArRef";
+            json = new JSONObject(getJsonFromServer("getAllArticleDispoByArRef?DE_No=" + DE_No));
+            JSONArray jArray = json.getJSONArray("data");
+            lart= new ArrayList<ArticleServeur>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                lart.add(new ArticleServeur(json_data.getInt("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lart;
+    }
+
 
     public static ArrayList<StockEqVendeur> eqStkVendeur(String depot,String date_deb,String date_fin) {
         Socket socket;

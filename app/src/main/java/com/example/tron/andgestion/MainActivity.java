@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             if(parametre != null){
                 liste_client = ou.listeClientServeur("YDE");
-                liste_article = ou.listeArticleServeur();
+                liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 System.out.println("nombre article"+liste_article.size());
                 intent.putExtra("liste_facture", liste_facture);
