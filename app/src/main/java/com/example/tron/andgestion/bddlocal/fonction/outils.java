@@ -207,12 +207,9 @@ public class outils implements Serializable{
         try {
             String res = "addDocligne?DO_Piece=" + no_fac + "&AR_Ref=" + ref_fac + "&DL_Ligne=" + no_ligne+"&DL_Qte=" + dl_qte+"&DL_Remise=" + dl_remise;
             json = new JSONObject(getJsonFromServer(res));
-            JSONArray jArray = json.getJSONArray("data");
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                qte = json_data.getInt("id");
-            }
-        } catch (JSONException e) {
+            JSONObject jArray = json.getJSONObject("data");
+            qte = jArray.getInt("id");
+    } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -220,6 +217,41 @@ public class outils implements Serializable{
         return qte;
     }
 
+    public static void SupprLigneServeur(String entete){
+        JSONObject json = null;
+        try {
+            String res = "delLigne?DO_Piece=" +entete;
+            json = new JSONObject(getJsonFromServer(res));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SupprEnteteServeur(String entete){
+        JSONObject json = null;
+        try {
+            String res = "delEntete?DO_Piece=" +entete;
+            json = new JSONObject(getJsonFromServer(res));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ModifLigneServeur(int idLigne,int qte){
+        JSONObject json = null;
+        try {
+            String res = "modifLigne?CbMarq=" +idLigne+"&qte="+qte;
+            json = new JSONObject(getJsonFromServer(res));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static ArrayList<Stock> getStock(int de_no) {
         JSONObject json = null;
@@ -458,22 +490,18 @@ public class outils implements Serializable{
         return ldep;
     }
 
-    public static ArrayList<Souche> reglerEntete(String do_piece,String ref){
+    public static void reglerEntete(String do_piece,String ref){
         JSONObject json = null;
-        ArrayList<Souche> lart=null;
         try {
             String url="regleDocentete?DO_Piece="+do_piece+"&ref="+ref;
             json = new JSONObject(getJsonFromServer(url));
-
-//            json = new JSONObject(getJsonFromServer("http://genzy.esy.es/souche.html"));
-            JSONArray jArray = json.getJSONArray("data");
+            JSONObject jArray = json.getJSONObject("data");
 
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return lart;
     }
 
     public static ArrayList<Souche> listeSoucheServeur(){

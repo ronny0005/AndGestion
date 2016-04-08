@@ -25,12 +25,14 @@ public class Facture implements Serializable {
     private double latitude;
     private double longitude;
     private int totalTTC;
+    private ArrayList<Integer> liste_ligne;
 
     public Facture(String ref, Client id_client, int id_depot) {
         this.ref = ref;
         this.id_client = id_client;
         this.id_depot = id_depot;
         this.position_article= new  ArrayList<Integer>();
+        this.liste_ligne= new  ArrayList<Integer>();
         this.setNouveau(true);
         this.id=0;
         this.entete="";
@@ -93,6 +95,7 @@ public class Facture implements Serializable {
         this.ref = ref;
         this.liste_article= list;
         this.position_article= new  ArrayList<Integer>();
+        this.liste_ligne= new  ArrayList<Integer>();
         this.id_client=null;
         this.id=0;
         this.setNouveau(true);
@@ -162,6 +165,14 @@ public class Facture implements Serializable {
 
     public void setListe_article(ArrayList<ArticleServeur> liste_article) {
         this.liste_article = liste_article;
+    }
+
+    public ArrayList<Integer> getListe_ligne() {
+        return liste_ligne;
+    }
+
+    public void setListe_ligne(ArrayList<Integer> liste_ligne) {
+        this.liste_ligne = liste_ligne;
     }
 
     public String toString(){

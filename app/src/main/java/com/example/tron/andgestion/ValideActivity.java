@@ -49,27 +49,26 @@ public class ValideActivity extends AppCompatActivity {
     outils ou = new outils();
 
     public void active_avance(boolean active){
-        mtt_avance.setText("");
-        if(active){
-            mtt_avance.setFocusable(true);
-            mtt_avance.setFocusableInTouchMode(true);
-            mtt_avance.setClickable(true);
-        } else { // enable editing of password
-            mtt_avance.setFocusable(false);
-            mtt_avance.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-            mtt_avance.setClickable(false); // user navigates with wheel and selects widget
+        if(active) {
+            mtt_avance.setEnabled(false);
+            mtt_avance.setText("0");
+        }else {
+            mtt_avance.setEnabled(true);
+            mtt_avance.setText("");
         }
     }
 
 
     public void bloqueBox(){
         if(!liste_facture.get(id_facture).getNouveau()) {
-            credit.setFocusableInTouchMode(false);
-            credit.setFocusable(false);
-            credit.setClickable(false);
-            comptant.setFocusableInTouchMode(false);
-            comptant.setFocusable(false);
-            comptant.setClickable(false);
+            //credit.setFocusableInTouchMode(false);
+            //credit.setFocusable(false);
+            //credit.setClickable(false);
+            credit.setEnabled(false);
+            comptant.setEnabled(false);
+            //comptant.setFocusableInTouchMode(false);
+            //comptant.setFocusable(false);
+            //comptant.setClickable(false);
         }
     }
     @Override
@@ -92,7 +91,6 @@ public class ValideActivity extends AppCompatActivity {
         mode_paiement = (Spinner) findViewById(R.id.valide_paiement);
         comptant = (CheckBox) findViewById(R.id.valide_comptant);
         credit = (CheckBox) findViewById(R.id.valide_credit);
-        annuler = (Button) findViewById(R.id.valide_annuler);
         valider = (Button) findViewById(R.id.valide_ajout);
         lstr = new ArrayList<String>();
         lstr.add("Espèce");
@@ -107,7 +105,7 @@ public class ValideActivity extends AppCompatActivity {
                 if (liste_facture.get(id_facture).getStatut().equals("credit"))
                     credit.setChecked(true);
                 else
-                    credit.setChecked(false);
+                    comptant.setChecked(true);
         }
 
         liste_facture.get(id_facture).setType_paiement("espece");
@@ -159,18 +157,8 @@ public class ValideActivity extends AppCompatActivity {
         t_ht.setText(decim.format(total_ht));
         t_precompte.setText(decim.format(total_precompte));
 
-        annuler.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(ValideActivity.this, FactureActivity.class);
-                intent.putExtra("liste_facture", liste_facture);
-                intent.putExtra("id_facture", String.valueOf(id_facture));
-                intent.putExtra("outils", ou);
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                startActivity(intent);
-            }
-        });
+        if(!liste_facture.get(id_facture).getNouveau())
+            valider.setText("Continuer");
 
         mode_paiement.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -218,7 +206,6 @@ public class ValideActivity extends AppCompatActivity {
                    intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
                    intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                    intent.putExtra("outils", ou);
-                   intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                    startActivity(intent);
                }   else {
                    Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.",Toast.LENGTH_SHORT).show();

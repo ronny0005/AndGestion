@@ -90,15 +90,11 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
 
     public void verouille(){
         if(!liste_facture.get(id_facture).getNouveau()) {
-            client.setFocusable(false);
-            client.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-            client.setClickable(false); // user navigates with wheel and selects widget
-            designation.setFocusable(false);
-            designation.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-            designation.setClickable(false); // user navigates with wheel and selects widget
-            qte.setFocusable(false);
-            qte.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-            qte.setClickable(false); // user navigates with wheel and selects widget
+            client.setEnabled(false);
+            designation.setEnabled(false);
+            qte.setEnabled(false);
+            caisse.setEnabled(false);
+            date.setEnabled(false);
         }
     }
     public void ajoutListe() {
@@ -118,15 +114,10 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                 new int[]{android.R.id.text1, android.R.id.text2});
 
         lv.setAdapter(adapter);
-        if (position_article.size() > 0) { // disable editing password
-            client.setFocusable(false);
-            client.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-            client.setClickable(false); // user navigates with wheel and selects widget
-        } else { // enable editing of password
-            client.setFocusable(true);
-            client.setFocusableInTouchMode(true);
-            client.setClickable(true);
-        }
+        if (position_article.size() > 0)  // disable editing password
+            client.setEnabled(false);
+            else  // enable editing of password
+            client.setEnabled(true);
     }
 
     public void initialise() {
@@ -175,9 +166,11 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         caisse.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
         caisse.setClickable(false);
         caisse.setText(parametre.getCa_no().getCa_intitule());
-        caisse.setBackgroundColor(R.color.gray);
+        //caisse.setBackgroundColor(R.color.gray);
         date = (TextView) findViewById(R.id.facture_date);
-        date.setBackgroundColor(R.color.gray);
+        //date.setBackgroundColor(R.color.gray);
+        date.setEnabled(false);
+        caisse.setEnabled(false);
         date.setFocusable(false);
         date.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
         date.setClickable(false);
@@ -222,15 +215,21 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         initialise();
         verouille();
 
+        if(!liste_facture.get(id_facture).getNouveau())
+            valider.setText("Continuer");
+
         annuler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(liste_facture.get(id_facture).getNouveau()) {
-                    position_article = new ArrayList<Integer>();
                     ajoutListe();
                     liste_facture.get(id_facture).setId(0);
+                    ou.SupprEnteteServeur(liste_facture.get(id_facture).getEntete());
+                    ou.SupprLigneServeur(liste_facture.get(id_facture).getEntete());
                     clear();
                     total.setText(calculPrix());
+                    liste_facture.get(id_facture).setListe_ligne(new ArrayList<Integer>());
+                    position_article = new ArrayList<Integer>();
                 }
             }
         });
@@ -316,12 +315,13 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                                     liste_facture.get(id_facture).setEntete(piece);
                                 }
                                 if (!modif) {
-                                    ou.ajoutLigneServeur(liste_facture.get(id_facture).getEntete(), String.valueOf(liste_article.get(id_article).getAr_ref()), (position_article.size() + 1) * 10000, Integer.parseInt(qte.getText().toString()), 0);
+                                    liste_facture.get(id_facture).getListe_ligne().add(ou.ajoutLigneServeur(liste_facture.get(id_facture).getEntete(), String.valueOf(liste_article.get(id_article).getAr_ref()), (position_article.size() + 1) * 10000, Integer.parseInt(qte.getText().toString()), 0));
                                     position_article.add(id_article);
                                     liste_article.get(id_article).setId(liste_article.size());
                                 } else {
                                     modif = false;
                                     ajouter.setText("Ajouter");
+                                    ou.ModifLigneServeur(liste_facture.get(id_facture).getListe_ligne().get(0), Integer.parseInt(qte.getText().toString()));
                                 }
                                 liste_article.get(id_article).setQte_vendue(Integer.parseInt(qte.getText().toString()));
                                 ou.getPrixclient(liste_article.get(id_article).getAr_ref(), liste_facture.get(id_facture).getId_client().getCattarif(), liste_facture.get(id_facture).getId_client().getCatcompta(), liste_article.get(id_article));

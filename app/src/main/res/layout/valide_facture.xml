@@ -181,12 +181,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ANNULER"
-            android:id="@+id/valide_annuler" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="VALIDER"
             android:id="@+id/valide_ajout"
             android:layout_gravity="center_horizontal" />
