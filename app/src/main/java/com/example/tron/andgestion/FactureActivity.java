@@ -87,6 +87,7 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
     ArrayList<String> lclient = new ArrayList<String>();
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     Parametre parametre;
+    Facture facture;
 
     public void verouille(){
         if(!liste_facture.get(id_facture).getNouveau()) {
@@ -101,11 +102,12 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         data = new ArrayList<Map<String, String>>();
         for (int i = 0; i < position_article.size(); i++) {
             DecimalFormat decim = new DecimalFormat("#.##");
+            System.out.println(liste_article.get(position_article.get(i)).getAr_design()+" ere");
             double px_achat = (liste_article.get(position_article.get(i)).getAr_prixven() * liste_article.get(position_article.get(i)).getQte_vendue());
             Map<String, String> datum = new HashMap<String, String>(2);
             datum.put("First Line", liste_article.get(position_article.get(i)).getAr_design());
             datum.put("Second Line", "Qte : " + ((int) liste_article.get(position_article.get(i)).getQte_vendue())
-                    + " Prix achat : " + decim.format(px_achat));
+                    + " Prix de vente : " + decim.format(px_achat));
             data.add(datum);
         }
         SimpleAdapter adapter = new SimpleAdapter(this, data,
@@ -134,7 +136,7 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
     public String calculPrix() {
         double total_tva = 0, total_precompte = 0, total_marge = 0, total_ht = 0, total_ttc;
         for (int i = 0; i < position_article.size(); i++) {
-            ArticleServeur article = liste_facture.get(id_facture).getListe_article().get(position_article.get(i));
+            ArticleServeur article = facture.getListe_article().get(position_article.get(i));
             double prix = article.getAr_prixven() * article.getQte_vendue();
             total_tva += prix * article.getTaxe1() / 100;
             total_precompte += prix * article.getTaxe2() / 100;
@@ -157,33 +159,25 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         id_facture = Integer.parseInt(getIntent().getStringExtra("id_facture"));
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
-
+        facture = (Facture) getIntent().getSerializableExtra("facture");
         annuler = (Button) findViewById(R.id.facture_annuler);
         caisse = (TextView) findViewById(R.id.facture_caisse);
         total = (TextView) findViewById(R.id.facture_ttc);
 
-        caisse.setFocusable(false);
-        caisse.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-        caisse.setClickable(false);
         caisse.setText(parametre.getCa_no().getCa_intitule());
-        //caisse.setBackgroundColor(R.color.gray);
         date = (TextView) findViewById(R.id.facture_date);
-        //date.setBackgroundColor(R.color.gray);
         date.setEnabled(false);
         caisse.setEnabled(false);
-        date.setFocusable(false);
-        date.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-        date.setClickable(false);
         date.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
 
 
-        position_article = liste_facture.get(id_facture).getPosition_article();
-        liste_article = liste_facture.get(id_facture).getListe_article();
+        position_article = facture.getPosition_article();
+        liste_article = facture.getListe_article();
 
-        if (liste_facture.get(id_facture).getNouveau())
+        if (facture.getNouveau())
             this.setTitle("Facture");
         else
-            this.setTitle(liste_facture.get(id_facture).getRef()+" - "+liste_facture.get(id_facture).getEntete());
+            this.setTitle(facture.getRef()+" - "+facture.getEntete());
 
         lv = (ListView) findViewById(R.id.facture_liste);
         ajouter = (Button) findViewById(R.id.facture_ajouter);
@@ -215,20 +209,22 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         initialise();
         verouille();
 
-        if(!liste_facture.get(id_facture).getNouveau())
+        if(!facture.getNouveau()) {
             valider.setText("Continuer");
+            date.requestFocus();
+        }
 
         annuler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(liste_facture.get(id_facture).getNouveau()) {
+                if (facture.getNouveau()) {
                     ajoutListe();
-                    liste_facture.get(id_facture).setId(0);
-                    ou.SupprEnteteServeur(liste_facture.get(id_facture).getEntete());
-                    ou.SupprLigneServeur(liste_facture.get(id_facture).getEntete());
+                    facture.setId(0);
+                    // ou.SupprEnteteServeur(liste_facture.get(id_facture).getEntete());
+                    // ou.SupprLigneServeur(liste_facture.get(id_facture).getEntete());
                     clear();
                     total.setText(calculPrix());
-                    liste_facture.get(id_facture).setListe_ligne(new ArrayList<Integer>());
+                    facture.setListe_ligne(new ArrayList<Integer>());
                     position_article = new ArrayList<Integer>();
                 }
             }
@@ -237,7 +233,7 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(liste_facture.get(id_facture).getNouveau()) {
+                if (facture.getNouveau()) {
                     ArticleServeur art = liste_article.get(position_article.get(position));
                     designation.setText(art.getAr_design());
                     qte.setText(String.valueOf(art.getQte_vendue()));
@@ -252,7 +248,7 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                 () {
             @Override
             public boolean onItemLongClick(AdapterView<?> av, View v, int pos, long id) {
-                if (liste_facture.get(id_facture).getNouveau()) {
+                if (facture.getNouveau()) {
                     final int i = pos;
                     new AlertDialog.Builder(FactureActivity.this)
                             .setTitle("Suppression")
@@ -274,13 +270,13 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
-                    return false;
-                }
+                return false;
+            }
         });
 
         ajouter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (liste_facture.get(id_facture).getNouveau()) {
+                if (facture.getNouveau()) {
 
                     if (!qte.getText().toString().isEmpty() && !designation.getText().toString().isEmpty() && !client.getText().toString().isEmpty()) {
                         ArticleServeur art = null;
@@ -292,43 +288,49 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                         for (int i = 0; i < lst_client.size(); i++)
                             if (lst_client.get(i).getIntitule().equals(client.getText().toString()))
                                 id_client = i;
+
                         if (art != null && id_client != 0) {
                             int id_article = 0;
                             for (int i = 0; i < liste_article.size(); i++)
                                 if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))
                                     id_article = i;
+
                             double qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
+                            System.out.println("Latitude:  pp " + qteart);
+
                             if (!qte.getText().toString().equals("0") && qteart > 0) {
-                                String piece = "";
-                                if (liste_facture.get(id_facture).getEntete().equals("")) {
-                                /*if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                if (qteart >= Double.parseDouble(qte.getText().toString())) {
+                                    if (facture.getEntete().equals("")) {
+                                        if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        } else {
+                                            Location locationGPS = getLastBestLocation();
+                                            System.out.println("Latitude:" + locationGPS.getLatitude() + ", Longitude:" + locationGPS.getLongitude());
+                                            facture.setLatitude(locationGPS.getLatitude());
+                                            facture.setLongitude(locationGPS.getLongitude());
+                                            facture.setId_client(lst_client.get(id_client));
 
-                                } else {
-                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FactureActivity.this);
-                                }*/
-                                    piece = ou.ajoutEnteteServeur(parametre.getCo_no(), lst_client.get(id_client).getNum(), liste_facture.get(id_facture).getRef(), "1");
-                                    //Location locationGPS=getLastBestLocation();
-                                    //System.out.println("Latitude:" + locationGPS.getLatitude() + ", Longitude:" + locationGPS.getLongitude());
-                                    //liste_facture.get(id_facture).setLatitude(locationGPS.getLatitude());
-                                    //liste_facture.get(id_facture).setLongitude(locationGPS.getLongitude());
-                                    liste_facture.get(id_facture).setId_client(lst_client.get(id_client));
-                                    liste_facture.get(id_facture).setEntete(piece);
-                                }
-                                if (!modif) {
-                                    liste_facture.get(id_facture).getListe_ligne().add(ou.ajoutLigneServeur(liste_facture.get(id_facture).getEntete(), String.valueOf(liste_article.get(id_article).getAr_ref()), (position_article.size() + 1) * 10000, Integer.parseInt(qte.getText().toString()), 0));
-                                    position_article.add(id_article);
-                                    liste_article.get(id_article).setId(liste_article.size());
-                                } else {
-                                    modif = false;
-                                    ajouter.setText("Ajouter");
-                                    ou.ModifLigneServeur(liste_facture.get(id_facture).getListe_ligne().get(0), Integer.parseInt(qte.getText().toString()));
-                                }
-                                liste_article.get(id_article).setQte_vendue(Integer.parseInt(qte.getText().toString()));
-                                ou.getPrixclient(liste_article.get(id_article).getAr_ref(), liste_facture.get(id_facture).getId_client().getCattarif(), liste_facture.get(id_facture).getId_client().getCatcompta(), liste_article.get(id_article));
-                                ajoutListe();
-                                total.setText(calculPrix());
-                                clear();
+//                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FactureActivity.this);
+                                        }
 
+                                    }
+                                    if (!modif) {
+                                        position_article.add(id_article);
+                                        liste_article.get(id_article).setId(liste_article.size());
+                                    } else {
+                                        modif = false;
+                                        ajouter.setText("Ajouter");
+                                    }
+                                    liste_article.get(id_article).setQte_vendue(Integer.parseInt(qte.getText().toString()));
+                                    ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), liste_article.get(id_article));
+                                    ajoutListe();
+                                    total.setText(calculPrix());
+                                    clear();
+                                    designation.requestFocus();
+                                } else {
+
+                                    DecimalFormat ttcformat = new DecimalFormat("#");
+                                    Toast.makeText(FactureActivity.this, "Saisie impossible. Il reste en stock " + ttcformat.format(qteart) + " éléments.", Toast.LENGTH_SHORT).show();
+                                }
                             } else {
                                 Toast.makeText(FactureActivity.this, "Le stock de cet article est épuisé.", Toast.LENGTH_SHORT).show();
                             }
@@ -344,12 +346,13 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
             public void onClick(View v) {
                     if (position_article.size() > 0) {
                         Intent intent = new Intent(FactureActivity.this, ValideActivity.class);
-                        liste_facture.get(id_facture).setPosition_article(position_article);
+                        facture.setPosition_article(position_article);
                         intent.putExtra("liste_facture", liste_facture);
                         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                         intent.putExtra("id_facture", String.valueOf(id_facture));
                         intent.putExtra("outils", ou);
+                        intent.putExtra("facture",facture);
                         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
                         startActivity(intent);
                     }

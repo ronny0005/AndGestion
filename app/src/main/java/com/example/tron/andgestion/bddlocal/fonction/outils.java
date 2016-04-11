@@ -35,13 +35,15 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import static android.text.Html.escapeHtml;
+
 /**
  * Created by T.Ron$ on 12/03/2016.
  */
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://192.168.1.14:8082/api/";
+    public static String lien="http://90.127.113.182:8082/api/";
     public static Parametre connexion(String login,String mdp) throws IOException{
         return getParametre(login,mdp);
     }
@@ -127,35 +129,21 @@ public class outils implements Serializable{
 
 
     public static ArrayList<StockEqVendeur> eqStkVendeur(String depot,String date_deb,String date_fin) {
-        Socket socket;
-        BufferedReader in;
-        PrintWriter out;
+        JSONObject json = null;
+        System.out.println(escapeHtml(depot));
         ArrayList<StockEqVendeur> ldep = null;
         try {
-            socket = new Socket("90.127.113.182", 8083);
-            System.out.println("Demande de connexion");
-            out = new PrintWriter(socket.getOutputStream());
-            out.println("equation_stock_vendeur/"+depot+"/"+date_deb+"/"+date_fin);
-            System.out.println("equation_stock_vendeur/"+depot+"/"+date_deb+"/"+date_fin);
-            out.flush();
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String message_distant = in.readLine();
-            System.out.println(message_distant);
-            JSONObject json = null;
-            ldep = new ArrayList<StockEqVendeur>();
-            json = new JSONObject(message_distant);
+            String url = "getAllArticleDispoByArRef";
+            json = new JSONObject(getJsonFromServer("getEqStock?depot="+depot+"&date_deb="+date_deb+"&date_fin="+date_fin));
             JSONArray jArray = json.getJSONArray("data");
-
-            for (int i = 0; i < jArray.length(); i++) {
+            ldep= new ArrayList<StockEqVendeur>();
+            for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
                 ldep.add(new StockEqVendeur(json_data.getString("AR_Design"), json_data.getInt("STOCKS"), json_data.getInt("ENTREES"), json_data.getInt("RETOURS"), json_data.getInt("AVARIS"), json_data.getInt("STOCK_FINAL"), json_data.getInt("QTE_VENDUES"), json_data.getInt("STOCK_RESTANTS")));
             }
-            socket.close();
-        } catch (UnknownHostException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
         return ldep;

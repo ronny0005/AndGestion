@@ -55,15 +55,7 @@ public class EquationActivity extends AppCompatActivity {
     public void ajoutListe(Date deb,Date fin){
         lstk = new ArrayList<StockEqVendeur> ();
         data = new ArrayList<Map<String, String>>();
-        ArrayList<Depot> ldep  = ou.listeDepotServeur();
-        String nomdep ="";
-        for(int i=0;i<ldep.size();i++){
-            if(ldep.get(i).getId()==param.getDe_no())
-                nomdep = ldep.get(i).getNom();
-        }
-        System.out.println("Suteprocess");
-
-        lstk=ou.eqStkVendeur(nomdep, new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
+        lstk=ou.eqStkVendeur(String.valueOf(param.getDe_no()), new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for(int i=0;i<lstk.size();i++) {
             data.add(createRow(lstk.get(i).getDesign(), " Stock : " + lstk.get(i).getStock()+"  Entrées : " + lstk.get(i).getEntrees()

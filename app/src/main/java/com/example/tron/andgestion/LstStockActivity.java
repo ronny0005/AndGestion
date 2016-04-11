@@ -32,6 +32,8 @@ import java.util.Map;
 public class LstStockActivity extends AppCompatActivity {
     Button stock;
     Button vendeur;
+    Button maps;
+
     outils ou;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class LstStockActivity extends AppCompatActivity {
         this.setTitle("Liste des etats");
         stock = (Button) findViewById(R.id.lststk_stock);
         vendeur = (Button) findViewById(R.id.lststk_vendeur);
+        maps = (Button) findViewById(R.id.lststk_map);
 
         stock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -56,6 +59,18 @@ public class LstStockActivity extends AppCompatActivity {
         vendeur.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LstStockActivity.this, EquationActivity.class);
+                intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
+                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+                intent.putExtra("outils",(outils) getIntent().getSerializableExtra("outils"));
+                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+                startActivity(intent);
+            }
+        });
+
+        maps.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LstStockActivity.this, MapsActivity.class);
                 intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
                 intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                 intent.putExtra("outils",(outils) getIntent().getSerializableExtra("outils"));

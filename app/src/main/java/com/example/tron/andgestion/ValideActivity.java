@@ -47,37 +47,36 @@ public class ValideActivity extends AppCompatActivity {
     Button valider;
     int id_facture;
     outils ou = new outils();
+    Parametre parametre;
+    ArrayList<ArticleServeur> liste_article;
+    Facture facture;
 
     public void active_avance(boolean active){
         if(active) {
-            mtt_avance.setEnabled(false);
-            mtt_avance.setText("0");
-        }else {
             mtt_avance.setEnabled(true);
             mtt_avance.setText("");
+        }else {
+            mtt_avance.setEnabled(false);
+            mtt_avance.setText(" 0");
         }
     }
 
 
     public void bloqueBox(){
         if(!liste_facture.get(id_facture).getNouveau()) {
-            //credit.setFocusableInTouchMode(false);
-            //credit.setFocusable(false);
-            //credit.setClickable(false);
             credit.setEnabled(false);
             comptant.setEnabled(false);
-            //comptant.setFocusableInTouchMode(false);
-            //comptant.setFocusable(false);
-            //comptant.setClickable(false);
         }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.valide_facture);
-
+        parametre = (Parametre) getIntent().getSerializableExtra("parametre");
+        liste_article = (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
         this.setTitle("Validation");
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
+        facture = (Facture) getIntent().getSerializableExtra("facture");
         id_facture= Integer.parseInt(getIntent().getStringExtra("id_facture"));
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = ValideActivity.this;
@@ -118,7 +117,7 @@ public class ValideActivity extends AppCompatActivity {
                 if (comptant.isChecked()) {
                     credit.setChecked(false);
                     active_avance(false);
-                    liste_facture.get(id_facture).setStatut("comptant");
+                    facture.setStatut("comptant");
                 }
             }
         });
@@ -130,15 +129,15 @@ public class ValideActivity extends AppCompatActivity {
                 if (credit.isChecked()) {
                     comptant.setChecked(false);
                     active_avance(true);
-                    liste_facture.get(id_facture).setStatut("credit");
+                    facture.setStatut("credit");
                 }
             }
         });
 
-        ArrayList<Integer> position = liste_facture.get(id_facture).getPosition_article();
+        final ArrayList<Integer> position = facture.getPosition_article();
         System.out.println("id facture "+liste_facture.size());
         for (int i = 0; i < position.size(); i++) {
-            ArticleServeur article = liste_facture.get(id_facture).getListe_article().get(position.get(i));
+            ArticleServeur article = facture.getListe_article().get(position.get(i));
             double prix = article.getAr_prixven() * article.getQte_vendue();
             total_tva += prix * article.getTaxe1() / 100;
             total_precompte += prix * article.getTaxe2() / 100;
@@ -157,7 +156,7 @@ public class ValideActivity extends AppCompatActivity {
         t_ht.setText(decim.format(total_ht));
         t_precompte.setText(decim.format(total_precompte));
 
-        if(!liste_facture.get(id_facture).getNouveau())
+        if(!facture.getNouveau())
             valider.setText("Continuer");
 
         mode_paiement.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -165,12 +164,11 @@ public class ValideActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // your code here
                 if(position==0)
-                    liste_facture.get(id_facture).setType_paiement("espece");
+                    facture.setType_paiement("espece");
                 if(position==1)
-                    liste_facture.get(id_facture).setType_paiement("carte");
+                    facture.setType_paiement("carte");
                 if(position==2)
-                    liste_facture.get(id_facture).setType_paiement("cheque");
-                System.out.println(liste_facture.get(id_facture).getType_paiement());
+                    facture.setType_paiement("cheque");
             }
 
             @Override
@@ -192,14 +190,23 @@ public class ValideActivity extends AppCompatActivity {
                if(comptant.isChecked() || credit.isChecked()) {
                    if(credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
                            && Double.compare(total_ttc,d)>=0 ) {
-                       liste_facture.get(id_facture).setStatut("avance");
-                       liste_facture.get(id_facture).setMtt_avance(d);
+                       facture.setStatut("avance");
+                       facture.setMtt_avance(d);
                    }
-                   if(comptant.isChecked() && liste_facture.get(id_facture).getNouveau()){
-                       ou.reglerEntete(liste_facture.get(id_facture).getEntete(),liste_facture.get(id_facture).getRef());
+
+                   if(facture.getNouveau()) {
+                       String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1");
+                       facture.setEntete(entete);
+                       for (int i = 0; i < position.size(); i++) {
+                           ArticleServeur article = facture.getListe_article().get(position.get(i));
+                           ou.ajoutLigneServeur(entete, String.valueOf(liste_article.get(facture.getPosition_article().get(i)).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
+                       }liste_facture.set(id_facture, facture);
+                       facture.setNouveau(false);
+                       facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
+                       if(comptant.isChecked() && facture.getNouveau()){
+                           ou.reglerEntete(facture.getEntete(),facture.getRef());
+                       }
                    }
-                   liste_facture.get(id_facture).setNouveau(false);
-                   liste_facture.get(id_facture).setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
                    Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
                    intent.putExtra("liste_facture", liste_facture);
                    intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));

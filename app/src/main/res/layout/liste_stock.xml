@@ -43,8 +43,8 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="114dp"
-            android:text="Stock1"
-            android:id="@+id/menu_etats"
+            android:text="Etat map"
+            android:id="@+id/lststk_map"
             android:layout_weight="0.93" />
 
     </LinearLayout>

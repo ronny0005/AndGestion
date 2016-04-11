@@ -109,6 +109,7 @@ public class LstFactureActivity extends AppCompatActivity {
                 Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
                 intent.putExtra("liste_facture", liste_facture);
                 intent.putExtra("outils", ou);
+                intent.putExtra("facture", fact);
                 intent.putExtra("id_facture", String.valueOf(position));
                 intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                 intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
@@ -164,6 +165,7 @@ public class LstFactureActivity extends AppCompatActivity {
                 Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
                 intent.putExtra("liste_facture", liste_facture);
                 intent.putExtra("outils", ou);
+                intent.putExtra("facture", fact);
                 intent.putExtra("id_facture", String.valueOf(liste_facture.size() - 1));
                 intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                 intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
