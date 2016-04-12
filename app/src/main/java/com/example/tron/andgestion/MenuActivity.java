@@ -26,12 +26,23 @@ public class MenuActivity extends AppCompatActivity {
     Button etat;
     outils ou;
 
+
+    private void passeVariable(Intent intent){
+        intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
+        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+        intent.putExtra("outils", ou);
+        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
         this.setTitle("Menu");
         ou = (outils) getIntent().getSerializableExtra("outils");
+        ou.app=MenuActivity.this;
         facture = (Button) findViewById(R.id.menu_facturation);
         parametre = (Button) findViewById(R.id.menu_parametre);
         etat = (Button) findViewById(R.id.menu_etats);
@@ -39,12 +50,7 @@ public class MenuActivity extends AppCompatActivity {
         etat.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, LstStockActivity.class);
-                intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("outils", ou);
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+                passeVariable(intent);
             }
         });
 
@@ -52,24 +58,14 @@ public class MenuActivity extends AppCompatActivity {
         facture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, LstFactureActivity.class);
-                intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("outils", ou);
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+                passeVariable(intent);
             }
         });
 
         parametre.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, ParametresActivity.class);
-                intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("outils", ou);
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+                passeVariable(intent);
             }
         });
     }

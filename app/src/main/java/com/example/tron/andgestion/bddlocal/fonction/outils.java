@@ -14,6 +14,7 @@ import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
 import com.example.tron.andgestion.bddlocal.caisse.Caisse;
 import com.example.tron.andgestion.bddlocal.client.Client;
 import com.example.tron.andgestion.bddlocal.depot.Depot;
+import com.example.tron.andgestion.bddlocal.manquant.ManquantModele;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 import com.example.tron.andgestion.bddlocal.souche.Souche;
 import com.example.tron.andgestion.bddlocal.vehicule.Vehicule;
@@ -33,7 +34,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.text.Html.escapeHtml;
 
@@ -46,6 +49,65 @@ public class outils implements Serializable{
     public static String lien="http://90.127.113.182:8082/api/";
     public static Parametre connexion(String login,String mdp) throws IOException{
         return getParametre(login,mdp);
+    }
+
+    public static ArrayList<ManquantModele> getManquant(int cono,String datedeb,String datefin) {
+        JSONObject json = null;
+        ArrayList<ManquantModele> ldep = new ArrayList<ManquantModele>();
+        try {
+            json = new JSONObject(getJsonFromServer("manquantVendeur?collaborateur_deb=19&debut="+datedeb+"&fin="+datefin));
+            JSONArray jArray = json.getJSONArray("data");
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject json_data = jArray.getJSONObject(i);
+                ldep.add(new ManquantModele(formatDate(convertirDate(json_data.getString("RG_Date"), "yyyy-MM-dd"), "dd/MM/yyyy"), json_data.getString("CT_NumPayeur"), json_data.getString("RG_Libelle"), json_data.getDouble("RG_Montant")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(ldep);
+        return ldep;
+    }
+
+    public static ArrayList<Stock> getStock(int de_no) {
+        JSONObject json = null;
+        ArrayList<Stock> ldep = new ArrayList<Stock>();
+        ldep.add(new Stock("10111","ARTICLE",22,2000,20));
+        try {
+            //json = new JSONObject(getJsonFromServer("http://genzy.esy.es/depot.html"));
+            json = new JSONObject(getJsonFromServer("stock?DE_No=" + de_no));
+            JSONArray jArray = json.getJSONArray("data");
+            //ldep = new ArrayList<Stock>();
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject json_data = jArray.getJSONObject(i);
+                ldep.add(new Stock(json_data.getString("AR_Ref"), json_data.getString("AR_Design"), json_data.getInt("DE_No"), json_data.getDouble("AS_MontSto"),json_data.getDouble("AS_QteSto")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
+    public static Date convertirDate(String dateString, String dateFormat) {
+        Date date = null;
+        java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat(dateFormat);
+        try {
+            date = formater.parse(dateString);
+        } catch (ParseException ex) {
+//            System.out.println(ex.getMessage());
+        }
+        return date;
+    }
+
+    public static String formatDate(Date date, String pattern) {
+
+        String d = null;
+        java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat(pattern);
+        d = formater.format(date);
+        return d;
     }
 
     public static String getJsonFromServer(String url) throws IOException {
@@ -241,27 +303,7 @@ public class outils implements Serializable{
         }
     }
 
-    public static ArrayList<Stock> getStock(int de_no) {
-        JSONObject json = null;
-        ArrayList<Stock> ldep = new ArrayList<Stock>();
-        ldep.add(new Stock("10111","ARTICLE",22,2000,20));
-        try {
-            //json = new JSONObject(getJsonFromServer("http://genzy.esy.es/depot.html"));
-            String url="stock?DE_No=" + de_no;
-            json = new JSONObject(getJsonFromServer(url));
-            JSONArray jArray = json.getJSONArray("data");
-            //ldep = new ArrayList<Stock>();
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject json_data = jArray.getJSONObject(i);
-                ldep.add(new Stock(json_data.getString("AR_Ref"), json_data.getString("AR_Design"), json_data.getInt("DE_No"), json_data.getDouble("AS_MontSto"),json_data.getDouble("AS_QteSto")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ldep;
-    }
+
 
     public static void reglerEntete(int idEntete,String ref){
         JSONObject json = null;
@@ -478,10 +520,10 @@ public class outils implements Serializable{
         return ldep;
     }
 
-    public static void reglerEntete(String do_piece,String ref){
+    public static void reglerEntete(String do_piece,String ref,String avance){
         JSONObject json = null;
         try {
-            String url="regleDocentete?DO_Piece="+do_piece+"&ref="+ref;
+            String url="regleDocentete?DO_Piece="+do_piece+"&ref="+ref+"&avance="+avance;
             json = new JSONObject(getJsonFromServer(url));
             JSONObject jArray = json.getJSONObject("data");
 

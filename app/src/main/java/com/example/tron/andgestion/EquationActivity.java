@@ -76,7 +76,6 @@ public class EquationActivity extends AppCompatActivity {
         this.setTitle("Equation stock");
         ou = (outils) getIntent().getSerializableExtra("outils");
         param = (Parametre) getIntent().getSerializableExtra("parametre");
-
         ou.app=EquationActivity.this;
         afficher = (Button) findViewById(R.id.equation_afficher);
         dt_deb = (TextView) findViewById(R.id.equation_dt_deb);

@@ -50,6 +50,9 @@ public class ValideActivity extends AppCompatActivity {
     Parametre parametre;
     ArrayList<ArticleServeur> liste_article;
     Facture facture;
+    private DecimalFormat decim = new DecimalFormat("#.##");
+    private DecimalFormat ttcformat = new DecimalFormat("#");
+
 
     public void active_avance(boolean active){
         if(active) {
@@ -141,13 +144,11 @@ public class ValideActivity extends AppCompatActivity {
             double prix = article.getAr_prixven() * article.getQte_vendue();
             total_tva += prix * article.getTaxe1() / 100;
             total_precompte += prix * article.getTaxe2() / 100;
-            total_marge += prix * article.getTaxe3() / 100;
+            total_marge += article.getQte_vendue() * article.getTaxe3();
             total_ht += prix;
             System.out.println(article.getAr_design() + " total :" + prix);
         }
 
-        DecimalFormat decim = new DecimalFormat("#.##");
-        DecimalFormat ttcformat = new DecimalFormat("#");
 
         total_ttc = total_ht + total_tva + total_precompte + total_marge;
         t_marge.setText(decim.format(total_marge));
@@ -156,18 +157,19 @@ public class ValideActivity extends AppCompatActivity {
         t_ht.setText(decim.format(total_ht));
         t_precompte.setText(decim.format(total_precompte));
 
-        if(!facture.getNouveau())
+        if(!facture.getNouveau()) {
             valider.setText("Continuer");
-
+            mtt_avance.setText(String.valueOf(ttcformat.format(facture.getMtt_avance())));
+        }
         mode_paiement.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // your code here
-                if(position==0)
+                if (position == 0)
                     facture.setType_paiement("espece");
-                if(position==1)
+                if (position == 1)
                     facture.setType_paiement("carte");
-                if(position==2)
+                if (position == 2)
                     facture.setType_paiement("cheque");
             }
 
@@ -179,49 +181,54 @@ public class ValideActivity extends AppCompatActivity {
         });
 
         valider.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-               DecimalFormat decim = new DecimalFormat("#.##");
-               Double d ;
-               if(mtt_avance.getText().toString().equals(""))
-                   d=Double.MIN_VALUE;
-               else d=Double.parseDouble(mtt_avance.getText().toString());
+            public void onClick(View v) {
+                DecimalFormat decim = new DecimalFormat("#.##");
+                Double d;
+                if (mtt_avance.getText().toString().equals(""))
+                    d = Double.MIN_VALUE;
+                else d = Double.parseDouble(mtt_avance.getText().toString());
 
-               if(Double.compare(total_ttc,d)>=0){
-               if(comptant.isChecked() || credit.isChecked()) {
-                   if(credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
-                           && Double.compare(total_ttc,d)>=0 ) {
-                       facture.setStatut("avance");
-                       facture.setMtt_avance(d);
-                   }
+                if (Double.compare(total_ttc, d) >= 0) {
+                    if (comptant.isChecked() || credit.isChecked()) {
+                        if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
+                                && Double.compare(total_ttc, d) >= 0) {
+                            facture.setStatut("avance");
+                            facture.setMtt_avance(d);
+                        }
 
-                   if(facture.getNouveau()) {
-                       String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1");
-                       facture.setEntete(entete);
-                       for (int i = 0; i < position.size(); i++) {
-                           ArticleServeur article = facture.getListe_article().get(position.get(i));
-                           ou.ajoutLigneServeur(entete, String.valueOf(liste_article.get(facture.getPosition_article().get(i)).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
-                       }liste_facture.set(id_facture, facture);
-                       facture.setNouveau(false);
-                       facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
-                       if(comptant.isChecked() && facture.getNouveau()){
-                           ou.reglerEntete(facture.getEntete(),facture.getRef());
-                       }
-                   }
-                   Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
-                   intent.putExtra("liste_facture", liste_facture);
-                   intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                   intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                   intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                   intent.putExtra("outils", ou);
-                   startActivity(intent);
-               }   else {
-                   Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.",Toast.LENGTH_SHORT).show();
-               }
-           }else {
-                   Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
-                           Toast.LENGTH_SHORT).show();
-               }
-           }
-       });
+                        if (facture.getNouveau()) {
+                            String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1");
+                            facture.setEntete(entete);
+                            for (int i = 0; i < position.size(); i++) {
+                                ArticleServeur article = facture.getListe_article().get(position.get(i));
+                                ou.ajoutLigneServeur(entete, String.valueOf(liste_article.get(facture.getPosition_article().get(i)).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
+                            }
+                            liste_facture.set(id_facture, facture);
+                            facture.setNouveau(false);
+                            facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
+                            String montant = "0";
+                            if(comptant.isChecked())
+                                montant=ttcformat.format(total_ttc);
+                            else
+                                if(!mtt_avance.getText().toString().equals(""))
+                                    montant=mtt_avance.getText().toString();
+                            ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
+                        }
+                        Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
+                        intent.putExtra("liste_facture", liste_facture);
+                        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+                        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+                        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+                        intent.putExtra("outils", ou);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

@@ -46,6 +46,17 @@ public class LstFactureActivity extends AppCompatActivity {
     Date datecmpt = new Date();
     private static final String PREFS_NAME = "compteur";
 
+    private void itemCommun(Intent intent,Facture facture,int idfacture){
+        intent.putExtra("liste_facture", liste_facture);
+        intent.putExtra("outils", ou);
+        intent.putExtra("facture", facture);
+        intent.putExtra("id_facture", String.valueOf(idfacture));
+        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        startActivity(intent);
+    }
+
     public void initVariable() {
         // Get from the SharedPreferences
         try {
@@ -80,7 +91,8 @@ public class LstFactureActivity extends AppCompatActivity {
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for (int i = 0; i < liste_facture.size(); i++) {
             data.add(createRow(liste_facture.get(i).getRef() + " - " + liste_facture.get(i).getEntete()+" - " + liste_facture.get(i).getStatut() ,
-                    "Client : " + liste_facture.get(i).getId_client().getIntitule()+ "\nTotal TTC : " + liste_facture.get(i).getTotalTTC() ));
+                    "Client : " + liste_facture.get(i).getId_client().getIntitule()+ "\nTotal TTC : "
+                            + liste_facture.get(i).getTotalTTC() ));
         }
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};
@@ -98,6 +110,7 @@ public class LstFactureActivity extends AppCompatActivity {
         nouveau = (Button) findViewById(R.id.lstfac_nouveau);
         menu = (Button) findViewById(R.id.lstfac_menu);
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
+        System.out.println("taille liste facture : "+liste_facture.size());
         lst_fact = (ListView) findViewById(R.id.liste_facture);
         ajoutListe();
         initVariable();
@@ -107,85 +120,32 @@ public class LstFactureActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Facture fact = liste_facture.get(position);
                 Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-                intent.putExtra("liste_facture", liste_facture);
-                intent.putExtra("outils", ou);
-                intent.putExtra("facture", fact);
-                intent.putExtra("id_facture", String.valueOf(position));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                startActivity(intent);
-            }
-        });
-
-        lst_fact.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> av, View v, int pos, long id) {
-                final int i = pos;
-                Facture fact = liste_facture.get(i);
-                if (fact.getStatut().equals("credit")) {
-                    new AlertDialog.Builder(LstFactureActivity.this)
-                            .setTitle("Suppression")
-                            .setMessage("Voulez vous supprimer " + liste_facture.get(pos).getRef() + " ?")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // continue with delete
-                                    liste_facture.remove(i);
-                                    ajoutListe();
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // do nothing
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                }
-                return false;
+                itemCommun(intent,fact,position);
             }
         });
 
         nouveau.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                outils Ou = new outils();
-                Ou.app = LstFactureActivity.this;
-                ArrayList<ArticleServeur> lart = (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
-                Facture fact = new Facture("Fact" + compteur, lart);
-                compteur++;
-                SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putInt("compteur", compteur);
-                editor.commit();
-                editor.putString("datecmpt", new SimpleDateFormat("dd/mm/yyyy").format(datecmpt));
-                editor.commit();
-                Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
-                //fact.setListe_article(lart);
-                liste_facture.add(fact);
-                Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-                intent.putExtra("liste_facture", liste_facture);
-                intent.putExtra("outils", ou);
-                intent.putExtra("facture", fact);
-                intent.putExtra("id_facture", String.valueOf(liste_facture.size() - 1));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+            ArrayList<ArticleServeur> lart = (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
+            Facture fact = new Facture("Fact" + compteur, lart);
+            compteur++;
+            SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("compteur", compteur);
+            editor.commit();
+            editor.putString("datecmpt", new SimpleDateFormat("dd/mm/yyyy").format(datecmpt));
+            editor.commit();
+            Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
+            liste_facture.add(fact);
+            Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
+            itemCommun(intent,fact,liste_facture.size() - 1);
             }
         });
 
         menu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                outils Ou = new outils();
-                Ou.app = LstFactureActivity.this;
                 Intent intent = new Intent(LstFactureActivity.this, MenuActivity.class);
-                intent.putExtra("liste_facture", liste_facture);
-                intent.putExtra("outils", ou);
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+                itemCommun(intent,null,0);
             }
         });
 
@@ -197,12 +157,7 @@ public class LstFactureActivity extends AppCompatActivity {
         outils Ou = new outils();
         Ou.app = LstFactureActivity.this;
         Intent intent = new Intent(LstFactureActivity.this, LstFactureActivity.class);
-        intent.putExtra("liste_facture", liste_facture);
-        intent.putExtra("outils", ou);
-        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-        startActivity(intent);
+        itemCommun(intent,null,0);
         super.onBackPressed();  // optional depending on your needs
     }
 }

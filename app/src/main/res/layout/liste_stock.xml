@@ -45,7 +45,14 @@
             android:layout_height="114dp"
             android:text="Etat map"
             android:id="@+id/lststk_map"
-            android:layout_weight="0.93" />
+            android:layout_weight="0.79" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="115dp"
+            android:text="ETATS MANQUANTS"
+            android:id="@+id/lststk_manquant"
+            android:layout_weight="0.11" />
 
     </LinearLayout>
 </LinearLayout>

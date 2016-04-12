@@ -33,50 +33,55 @@ public class LstStockActivity extends AppCompatActivity {
     Button stock;
     Button vendeur;
     Button maps;
-
+    Button manquant;
     outils ou;
+
+    private void passeVariable(Intent intent){
+        intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
+        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+        intent.putExtra("outils", ou);
+        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.liste_stock);
         this.setTitle("Liste des etats");
+        ou = (outils) getIntent().getSerializableExtra("outils");
+        ou.app=LstStockActivity.this;
         stock = (Button) findViewById(R.id.lststk_stock);
         vendeur = (Button) findViewById(R.id.lststk_vendeur);
         maps = (Button) findViewById(R.id.lststk_map);
+        manquant = (Button) findViewById(R.id.lststk_manquant);
 
         stock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LstStockActivity.this, StockActivity.class);
-                intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("outils",(outils) getIntent().getSerializableExtra("outils"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+                passeVariable(intent);
             }
         });
 
         vendeur.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LstStockActivity.this, EquationActivity.class);
-                intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("outils",(outils) getIntent().getSerializableExtra("outils"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+                passeVariable(intent);
+            }
+        });
+
+        manquant.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LstStockActivity.this, ManquantActivity.class);
+                passeVariable(intent);
             }
         });
 
         maps.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LstStockActivity.this, MapsActivity.class);
-                intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("outils",(outils) getIntent().getSerializableExtra("outils"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                startActivity(intent);
+                passeVariable(intent);
             }
         });
 

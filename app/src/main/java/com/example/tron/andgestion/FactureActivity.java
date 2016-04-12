@@ -140,10 +140,11 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
             double prix = article.getAr_prixven() * article.getQte_vendue();
             total_tva += prix * article.getTaxe1() / 100;
             total_precompte += prix * article.getTaxe2() / 100;
-            total_marge += prix * article.getTaxe3() / 100;
+            total_marge += article.getQte_vendue() * article.getTaxe3();
             total_ht += prix;
         }
-        DecimalFormat decim = new DecimalFormat("#.##");
+
+        DecimalFormat decim = new DecimalFormat("#");
         total_ttc = total_ht + total_tva + total_precompte + total_marge;
         return "Total TTC : " + decim.format(total_ttc);
     }
@@ -208,20 +209,18 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         ajoutListe();
         initialise();
         verouille();
-
+        calculPrix();
         if(!facture.getNouveau()) {
             valider.setText("Continuer");
             date.requestFocus();
-        }
+        }else
+            client.requestFocus();
 
         annuler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (facture.getNouveau()) {
                     ajoutListe();
-                    facture.setId(0);
-                    // ou.SupprEnteteServeur(liste_facture.get(id_facture).getEntete());
-                    // ou.SupprLigneServeur(liste_facture.get(id_facture).getEntete());
                     clear();
                     total.setText(calculPrix());
                     facture.setListe_ligne(new ArrayList<Integer>());
