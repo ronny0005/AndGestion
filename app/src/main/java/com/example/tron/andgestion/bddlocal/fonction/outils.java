@@ -46,7 +46,8 @@ import static android.text.Html.escapeHtml;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://90.127.113.182:8082/api/";
+    public static String lien="http://192.168.1.14:8082/api/";
+
     public static Parametre connexion(String login,String mdp) throws IOException{
         return getParametre(login,mdp);
     }
@@ -456,19 +457,21 @@ public class outils implements Serializable{
         JSONObject json = null;
         int qte=0;
         try {
-            //String url="getParametreByLogin?NomUser="+nomUser+"&Password="+password;
-            String url="http://genzy.esy.es/parametre.html";
-            json = new JSONObject(getJsonFromServerGenzy(url));
+            String url="connect?NomUser="+nomUser+"&Password="+password;
+            json = new JSONObject(getJsonFromServer(url));
             JSONObject ob =json.getJSONObject("data");
             ArrayList<Caisse> lcaisse = listeCaisseServeur();
             Caisse c =null;
-            for(int i=0;i<lcaisse.size();i++)
-                if(lcaisse.get(i).getCa_no()==ob.getInt("CA_No"))
-                    c=lcaisse.get(i);
-            return new Parametre( ob.getInt("DE_No"),ob.getString("CT_Num") , ob.getInt("CO_No"),ob.getInt("DO_Souche"),
-                    ob.getString("affaire"),ob.getString("numDoc") ,ob.getString("vehicule"),
-                    nomUser,password,c);
-
+            if(ob.getInt("id_parametre")!=0) {
+                for (int i = 0; i < lcaisse.size(); i++)
+                    if (lcaisse.get(i).getCa_no() == ob.getInt("CA_No"))
+                        c = lcaisse.get(i);
+                return new Parametre(ob.getInt("DE_No"), ob.getString("CT_Num"), ob.getInt("CO_No"), ob.getInt("DO_Souche"),
+                        ob.getString("affaire"), ob.getString("numDoc"), ob.getString("vehicule"),
+                        nomUser, password, c);
+            }else {
+                Toast.makeText(app, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -66,7 +66,7 @@ public class ValideActivity extends AppCompatActivity {
 
 
     public void bloqueBox(){
-        if(!liste_facture.get(id_facture).getNouveau()) {
+        if(!facture.getNouveau()) {
             credit.setEnabled(false);
             comptant.setEnabled(false);
         }
@@ -101,16 +101,15 @@ public class ValideActivity extends AppCompatActivity {
         active_avance(false);
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lstr);
         mode_paiement.setAdapter(arrayAdapter);
-        System.out.println(liste_facture.get(id_facture).getStatut()+" statut");
-        if(!liste_facture.get(id_facture).getNouveau()) {
-            if (!liste_facture.get(id_facture).getStatut().isEmpty())
-                if (liste_facture.get(id_facture).getStatut().equals("credit"))
+        if(!facture.getNouveau()) {
+            if (!facture.getStatut().isEmpty())
+                if (facture.getStatut().equals("credit"))
                     credit.setChecked(true);
                 else
                     comptant.setChecked(true);
         }
 
-        liste_facture.get(id_facture).setType_paiement("espece");
+        facture.setType_paiement("espece");
 
         bloqueBox();
         comptant.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +137,6 @@ public class ValideActivity extends AppCompatActivity {
         });
 
         final ArrayList<Integer> position = facture.getPosition_article();
-        System.out.println("id facture "+liste_facture.size());
         for (int i = 0; i < position.size(); i++) {
             ArticleServeur article = facture.getListe_article().get(position.get(i));
             double prix = article.getAr_prixven() * article.getQte_vendue();
@@ -203,7 +201,7 @@ public class ValideActivity extends AppCompatActivity {
                                 ArticleServeur article = facture.getListe_article().get(position.get(i));
                                 ou.ajoutLigneServeur(entete, String.valueOf(liste_article.get(facture.getPosition_article().get(i)).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
                             }
-                            liste_facture.set(id_facture, facture);
+                            liste_facture.add(facture);
                             facture.setNouveau(false);
                             facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
                             String montant = "0";

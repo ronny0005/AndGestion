@@ -68,7 +68,6 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
     ArrayList<ArticleServeur> liste_article;
     ArrayList<String> lstr;
     ArrayAdapter<String> arrayAdapter;
-    ArrayList<Facture> liste_facture;
     ArrayList<String> lart;
     TextView caisse;
     TextView date;
@@ -90,7 +89,7 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
     Facture facture;
 
     public void verouille(){
-        if(!liste_facture.get(id_facture).getNouveau()) {
+        if(!facture.getNouveau()) {
             client.setEnabled(false);
             designation.setEnabled(false);
             qte.setEnabled(false);
@@ -123,8 +122,8 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
     }
 
     public void initialise() {
-        if (liste_facture.get(id_facture).getPosition_article().size() > 0) {
-            client.setText(liste_facture.get(id_facture).getId_client().getIntitule());
+        if (!facture.getNouveau()) {
+            client.setText(facture.getId_client().getIntitule());
         }
     }
 
@@ -158,7 +157,6 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
         ou.app = FactureActivity.this;
         parametre = (Parametre) getIntent().getSerializableExtra("parametre");
         id_facture = Integer.parseInt(getIntent().getStringExtra("id_facture"));
-        liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
         facture = (Facture) getIntent().getSerializableExtra("facture");
         annuler = (Button) findViewById(R.id.facture_annuler);
@@ -295,18 +293,17 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                                     id_article = i;
 
                             double qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
-                            System.out.println("Latitude:  pp " + qteart);
 
                             if (!qte.getText().toString().equals("0") && qteart > 0) {
                                 if (qteart >= Double.parseDouble(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
+                                        facture.setId_client(lst_client.get(id_client));
                                         if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                         } else {
                                             Location locationGPS = getLastBestLocation();
-                                            System.out.println("Latitude:" + locationGPS.getLatitude() + ", Longitude:" + locationGPS.getLongitude());
                                             facture.setLatitude(locationGPS.getLatitude());
                                             facture.setLongitude(locationGPS.getLongitude());
-                                            facture.setId_client(lst_client.get(id_client));
+
 
 //                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FactureActivity.this);
                                         }
@@ -346,7 +343,7 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                     if (position_article.size() > 0) {
                         Intent intent = new Intent(FactureActivity.this, ValideActivity.class);
                         facture.setPosition_article(position_article);
-                        intent.putExtra("liste_facture", liste_facture);
+                        intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
                         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                         intent.putExtra("id_facture", String.valueOf(id_facture));

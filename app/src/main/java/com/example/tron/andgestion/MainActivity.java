@@ -62,14 +62,10 @@ public class MainActivity extends AppCompatActivity {
             // ! à enlever
             Parametre parametre=null;
                 if(!login.getText().toString().isEmpty() && !mdp.getText().toString().isEmpty()) {
-                    if(mdp.getText().toString().equals("borice") && mdp.getText().toString().equals("borice")) {
-                        try {
-                            parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }else {
-                        Toast.makeText(MainActivity.this, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
+                    try {
+                        parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }else {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();

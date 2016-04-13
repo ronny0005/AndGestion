@@ -90,7 +90,7 @@ public class EquationActivity extends AppCompatActivity {
 
                        DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
                        Date deb = format.parse(dt_deb.getText().toString());
-                       Date fin = format.parse(dt_deb.getText().toString());
+                       Date fin = format.parse(dt_fin.getText().toString());
                        ajoutListe(deb,fin);
                    } catch (ParseException e) {
                        e.printStackTrace();

@@ -136,7 +136,7 @@ public class LstFactureActivity extends AppCompatActivity {
             editor.putString("datecmpt", new SimpleDateFormat("dd/mm/yyyy").format(datecmpt));
             editor.commit();
             Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
-            liste_facture.add(fact);
+
             Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
             itemCommun(intent,fact,liste_facture.size() - 1);
             }
