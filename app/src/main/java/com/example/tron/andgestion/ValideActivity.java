@@ -139,10 +139,10 @@ public class ValideActivity extends AppCompatActivity {
         final ArrayList<Integer> position = facture.getPosition_article();
         for (int i = 0; i < position.size(); i++) {
             ArticleServeur article = facture.getListe_article().get(position.get(i));
-            double prix = article.getAr_prixven() * article.getQte_vendue();
-            total_tva += prix * article.getTaxe1() / 100;
-            total_precompte += prix * article.getTaxe2() / 100;
-            total_marge += article.getQte_vendue() * article.getTaxe3();
+            double prix = Math.round(article.getAr_prixven() * article.getQte_vendue());
+            total_tva += Math.round(prix * article.getTaxe1() / 100);
+            total_precompte += Math.round(prix * article.getTaxe2() / 100);
+            total_marge += Math.round(article.getQte_vendue() * article.getTaxe3());
             total_ht += prix;
             System.out.println(article.getAr_design() + " total :" + prix);
         }

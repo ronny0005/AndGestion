@@ -52,7 +52,7 @@ import java.util.Map;
 /**
  * Created by T.Ron$ on 13/03/2016.
  */
-public class FactureActivity extends AppCompatActivity implements LocationListener {
+public class FactureActivity extends AppCompatActivity {
     ArticleBDD donneeBDD;
     ListView lv;
     Button ajouter;
@@ -298,15 +298,15 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
                                 if (qteart >= Double.parseDouble(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
                                         facture.setId_client(lst_client.get(id_client));
-                                        if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                        } else {
-                                            Location locationGPS = getLastBestLocation();
-                                            facture.setLatitude(locationGPS.getLatitude());
-                                            facture.setLongitude(locationGPS.getLongitude());
+                                        //if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        //} else {
+                                        //    Location locationGPS = getLastBestLocation();
+                                        //    facture.setLatitude(locationGPS.getLatitude());
+                                          //  facture.setLongitude(locationGPS.getLongitude());
 
 
 //                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FactureActivity.this);
-                                        }
+                                        //}
 
                                     }
                                     if (!modif) {
@@ -355,26 +355,6 @@ public class FactureActivity extends AppCompatActivity implements LocationListen
             }
         });
 
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        System.out.println("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.d("Latitude", "disable");
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.d("Latitude", "enable");
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d("Latitude", "status");
     }
 
     public Location getLastBestLocation() {
