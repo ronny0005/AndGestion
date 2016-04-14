@@ -298,15 +298,12 @@ public class FactureActivity extends AppCompatActivity {
                                 if (qteart >= Double.parseDouble(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
                                         facture.setId_client(lst_client.get(id_client));
-                                        //if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                        //} else {
-                                        //    Location locationGPS = getLastBestLocation();
-                                        //    facture.setLatitude(locationGPS.getLatitude());
-                                          //  facture.setLongitude(locationGPS.getLongitude());
-
-
-//                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FactureActivity.this);
-                                        //}
+                                        if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        } else {
+                                            Location locationGPS = getLastBestLocation();
+                                            facture.setLatitude(locationGPS.getLatitude());
+                                            facture.setLongitude(locationGPS.getLongitude());
+                                        }
 
                                     }
                                     if (!modif) {
