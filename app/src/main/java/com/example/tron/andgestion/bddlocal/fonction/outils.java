@@ -148,6 +148,10 @@ public class outils implements Serializable{
         return ldep;
     }
 
+    public boolean verifDate(String date){
+
+        return false;
+    }
     public static ArrayList<ArticleServeur> listeArticleDispo(String DE_No){
         JSONObject json = null;
         ArrayList<ArticleServeur> lart=null;

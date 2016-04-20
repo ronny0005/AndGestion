@@ -1,58 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:padding="4dp"
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="101dp"
-        android:weightSum="1">
+    android:alignmentMode="alignBounds"
+    android:columnCount="2"
+    android:rowOrderPreserved="false"
+    android:useDefaultMargins="true">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="114dp"
-            android:text="Stock"
-            android:id="@+id/lststk_stock"
-            android:layout_weight="0.93" />
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:text="Stock"
+        android:id="@+id/lststk_stock"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"/>
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="178dp"
-            android:layout_height="116dp"
-            android:text="Equation vendeur"
-            android:id="@+id/lststk_vendeur" />
-    </LinearLayout>
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:text="Etat map"
+        android:id="@+id/lststk_map"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1" >
+    <Button
+        android:text="ETATS MANQUANTS"
+        android:id="@+id/lststk_manquant"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="1" >
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="114dp"
-            android:text="Etat map"
-            android:id="@+id/lststk_map"
-            android:layout_weight="0.79" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="115dp"
-            android:text="ETATS MANQUANTS"
-            android:id="@+id/lststk_manquant"
-            android:layout_weight="0.11" />
-
-    </LinearLayout>
-</LinearLayout>
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:text="Equation vendeur"
+        android:id="@+id/lststk_vendeur"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        />
+</GridLayout>
