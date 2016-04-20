@@ -14,6 +14,7 @@ import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
 import com.example.tron.andgestion.bddlocal.caisse.Caisse;
 import com.example.tron.andgestion.bddlocal.client.Client;
 import com.example.tron.andgestion.bddlocal.depot.Depot;
+import com.example.tron.andgestion.bddlocal.facture.Facture;
 import com.example.tron.andgestion.bddlocal.manquant.ManquantModele;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 import com.example.tron.andgestion.bddlocal.souche.Souche;
@@ -46,7 +47,7 @@ import static android.text.Html.escapeHtml;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://90.127.113.182:8082/api/";
+    public static String lien="http://192.168.1.14:8082/api/";
 
     public static Parametre connexion(String login,String mdp) throws IOException{
         return getParametre(login,mdp);
@@ -76,10 +77,8 @@ public class outils implements Serializable{
         ArrayList<Stock> ldep = new ArrayList<Stock>();
         ldep.add(new Stock("10111","ARTICLE",22,2000,20));
         try {
-            //json = new JSONObject(getJsonFromServer("http://genzy.esy.es/depot.html"));
             json = new JSONObject(getJsonFromServer("stock?DE_No=" + de_no));
             JSONArray jArray = json.getJSONArray("data");
-            //ldep = new ArrayList<Stock>();
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
                 ldep.add(new Stock(json_data.getString("AR_Ref"), json_data.getString("AR_Design"), json_data.getInt("DE_No"), json_data.getDouble("AS_MontSto"),json_data.getDouble("AS_QteSto")));
@@ -98,7 +97,6 @@ public class outils implements Serializable{
         try {
             date = formater.parse(dateString);
         } catch (ParseException ex) {
-//            System.out.println(ex.getMessage());
         }
         return date;
     }
@@ -130,31 +128,11 @@ public class outils implements Serializable{
         return "";
     }
 
-    public static String getJsonFromServerGenzy(String url) throws IOException {
-        try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            System.out.println(url);
-            InputStream is = (InputStream) new URL(url).getContent();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String result, line = reader.readLine();
-            result = line;
-            while ((line = reader.readLine()) != null) {
-                result += line;
-            }
-            return result;
-        }catch(IOException e){
-            Toast.makeText(app,"Problème de connexion! Veuillez réessayer plus tard !", Toast.LENGTH_SHORT).show();
-        }
-        return "";
-    }
-
     public static ArrayList<Depot> listeDepotServeur(){
         JSONObject json = null;
         ArrayList<Depot> ldep=null;
         try {
             String url = "depot";
-            //String url = "http://genzy.esy.es/depot.html";
             json = new JSONObject(getJsonFromServer(url));
             JSONArray jArray = json.getJSONArray("data");
             ldep= new ArrayList<Depot>();
@@ -174,7 +152,6 @@ public class outils implements Serializable{
         JSONObject json = null;
         ArrayList<ArticleServeur> lart=null;
         try {
-            String url = "getAllArticleDispoByArRef";
             json = new JSONObject(getJsonFromServer("getAllArticleDispoByArRef?DE_No=" + DE_No));
             JSONArray jArray = json.getJSONArray("data");
             lart= new ArrayList<ArticleServeur>();
@@ -191,6 +168,54 @@ public class outils implements Serializable{
     }
 
 
+    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin){
+        ArrayList<Facture> list= new ArrayList<Facture>();
+        JSONObject json = null;
+        try {
+            json = new JSONObject(getJsonFromServer("getFactureCO?CO_No="+CO_No+"&datedeb="+datedeb+"&datefin="+datefin));
+            JSONArray jArray = json.getJSONArray("data");
+            Facture facture=null;
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                facture = new Facture();
+                facture.setNouveau(false);
+                ArrayList<Client> lclient = listeClientServeur("YDE");
+                for(int c=0;c<lclient.size();c++)
+                    if(lclient.get(c).getNum().compareTo(json_data.getString("CT_Num"))==0)
+                        facture.setId_client(lclient.get(c));
+                facture.setStatut("");
+                facture.setDO_Date(json_data.getString("DO_Date"));
+                facture.setTotalTTC((int) Math.round(json_data.getDouble("ttc")));
+                facture.setMtt_avance((int) Math.round(json_data.getDouble("avance")));
+                if((int)facture.getTotalTTC()>=(int)facture.getMtt_avance() && (int)facture.getMtt_avance()>0){
+                    facture.setStatut("comptant");
+                }else
+                if((int)facture.getMtt_avance()>0)
+                    facture.setStatut("avance");
+                else
+                    facture.setStatut("credit");
+                facture.setRef(json_data.getString("DO_Ref"));
+                    facture.setEntete(json_data.getString("DO_Piece"));
+                json = new JSONObject(getJsonFromServer("getLigneFacture?DO_Piece="+json_data.getString("DO_Piece")));
+                JSONArray jArrayFacture = json.getJSONArray("data");
+                for(int j=0; j<jArrayFacture.length(); j++) {
+                    JSONObject json_datafact = jArrayFacture.getJSONObject(j);
+                    ArticleServeur art = new ArticleServeur(json_datafact.getInt("AR_Ref"), json_datafact.getString("DL_Design")
+                            , json_datafact.getDouble("DL_PrixUnitaire"),json_datafact.getDouble("DL_Taxe1"),json_datafact.getDouble("DL_Taxe2"),
+                            json_datafact.getDouble("DL_Taxe3"));
+                    art.setQte_vendue(json_datafact.getInt("DL_Qte"));
+                    art.setAr_prixven((float) json_datafact.getDouble("DL_PrixUnitaire"));
+                    facture.getListe_article().add(art);
+                }
+                list.add(facture);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     public static ArrayList<StockEqVendeur> eqStkVendeur(String depot,String date_deb,String date_fin) {
         JSONObject json = null;
         System.out.println(escapeHtml(depot));
@@ -437,13 +462,13 @@ public class outils implements Serializable{
         return lart;
     }
 
-    public static double articleDisponibleServeur(int ref_art,int depot){
+    public static int articleDisponibleServeur(int ref_art,int depot){
         JSONObject json = null;
-        double qte=0;
+        int qte=0;
         try {
             String url = "isStock?AR_Ref="+ref_art+"&DE_No="+depot;
             json = new JSONObject(getJsonFromServer(url));
-            return json.getJSONObject("data").getDouble("AS_QteSto");
+            return json.getJSONObject("data").getInt("AS_QteSto");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {

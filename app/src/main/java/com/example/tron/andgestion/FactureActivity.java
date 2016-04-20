@@ -64,7 +64,6 @@ public class FactureActivity extends AppCompatActivity {
     ArrayList<Article> list;
     TextView qte;
     ArticleBDD articleBDD;
-    ArrayList<Integer> position_article = new ArrayList<Integer>();
     ArrayList<ArticleServeur> liste_article;
     ArrayList<String> lstr;
     ArrayAdapter<String> arrayAdapter;
@@ -99,13 +98,12 @@ public class FactureActivity extends AppCompatActivity {
     }
     public void ajoutListe() {
         data = new ArrayList<Map<String, String>>();
-        for (int i = 0; i < position_article.size(); i++) {
+        for (int i = 0; i < facture.getListe_article().size(); i++) {
             DecimalFormat decim = new DecimalFormat("#.##");
-            System.out.println(liste_article.get(position_article.get(i)).getAr_design()+" ere");
-            double px_achat = (liste_article.get(position_article.get(i)).getAr_prixven() * liste_article.get(position_article.get(i)).getQte_vendue());
+            double px_achat = (facture.getListe_article().get(i).getAr_prixven() * facture.getListe_article().get(i).getQte_vendue());
             Map<String, String> datum = new HashMap<String, String>(2);
-            datum.put("First Line", liste_article.get(position_article.get(i)).getAr_design());
-            datum.put("Second Line", "Qte : " + ((int) liste_article.get(position_article.get(i)).getQte_vendue())
+            datum.put("First Line", facture.getListe_article().get(i).getAr_design());
+            datum.put("Second Line", "Qte : " + ((int) facture.getListe_article().get(i).getQte_vendue())
                     + " Prix de vente : " + decim.format(px_achat));
             data.add(datum);
         }
@@ -115,16 +113,15 @@ public class FactureActivity extends AppCompatActivity {
                 new int[]{android.R.id.text1, android.R.id.text2});
 
         lv.setAdapter(adapter);
-        if (position_article.size() > 0)  // disable editing password
+        if (facture.getListe_article().size() > 0)  // disable editing password
             client.setEnabled(false);
             else  // enable editing of password
             client.setEnabled(true);
     }
 
     public void initialise() {
-        if (!facture.getNouveau()) {
+        if (!facture.getNouveau())
             client.setText(facture.getId_client().getIntitule());
-        }
     }
 
     public void clear() {
@@ -134,12 +131,12 @@ public class FactureActivity extends AppCompatActivity {
 
     public String calculPrix() {
         double total_tva = 0, total_precompte = 0, total_marge = 0, total_ht = 0, total_ttc;
-        for (int i = 0; i < position_article.size(); i++) {
-            ArticleServeur article = facture.getListe_article().get(position_article.get(i));
-            double prix = article.getAr_prixven() * article.getQte_vendue();
-            total_tva += prix * article.getTaxe1() / 100;
-            total_precompte += prix * article.getTaxe2() / 100;
-            total_marge += article.getQte_vendue() * article.getTaxe3();
+        for (int i = 0; i < facture.getListe_article().size(); i++) {
+            ArticleServeur article = facture.getListe_article().get(i);
+            double prix = Math.round(article.getAr_prixven() * article.getQte_vendue());
+            total_tva += Math.round(prix * article.getTaxe1() / 100);
+            total_precompte += Math.round(prix * article.getTaxe2() / 100);
+            total_marge += Math.round(article.getQte_vendue() * article.getTaxe3());
             total_ht += prix;
         }
 
@@ -170,8 +167,7 @@ public class FactureActivity extends AppCompatActivity {
         date.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
 
 
-        position_article = facture.getPosition_article();
-        liste_article = facture.getListe_article();
+        liste_article =  (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
 
         if (facture.getNouveau())
             this.setTitle("Facture");
@@ -192,6 +188,7 @@ public class FactureActivity extends AppCompatActivity {
         lart = new ArrayList<String>();
         for (int i = 0; i < liste_article.size(); i++)
             lart.add(liste_article.get(i).getAr_design());
+        System.out.println(lart.size()+" liste article");
         designation = (AutoCompleteTextView) findViewById(R.id.facture_designation);
         ArrayAdapter<String> adapterComplete = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, lart);
@@ -207,7 +204,8 @@ public class FactureActivity extends AppCompatActivity {
         ajoutListe();
         initialise();
         verouille();
-        calculPrix();
+        total.setText(calculPrix());
+
         if(!facture.getNouveau()) {
             valider.setText("Continuer");
             date.requestFocus();
@@ -222,7 +220,7 @@ public class FactureActivity extends AppCompatActivity {
                     clear();
                     total.setText(calculPrix());
                     facture.setListe_ligne(new ArrayList<Integer>());
-                    position_article = new ArrayList<Integer>();
+                    facture.setListe_article(new ArrayList<ArticleServeur>());
                 }
             }
         });
@@ -231,7 +229,7 @@ public class FactureActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (facture.getNouveau()) {
-                    ArticleServeur art = liste_article.get(position_article.get(position));
+                    ArticleServeur art = facture.getListe_article().get(position);
                     designation.setText(art.getAr_design());
                     qte.setText(String.valueOf(art.getQte_vendue()));
                     modif = true;
@@ -249,11 +247,11 @@ public class FactureActivity extends AppCompatActivity {
                     final int i = pos;
                     new AlertDialog.Builder(FactureActivity.this)
                             .setTitle("Suppression")
-                            .setMessage("Voulez vous supprimer " + liste_article.get(position_article.get(pos)).getAr_design() + " ?")
+                            .setMessage("Voulez vous supprimer " + facture.getListe_article().get(i).getAr_design() + " ?")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with delete
-                                    position_article.remove(i);
+                                    facture.getListe_article().remove(i);
                                     ajoutListe();
                                     clear();
                                     total.setText(calculPrix());
@@ -292,29 +290,27 @@ public class FactureActivity extends AppCompatActivity {
                                 if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))
                                     id_article = i;
 
-                            double qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
+                            int qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
 
                             if (!qte.getText().toString().equals("0") && qteart > 0) {
-                                if (qteart >= Double.parseDouble(qte.getText().toString())) {
+                                if (qteart >= Integer.parseInt(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
                                         facture.setId_client(lst_client.get(id_client));
-                                        if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                        } else {
-                                            Location locationGPS = getLastBestLocation();
-                                            facture.setLatitude(locationGPS.getLatitude());
-                                            facture.setLongitude(locationGPS.getLongitude());
-                                        }
-
+                                      //  if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                      //  } else {
+                                        //    Location locationGPS = getLastBestLocation();
+                                          //  facture.setLatitude(locationGPS.getLatitude());
+                                            //facture.setLongitude(locationGPS.getLongitude());
+                                      //  }
                                     }
+                                    art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
+                                    ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
                                     if (!modif) {
-                                        position_article.add(id_article);
-                                        liste_article.get(id_article).setId(liste_article.size());
+                                        facture.getListe_article().add(art);
                                     } else {
                                         modif = false;
                                         ajouter.setText("Ajouter");
                                     }
-                                    liste_article.get(id_article).setQte_vendue(Integer.parseInt(qte.getText().toString()));
-                                    ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), liste_article.get(id_article));
                                     ajoutListe();
                                     total.setText(calculPrix());
                                     clear();
@@ -337,9 +333,8 @@ public class FactureActivity extends AppCompatActivity {
 
         valider.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    if (position_article.size() > 0) {
+                    if (facture.getListe_article().size() > 0) {
                         Intent intent = new Intent(FactureActivity.this, ValideActivity.class);
-                        facture.setPosition_article(position_article);
                         intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
                         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));

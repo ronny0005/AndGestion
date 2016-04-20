@@ -75,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 System.out.println("nombre article"+liste_article.size());
-                intent.putExtra("liste_facture", liste_facture);
+                DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
+                intent.putExtra("liste_facture",ou.listeFacture(parametre.getCo_no(),
+                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()) ));
                 intent.putExtra("parametre", parametre);
                 intent.putExtra("outils", ou);
                 intent.putExtra("liste_client", liste_client);

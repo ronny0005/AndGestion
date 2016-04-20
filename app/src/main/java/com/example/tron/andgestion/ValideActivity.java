@@ -21,7 +21,10 @@ import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 /**
  * Created by T.Ron on 19/03/2016.
  */
@@ -136,9 +139,8 @@ public class ValideActivity extends AppCompatActivity {
             }
         });
 
-        final ArrayList<Integer> position = facture.getPosition_article();
-        for (int i = 0; i < position.size(); i++) {
-            ArticleServeur article = facture.getListe_article().get(position.get(i));
+        for (int i = 0; i < facture.getListe_article().size(); i++) {
+            ArticleServeur article = facture.getListe_article().get(i);
             double prix = Math.round(article.getAr_prixven() * article.getQte_vendue());
             total_tva += Math.round(prix * article.getTaxe1() / 100);
             total_precompte += Math.round(prix * article.getTaxe2() / 100);
@@ -197,10 +199,11 @@ public class ValideActivity extends AppCompatActivity {
                         if (facture.getNouveau()) {
                             String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1");
                             facture.setEntete(entete);
-                            for (int i = 0; i < position.size(); i++) {
-                                ArticleServeur article = facture.getListe_article().get(position.get(i));
-                                ou.ajoutLigneServeur(entete, String.valueOf(liste_article.get(facture.getPosition_article().get(i)).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
+                            for (int i = 0; i < facture.getListe_article().size(); i++) {
+                                ArticleServeur article = facture.getListe_article().get(i);
+                                ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
                             }
+                            facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                             liste_facture.add(facture);
                             facture.setNouveau(false);
                             facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
