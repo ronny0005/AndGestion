@@ -296,12 +296,12 @@ public class FactureActivity extends AppCompatActivity {
                                 if (qteart >= Integer.parseInt(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
                                         facture.setId_client(lst_client.get(id_client));
-                                      //  if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                      //  } else {
-                                        //    Location locationGPS = getLastBestLocation();
-                                          //  facture.setLatitude(locationGPS.getLatitude());
-                                            //facture.setLongitude(locationGPS.getLongitude());
-                                      //  }
+                                        if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        } else {
+                                          Location locationGPS = getLastBestLocation();
+                                            facture.setLatitude(locationGPS.getLatitude());
+                                          facture.setLongitude(locationGPS.getLongitude());
+                                        }
                                     }
                                     art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
                                     ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);

@@ -184,6 +184,7 @@ public class outils implements Serializable{
                 facture = new Facture();
                 facture.setNouveau(false);
                 ArrayList<Client> lclient = listeClientServeur("YDE");
+
                 for(int c=0;c<lclient.size();c++)
                     if(lclient.get(c).getNum().compareTo(json_data.getString("CT_Num"))==0)
                         facture.setId_client(lclient.get(c));
@@ -507,11 +508,11 @@ public class outils implements Serializable{
         return null;
     }
 
-    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg){
+    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon){
         JSONObject json = null;
         int qte=0;
         try {
-            String url="addDocentete?CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac+"&N_Reglement="+reg;
+            String url="addDocentete?CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac+"&N_Reglement="+reg+"&Latitude=" + lat+"&Longitude=" + lon;
             json = new JSONObject(getJsonFromServer(url));
             return json.getJSONObject("data").getString("DO_Piece");
         } catch (JSONException e) {

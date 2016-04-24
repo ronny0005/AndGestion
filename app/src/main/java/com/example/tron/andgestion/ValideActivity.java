@@ -197,7 +197,7 @@ public class ValideActivity extends AppCompatActivity {
                         }
 
                         if (facture.getNouveau()) {
-                            String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1");
+                            String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
                             facture.setEntete(entete);
                             for (int i = 0; i < facture.getListe_article().size(); i++) {
                                 ArticleServeur article = facture.getListe_article().get(i);
