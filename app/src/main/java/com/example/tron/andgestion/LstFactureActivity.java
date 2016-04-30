@@ -73,9 +73,8 @@ public class LstFactureActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
     }
+
     public void initVariable() {
         // Get from the SharedPreferences
         try {

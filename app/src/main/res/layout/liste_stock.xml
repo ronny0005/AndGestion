@@ -54,4 +54,25 @@
         android:layout_columnWeight="1"
         android:layout_gravity="fill_horizontal"
         />
+
+    <Button
+        android:text="BMQ"
+        android:id="@+id/lststk_bmq"
+        android:layout_row="2"
+        android:layout_column="0"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        />
+
+    <Button
+        android:text="TABLEAU MAP"
+        android:id="@+id/lststk_tabeau"
+        android:layout_row="2"
+        android:layout_column="1"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal" />
 </GridLayout>

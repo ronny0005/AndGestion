@@ -34,6 +34,8 @@ public class LstStockActivity extends AppCompatActivity {
     Button vendeur;
     Button maps;
     Button manquant;
+    Button bmq;
+    Button tmap;
     outils ou;
 
     private void passeVariable(Intent intent){
@@ -56,6 +58,22 @@ public class LstStockActivity extends AppCompatActivity {
         vendeur = (Button) findViewById(R.id.lststk_vendeur);
         maps = (Button) findViewById(R.id.lststk_map);
         manquant = (Button) findViewById(R.id.lststk_manquant);
+        bmq = (Button) findViewById(R.id.lststk_bmq);
+        tmap = (Button) findViewById(R.id.lststk_tabeau);
+
+        bmq.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LstStockActivity.this, BmqActivity.class);
+                passeVariable(intent);
+            }
+        });
+
+        tmap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LstStockActivity.this, TableauMapActivity.class);
+                passeVariable(intent);
+            }
+        });
 
         stock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

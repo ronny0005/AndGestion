@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         facture = (Button) findViewById(R.id.menu_facturation);
         login =(TextView) findViewById(R.id.connexion_login);
         mdp =(TextView) findViewById(R.id.connexion_mdp);
-
+        login.requestFocus();
         connexion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             ArrayList<Depot> list = ou.listeDepotServeur();

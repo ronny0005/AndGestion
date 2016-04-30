@@ -52,7 +52,7 @@ import java.util.Map;
 /**
  * Created by T.Ron$ on 13/03/2016.
  */
-public class FactureActivity extends AppCompatActivity {
+public class FactureActivity extends AppCompatActivity{
     ArticleBDD donneeBDD;
     ListView lv;
     Button ajouter;
@@ -75,17 +75,12 @@ public class FactureActivity extends AppCompatActivity {
     int position_modif = 0;
     outils ou;
     TextView total;
-    double latitude;
-    double longitude;
-    protected boolean gps_enabled, network_enabled;
-    private Location currentBestLocation = null;
-    protected LocationManager locationManager;
-
     Integer id_facture;
     ArrayList<String> lclient = new ArrayList<String>();
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     Parametre parametre;
     Facture facture;
+
 
     public void verouille(){
         if(!facture.getNouveau()) {
@@ -149,7 +144,6 @@ public class FactureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facture);
-
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = FactureActivity.this;
         parametre = (Parametre) getIntent().getSerializableExtra("parametre");
@@ -159,6 +153,7 @@ public class FactureActivity extends AppCompatActivity {
         annuler = (Button) findViewById(R.id.facture_annuler);
         caisse = (TextView) findViewById(R.id.facture_caisse);
         total = (TextView) findViewById(R.id.facture_ttc);
+        final GPSTracker gps=new GPSTracker(this);
 
         caisse.setText(parametre.getCa_no().getCa_intitule());
         date = (TextView) findViewById(R.id.facture_date);
@@ -298,9 +293,23 @@ public class FactureActivity extends AppCompatActivity {
                                         facture.setId_client(lst_client.get(id_client));
                                         if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                         } else {
-                                          Location locationGPS = getLastBestLocation();
-                                            facture.setLatitude(locationGPS.getLatitude());
-                                          facture.setLongitude(locationGPS.getLongitude());
+
+                                            // check if GPS enabled
+                                            if(gps.canGetLocation()){
+
+                                                double latitude = gps.getLatitude();
+                                                double longitude = gps.getLongitude();
+                                                facture.setLatitude(latitude);
+                                                facture.setLongitude(longitude);
+
+                                                // \n is for new line
+                                                Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                                            }else{
+                                                // can't get location
+                                                // GPS or Network is not enabled
+                                                // Ask user to enable GPS/network in settings
+                                                gps.showSettingsAlert();
+                                            }
                                         }
                                     }
                                     art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
@@ -347,10 +356,5 @@ public class FactureActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public Location getLastBestLocation() {
-        GPSTracker gps = new GPSTracker(this,FactureActivity.this);
-        return gps.getLocation(FactureActivity.this);
     }
 }

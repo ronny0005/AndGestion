@@ -31,6 +31,8 @@
         <activity android:name=".ParametresActivity" />
         <activity android:name=".ValideActivity" />
         <activity android:name=".ManquantActivity" />
+        <activity android:name=".BmqActivity" />
+        <activity android:name=".TableauMapActivity" />
         <!--
         !     The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

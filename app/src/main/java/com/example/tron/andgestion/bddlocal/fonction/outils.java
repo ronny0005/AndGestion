@@ -6,6 +6,8 @@ import android.os.StrictMode;
 import android.widget.Toast;
 
 
+import com.example.tron.andgestion.GPSTracker;
+import com.example.tron.andgestion.Stock.BmqModele;
 import com.example.tron.andgestion.Stock.Stock;
 import com.example.tron.andgestion.Stock.StockEqVendeur;
 import com.example.tron.andgestion.bddlocal.affaire.Affaire;
@@ -47,10 +49,28 @@ import static android.text.Html.escapeHtml;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://192.168.1.14:8082/api/";
+    public static String lien="http://90.127.113.182:8083/api/";
 
     public static Parametre connexion(String login,String mdp) throws IOException{
         return getParametre(login,mdp);
+    }
+
+    public static ArrayList<BmqModele> getBmq(int cono, String datedeb, String datefin) {
+        JSONObject json = null;
+        ArrayList<BmqModele> ldep = new ArrayList<BmqModele>();
+        try {
+            json = new JSONObject(getJsonFromServer("getBmqVendeur?collaborateur_deb=19&debut=" + datedeb + "&fin=" + datefin));
+            JSONArray jArray = json.getJSONArray("data");
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject json_data = jArray.getJSONObject(i);
+                ldep.add(new BmqModele(json_data.getDouble("PR"),json_data.getDouble("RECU"),json_data.getDouble("RETOUR"),json_data.getDouble("AVARI"),json_data.getDouble("VENDU"),json_data.getDouble("VALEUR"),json_data.getDouble("TVA"),json_data.getDouble("PRECOMPTE"),json_data.getDouble("REMISE"),json_data.getDouble("COMPTANT_TTC"),json_data.getDouble("MANQUANT"),json_data.getString("AR_Ref"),json_data.getString("DL_Design"),json_data.getInt("NBLIGNE")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
     }
 
     public static ArrayList<ManquantModele> getManquant(int cono,String datedeb,String datefin) {
