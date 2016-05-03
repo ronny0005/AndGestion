@@ -212,7 +212,7 @@ public class outils implements Serializable{
                 facture.setDO_Date(json_data.getString("DO_Date"));
                 facture.setTotalTTC((int) Math.round(json_data.getDouble("ttc")));
                 facture.setMtt_avance((int) Math.round(json_data.getDouble("avance")));
-                if((int)facture.getTotalTTC()>=(int)facture.getMtt_avance() && (int)facture.getMtt_avance()>0){
+                if((int)facture.getMtt_avance()>=(int)facture.getTotalTTC() && (int)facture.getMtt_avance()>0){
                     facture.setStatut("comptant");
                 }else
                 if((int)facture.getMtt_avance()>0)

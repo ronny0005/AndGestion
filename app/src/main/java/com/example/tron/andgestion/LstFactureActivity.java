@@ -22,6 +22,7 @@ import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,7 +85,6 @@ public class LstFactureActivity extends AppCompatActivity {
             if (form == null)
                 form = format.format(new Date());
             datecmpt = format.parse(form);
-            System.out.println(datecmpt.getDay() + " lopp " + (new Date()).getDay() + " lal a");
             if (datecmpt.getDay() == (new Date()).getDay()) {
                 compteur = settings.getInt("compteur", 0);
             } else {
@@ -108,7 +108,11 @@ public class LstFactureActivity extends AppCompatActivity {
         data = new ArrayList<Map<String, String>>();
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for (int i = 0; i < liste_facture.size(); i++) {
-            data.add(createRow(liste_facture.get(i).getRef() + " - " + liste_facture.get(i).getEntete()+" - " + liste_facture.get(i).getStatut() ,
+            String val="";
+            DecimalFormat ttcformat = new DecimalFormat("#");
+            if(liste_facture.get(i).getStatut().equals("avance"))
+                val=" ("+ttcformat.format(liste_facture.get(i).getMtt_avance())+")";
+            data.add(createRow(liste_facture.get(i).getRef() + " - " + liste_facture.get(i).getEntete()+" - " + liste_facture.get(i).getStatut()+val ,
                     "Client : " + liste_facture.get(i).getId_client().getIntitule()+ "\nTotal TTC : "
                             + liste_facture.get(i).getTotalTTC()
                             +"\n"+liste_facture.get(i).getDO_Date() ));
@@ -138,6 +142,8 @@ public class LstFactureActivity extends AppCompatActivity {
         ajoutListe();
         initVariable();
 
+        datedeb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
+        datefin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
