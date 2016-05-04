@@ -73,7 +73,6 @@ public class EquationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.equation_stock);
-        this.setTitle("Equation stock");
         ou = (outils) getIntent().getSerializableExtra("outils");
         param = (Parametre) getIntent().getSerializableExtra("parametre");
         ou.app=EquationActivity.this;

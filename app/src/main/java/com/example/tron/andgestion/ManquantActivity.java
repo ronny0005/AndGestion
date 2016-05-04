@@ -40,7 +40,6 @@ public class ManquantActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.etatmanquant);
-        this.setTitle("Etat manquant");
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = ManquantActivity.this;
         parametre = (Parametre) getIntent().getSerializableExtra("parametre");

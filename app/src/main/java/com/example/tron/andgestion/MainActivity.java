@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.setTitle("Connexion");
 
         ou = (outils) getIntent().getSerializableExtra("outils");
 
@@ -62,11 +61,7 @@ public class MainActivity extends AppCompatActivity {
             // ! à enlever
             Parametre parametre=null;
                 if(!login.getText().toString().isEmpty() && !mdp.getText().toString().isEmpty()) {
-                    try {
                         parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }else {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }

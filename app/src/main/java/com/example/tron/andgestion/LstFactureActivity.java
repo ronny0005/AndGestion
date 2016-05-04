@@ -127,7 +127,6 @@ public class LstFactureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.liste_facture);
-        this.setTitle("Liste de facture");
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = LstFactureActivity.this;
         parametre=(Parametre) getIntent().getSerializableExtra("parametre");

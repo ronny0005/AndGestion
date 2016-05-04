@@ -49,9 +49,9 @@ import static android.text.Html.escapeHtml;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://90.127.113.182:8083/api/";
+    public static String lien="http://192.168.1.14:8083/api/";
 
-    public static Parametre connexion(String login,String mdp) throws IOException{
+    public static Parametre connexion(String login,String mdp) {
         return getParametre(login,mdp);
     }
 
@@ -503,7 +503,7 @@ public class outils implements Serializable{
     }
 
 
-    public static Parametre getParametre(String password,String nomUser) throws IOException{
+    public static Parametre getParametre(String password,String nomUser) {
         JSONObject json = null;
         int qte=0;
         try {
@@ -518,14 +518,30 @@ public class outils implements Serializable{
                         c = lcaisse.get(i);
                 return new Parametre(ob.getInt("DE_No"), ob.getString("CT_Num"), ob.getInt("CO_No"), ob.getInt("DO_Souche"),
                         ob.getString("affaire"), ob.getString("numDoc"), ob.getString("vehicule"),
-                        nomUser, password, c);
+                        nomUser, password, c,ob.getString("date_facture"),ob.getInt("r_Facture"),ob.getInt("ID_Facture"));
             }else {
                 Toast.makeText(app, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
+    }
+
+    public static void setParametre(String password,String nomUser,String date_Facture,String ID_Facture) {
+        JSONObject json = null;
+        try {
+            String url="setParametre?NomUser="+nomUser+"&Password="+password+"&Date_facture="+date_Facture+"&ID_facture="+ID_Facture;
+            System.out.println(url);
+            json = new JSONObject(getJsonFromServer(url));
+            JSONObject ob =json.getJSONObject("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon){

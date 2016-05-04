@@ -32,7 +32,6 @@ public class ServeurActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.connexion_serveur);
-        this.setTitle("Connexion serveur");
         ou.app=ServeurActivity.this;
         adresse = (TextView) findViewById(R.id.serveur_adresse);
         valide = (Button) findViewById(R.id.serveur_valide);

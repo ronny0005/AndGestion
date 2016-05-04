@@ -22,7 +22,6 @@ public class StockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stock);
-        this.setTitle("Etat du stock");
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = StockActivity.this;
         param = (Parametre) getIntent().getSerializableExtra("parametre");

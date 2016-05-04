@@ -27,7 +27,6 @@ public class ParametresActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.parametre);
-        this.setTitle("Paramètres");
         param = (Parametre) getIntent().getSerializableExtra("parametre");
 
         ArrayList<String> list = ou.listeAffaireTexte();

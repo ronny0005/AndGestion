@@ -18,8 +18,11 @@ public class Parametre implements Serializable {
     private String user;
     private String mdp;
     private Caisse ca_no;
+    private String Date_facture;
+    private int R_Facture;
+    private int ID_Facture;
 
-    public Parametre(int de_no, String ct_num, int co_no, int do_souche, String affaire, String numdoc, String vehicule, String user, String mdp, Caisse ca_no) {
+    public Parametre(int de_no, String ct_num, int co_no, int do_souche, String affaire, String numdoc, String vehicule, String user, String mdp, Caisse ca_no ,String Date_facture,int R_Facture,int ID_Facture) {
         this.de_no = de_no;
         this.ct_num = ct_num;
         this.co_no = co_no;
@@ -30,6 +33,33 @@ public class Parametre implements Serializable {
         this.user = user;
         this.mdp = mdp;
         this.ca_no = ca_no;
+        this.Date_facture=Date_facture;
+        this.R_Facture=R_Facture;
+        this.ID_Facture=ID_Facture;
+    }
+
+    public String getDate_facture() {
+        return Date_facture;
+    }
+
+    public void setDate_facture(String date_facture) {
+        Date_facture = date_facture;
+    }
+
+    public int getR_Facture() {
+        return R_Facture;
+    }
+
+    public void setR_Facture(int r_Facture) {
+        R_Facture = r_Facture;
+    }
+
+    public int getID_Facture() {
+        return ID_Facture;
+    }
+
+    public void setID_Facture(int ID_Facture) {
+        this.ID_Facture = ID_Facture;
     }
 
     public Caisse getCa_no() {

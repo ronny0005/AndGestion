@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">AndGestion</string>
-    <string name="title_activity_liste__stock">Liste Stock</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Etat map</string>
+    <string name="title_activity_lst_stock">Liste Stock</string>
+    <string name="title_activity_eq_stock">Equation stock</string>
+    <string name="title_activity_lst_fact">Liste de facture</string>
+    <string name="title_activity_lst_etat">Liste des etats</string>
+    <string name="title_activity_connexion">Connexion</string>
+    <string name="title_activity_etat_manquant">Etat manquant</string>
+    <string name="title_activity_menu">Menu</string>
+    <string name="title_activity_parametres">Paramètres</string>
+    <string name="title_activity_serveur">Connexion serveur</string>
+    <string name="title_activity_stock">Etat du stock</string>
+    <string name="title_activity_validation">Validation</string>
 </resources>

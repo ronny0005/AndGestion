@@ -40,7 +40,6 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
-        this.setTitle("Menu");
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app=MenuActivity.this;
         facture = (Button) findViewById(R.id.menu_facturation);

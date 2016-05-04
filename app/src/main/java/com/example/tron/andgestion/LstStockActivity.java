@@ -51,7 +51,6 @@ public class LstStockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.liste_stock);
-        this.setTitle("Liste des etats");
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app=LstStockActivity.this;
         stock = (Button) findViewById(R.id.lststk_stock);
