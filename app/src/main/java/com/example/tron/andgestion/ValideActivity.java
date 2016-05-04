@@ -106,8 +106,10 @@ public class ValideActivity extends AppCompatActivity {
                 myWebView = null;
             }
         });
-        String htmlDocument =   "<html><body><h1>CAMLAIT S.A.</h1>" +
-                "tel : 635423723<br/><br/>";
+        String htmlDocument =   "<html><body><h3>CAMLAIT S.A.</h3>" +
+                "tel : 237 33400093<br/>" +
+                "bp : BP 1838 DOUALA <br/>" +
+                "vendeur : "+parametre.getUser()+"<br/><br/>";
         htmlDocument+=facture.getEntete()+"<br/><br/>";
         htmlDocument+="<table>";
         double total_tva=0;
@@ -122,16 +124,23 @@ public class ValideActivity extends AppCompatActivity {
             total_precompte += Math.round(prix * article.getTaxe2() / 100);
             total_marge += Math.round(article.getQte_vendue() * article.getTaxe3());
             total_ht += prix;
+            htmlDocument += "<tr><td>" + article.getAr_design() + "</td></tr><tr><td style=\"float:right\">" +
+                    article.getAr_prixven() + " x " + article.getQte_vendue() + " = "+prix+"</td></tr>";
         }
 
         total_ttc = total_ht + total_tva + total_precompte + total_marge;
 
-        for(int i=0;i<facture.getListe_article().size();i++) {
-            htmlDocument += "<tr><td>" + facture.getListe_article().get(i).getAr_design() + "</td></tr><tr><td style=\"float:right\">" +
-                    facture.getListe_article().get(i).getAr_prixven() + "x" + facture.getListe_article().get(i).getQte_vendue() + "</td></tr>";
-        }
         htmlDocument +="<tr><td><br/></td></tr>";
-        htmlDocument +="<tr><td>Total : "+total_ttc+"</td></tr>";
+
+        htmlDocument +="<tr><td>Total HT : "+ttcformat.format(total_ht)+"</td></tr>";
+        htmlDocument +="<tr><td>TVA : "+ttcformat.format(total_tva)+"</td></tr>";
+        htmlDocument +="<tr><td>Précompte : "+ttcformat.format(total_precompte)+"</td></tr>";
+        htmlDocument +="<tr><td>Avance : "+ttcformat.format(facture.getMtt_avance())+"</td></tr>";
+        htmlDocument +="<tr><td>Total TTC : "+ttcformat.format(total_ttc)+"</td></tr>";
+        htmlDocument +="<tr><td>Montant payé : "+ttcformat.format(facture.getMtt_avance())+"</td></tr>";
+        htmlDocument +="<tr><td>Reste à payer : "+ ttcformat.format((total_ttc-facture.getMtt_avance())) +"</td></tr>";
+        htmlDocument +="<tr><td>-----------------</td></tr>";
+        htmlDocument +="<tr><td>Nous vous remercions de votre fidélité</td></tr>";
         htmlDocument+="</table>";
         htmlDocument+= "</body></html>";
         webView.loadDataWithBaseURL(null, htmlDocument,"text/HTML", "UTF-8", null);

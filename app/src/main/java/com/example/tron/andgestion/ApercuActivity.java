@@ -54,11 +54,11 @@ public class ApercuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.apercu);
-        ou = (outils) getIntent().getSerializableExtra("outils");
+        ou = new outils();//(outils) getIntent().getSerializableExtra("outils");
         ou.app = ApercuActivity.this;
-        parametre=(Parametre) getIntent().getSerializableExtra("parametre");
-        liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
-        facture = (Facture) getIntent().getSerializableExtra("facture");
+        //parametre=(Parametre) getIntent().getSerializableExtra("parametre");
+        liste_facture = ou.listeFacture(19,"2016-05-03","2016-05-03"); //(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
+        facture = liste_facture.get(0);//(Facture) getIntent().getSerializableExtra("facture");
         //if (savedInstanceState == null) {
         //    getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
         //}
@@ -80,7 +80,7 @@ public class ApercuActivity extends AppCompatActivity {
             }
         });
         String htmlDocument =   "<html><body><h1>CAMLAIT S.A.</h1>" +
-                                "tel : 635423723<br/><br/>";
+                                "tel : 237 33400093<br/><br/>";
         htmlDocument+=facture.getEntete()+"<br/><br/>";
         htmlDocument+="<table>";
         double total_tva=0;
@@ -95,16 +95,23 @@ public class ApercuActivity extends AppCompatActivity {
             total_precompte += Math.round(prix * article.getTaxe2() / 100);
             total_marge += Math.round(article.getQte_vendue() * article.getTaxe3());
             total_ht += prix;
+            htmlDocument += "<tr><td>" + article.getAr_design() + "</td></tr><tr><td style=\"float:right\">" +
+                    article.getAr_prixven() + " x " + article.getQte_vendue() + " = "+prix+"</td></tr>";
         }
 
         total_ttc = total_ht + total_tva + total_precompte + total_marge;
 
-        for(int i=0;i<facture.getListe_article().size();i++) {
-            htmlDocument += "<tr><td>" + facture.getListe_article().get(i).getAr_design() + "</td></tr><tr><td style=\"float:right\">" +
-                    facture.getListe_article().get(i).getAr_prixven() + "x" + facture.getListe_article().get(i).getQte_vendue() + "</td></tr>";
-        }
         htmlDocument +="<tr><td><br/></td></tr>";
-        htmlDocument +="<tr><td>Total : "+total_ttc+"</td></tr>";
+
+        htmlDocument +="<tr><td>Total HT : "+total_ht+"</td></tr>";
+        htmlDocument +="<tr><td>TVA : "+total_tva+"</td></tr>";
+        htmlDocument +="<tr><td>Précompte : "+total_precompte+"</td></tr>";
+        htmlDocument +="<tr><td>Avance : "+facture.getMtt_avance()+"</td></tr>";
+        htmlDocument +="<tr><td>Total TTC : "+total_ttc+"</td></tr>";
+        htmlDocument +="<tr><td>Montant payé : "+0+"</td></tr>";
+        htmlDocument +="<tr><td>Reste à payer : "+ (total_ttc-0) +"</td></tr>";
+        htmlDocument +="<tr><td>-----------------</td></tr>";
+        htmlDocument +="<tr><td>Nous vous remercions de votre fidélité</td></tr>";
         htmlDocument+="</table>";
         htmlDocument+= "</body></html>";
         webView.loadDataWithBaseURL(null, htmlDocument,"text/HTML", "UTF-8", null);
