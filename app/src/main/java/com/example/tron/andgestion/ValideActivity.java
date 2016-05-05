@@ -109,8 +109,9 @@ public class ValideActivity extends AppCompatActivity {
         String htmlDocument =   "<html><body><h3>CAMLAIT S.A.</h3>" +
                 "tel : 237 33400093<br/>" +
                 "bp : BP 1838 DOUALA <br/>" +
-                "vendeur : "+parametre.getUser()+"<br/><br/>";
-        htmlDocument+=facture.getEntete()+"<br/><br/>";
+                "vendeur : "+parametre.getUser()+"<br/>";
+        htmlDocument+="Fact N = "+facture.getEntete()+"<br/>";
+        htmlDocument+="Client = ("+facture.getId_client().getIntitule()+")<br/><br/>";
         htmlDocument+="<table>";
         double total_tva=0;
         double total_precompte=0;
@@ -135,12 +136,12 @@ public class ValideActivity extends AppCompatActivity {
         htmlDocument +="<tr><td>Total HT : "+ttcformat.format(total_ht)+"</td></tr>";
         htmlDocument +="<tr><td>TVA : "+ttcformat.format(total_tva)+"</td></tr>";
         htmlDocument +="<tr><td>Précompte : "+ttcformat.format(total_precompte)+"</td></tr>";
-        htmlDocument +="<tr><td>Avance : "+ttcformat.format(facture.getMtt_avance())+"</td></tr>";
+        htmlDocument +="<tr><td>Acompte : "+ttcformat.format(facture.getMtt_avance())+"</td></tr>";
         htmlDocument +="<tr><td>Total TTC : "+ttcformat.format(total_ttc)+"</td></tr>";
         htmlDocument +="<tr><td>Montant payé : "+ttcformat.format(facture.getMtt_avance())+"</td></tr>";
         htmlDocument +="<tr><td>Reste à payer : "+ ttcformat.format((total_ttc-facture.getMtt_avance())) +"</td></tr>";
         htmlDocument +="<tr><td>-----------------</td></tr>";
-        htmlDocument +="<tr><td>Nous vous remercions de votre fidélité</td></tr>";
+        htmlDocument +="<tr><td>Nous vous remercions<br/> de votre fidélité</td></tr>";
         htmlDocument+="</table>";
         htmlDocument+= "</body></html>";
         webView.loadDataWithBaseURL(null, htmlDocument,"text/HTML", "UTF-8", null);
