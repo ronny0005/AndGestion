@@ -52,12 +52,18 @@
             android:id="@+id/textView28" />
 
         <EditText
-            android:layout_width="190dp"
+            android:layout_width="148dp"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
             android:id="@+id/recouvrement_mtt"
-            android:layout_weight="0.99" />
+            android:layout_weight="1.02" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VALIDER"
+            android:id="@+id/recouvrement_valide" />
 
     </LinearLayout>
 

@@ -58,25 +58,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
             if(parametre != null){
-                switch (parametre.getDo_souche()){
-                    case 1 :
-                        liste_client = ou.listeClientServeur("DLA");
-                        break;
-                    case 2 :
-                        liste_client = ou.listeClientServeur("YDE");
-                        break;
-                    case 3 :
-                        liste_client = ou.listeClientServeur("BAF");
-                        break;
-                    case 4 :
-                        liste_client = ou.listeClientServeur("CO");
-                        break;
-                }
+                liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche()));
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
                 intent.putExtra("liste_facture",ou.listeFacture(parametre.getCo_no(),
-                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0" ));
+                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche()) ));
                 intent.putExtra("parametre", parametre);
                 intent.putExtra("outils", ou);
                 intent.putExtra("liste_client", liste_client);

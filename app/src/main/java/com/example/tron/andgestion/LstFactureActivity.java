@@ -66,7 +66,7 @@ public class LstFactureActivity extends AppCompatActivity {
             Date fin = format.parse(datefin.getText().toString());
             liste_facture=ou.listeFacture(parametre.getCo_no(),
                     new SimpleDateFormat("yyyy-MM-dd").format(deb),
-                    new SimpleDateFormat("yyyy-MM-dd").format(fin),"0");
+                    new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(parametre.getDo_souche()));
             ajoutListe();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -104,15 +104,16 @@ public class LstFactureActivity extends AppCompatActivity {
     public void ajoutListe() {
         data = new ArrayList<Map<String, String>>();
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
+        System.out.println(liste_facture.size()+" liste");
         for (int i = 0; i < liste_facture.size(); i++) {
+            Facture fac = liste_facture.get(i);
             String val="";
             DecimalFormat ttcformat = new DecimalFormat("#");
-            if(liste_facture.get(i).getStatut().equals("avance"))
-                val=" ("+ttcformat.format(liste_facture.get(i).getMtt_avance())+")";
-            data.add(createRow(liste_facture.get(i).getRef() + " - " + liste_facture.get(i).getEntete()+" - " + liste_facture.get(i).getStatut()+val ,
-                    "Client : " + liste_facture.get(i).getId_client().getIntitule()+ "\nTotal TTC : "
-                            + liste_facture.get(i).getTotalTTC()
-                            +"\n"+liste_facture.get(i).getDO_Date() ));
+            if(fac.getStatut().equals("avance"))
+                val=" ("+ttcformat.format(fac.getMtt_avance())+")";
+            data.add(createRow(fac.getRef() + " - " + fac.getEntete()+" - " + fac.getStatut()+val ,
+                    "Client : " + fac.getId_client().getIntitule()+ "\nTotal TTC : "+ fac.getTotalTTC()
+                            +"\n"+fac.getDO_Date() ));
         }
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};

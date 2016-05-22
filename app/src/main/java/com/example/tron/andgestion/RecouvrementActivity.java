@@ -70,7 +70,7 @@ public class RecouvrementActivity extends AppCompatActivity {
     }
 
     public void valideFacture(String ct_num){
-        liste_facture=ou.listeFacture(parametre.getCo_no(),"0","0",ct_num);
+        liste_facture=ou.listeFacture(parametre.getCo_no(),"0","0",ct_num,ou.getVille(parametre.getDo_souche()));
         ajoutListe();
     }
 
@@ -132,6 +132,7 @@ public class RecouvrementActivity extends AppCompatActivity {
         parametre=(Parametre) getIntent().getSerializableExtra("parametre");
         menu = (Button) findViewById(R.id.recouvrement_menu);
         rechercher = (Button) findViewById(R.id.recouvrement_rechercher);
+        valide = (Button) findViewById(R.id.recouvrement_valide);
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         mtt = (TextView) findViewById(R.id.recouvrement_mtt);
 
@@ -158,6 +159,12 @@ public class RecouvrementActivity extends AppCompatActivity {
                 }
             }
         });
+
+        valide.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mtt.setEnabled(false);
+            }
+        });
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -181,7 +188,6 @@ public class RecouvrementActivity extends AppCompatActivity {
                                     outils.addEcheance(String.valueOf(cr.getCbMarq()),String.valueOf(regle),fact.getEntete());
                                 }
                                 else
-
                                 mtt.setText(""+total);
                                 cr.setCbMarq(0);
                             }

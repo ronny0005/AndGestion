@@ -185,7 +185,19 @@ public class outils implements Serializable{
     }
 
 
-    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient){
+    public static String getVille(int num){
+        if(num==1)
+            return "DLA";
+        if(num==2)
+            return "YDE";
+        if(num==3)
+            return "BAF";
+        if(num==4)
+            return "CO";
+        return "";
+    }
+
+    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient,String ville){
         ArrayList<Facture> list= new ArrayList<Facture>();
         JSONObject json = null;
         try {
@@ -196,7 +208,7 @@ public class outils implements Serializable{
                 JSONObject json_data = jArray.getJSONObject(i);
                 facture = new Facture();
                 facture.setNouveau(false);
-                ArrayList<Client> lclient = listeClientServeur("YDE");
+                ArrayList<Client> lclient = listeClientServeur(ville);
 
                 for(int c=0;c<lclient.size();c++)
                     if(lclient.get(c).getNum().compareTo(json_data.getString("CT_Num"))==0)

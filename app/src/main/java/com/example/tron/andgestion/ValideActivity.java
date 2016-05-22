@@ -311,7 +311,7 @@ public class ValideActivity extends AppCompatActivity {
                            else
                            if(!mtt_avance.getText().toString().equals(""))
                                montant=mtt_avance.getText().toString();
-                           if(comptant.isChecked()|| !mtt_avance.getText().toString().equals(""))
+                           if(comptant.isChecked() || Integer.valueOf(montant)>0)
                                 ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
                        }
                        Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
