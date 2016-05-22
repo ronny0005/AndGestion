@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 
-import com.example.tron.andgestion.bddlocal.facture.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 

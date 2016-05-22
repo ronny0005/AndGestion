@@ -1,26 +1,24 @@
 package com.example.tron.andgestion.bddlocal.fonction;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.StrictMode;
 import android.widget.Toast;
 
 
-import com.example.tron.andgestion.GPSTracker;
 import com.example.tron.andgestion.Stock.BmqModele;
 import com.example.tron.andgestion.Stock.Stock;
 import com.example.tron.andgestion.Stock.StockEqVendeur;
-import com.example.tron.andgestion.bddlocal.affaire.Affaire;
-import com.example.tron.andgestion.bddlocal.article.Article;
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.caisse.Caisse;
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.depot.Depot;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
-import com.example.tron.andgestion.bddlocal.manquant.ManquantModele;
+import com.example.tron.andgestion.modele.Affaire;
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.cReglement;
+import com.example.tron.andgestion.modele.Caisse;
+import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Depot;
+import com.example.tron.andgestion.modele.Facture;
+import com.example.tron.andgestion.modele.ManquantModele;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
-import com.example.tron.andgestion.bddlocal.souche.Souche;
-import com.example.tron.andgestion.bddlocal.vehicule.Vehicule;
+import com.example.tron.andgestion.modele.Souche;
+import com.example.tron.andgestion.modele.Vehicule;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,13 +28,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,7 +56,7 @@ public class outils implements Serializable{
             JSONArray jArray = json.getJSONArray("data");
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
-                ldep.add(new BmqModele(json_data.getDouble("PR"),json_data.getDouble("RECU"),json_data.getDouble("RETOUR"),json_data.getDouble("AVARI"),json_data.getDouble("VENDU"),json_data.getDouble("VALEUR"),json_data.getDouble("TVA"),json_data.getDouble("PRECOMPTE"),json_data.getDouble("REMISE"),json_data.getDouble("COMPTANT_TTC"),json_data.getDouble("MANQUANT"),json_data.getString("AR_Ref"),json_data.getString("DL_Design"),json_data.getInt("NBLIGNE")));
+                ldep.add(new BmqModele(json_data.getDouble("PR"),json_data.getDouble("RECU"),json_data.getDouble("RETOUR"),json_data.getDouble("AVARI"),json_data.getDouble("VENDU"),json_data.getDouble("VALEUR"),json_data.getDouble("TVA"),json_data.getDouble("PRECOMPTE"),json_data.getDouble("REMISE"),json_data.getDouble("COMPTANT_TTC"),json_data.getDouble("MANQUANT"),json_data.getString("AR_Ref"),json_data.getString("DL_Design"),json_data.getInt("NBLIGNE"),json_data.getInt("MARGE")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -192,11 +185,11 @@ public class outils implements Serializable{
     }
 
 
-    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin){
+    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient){
         ArrayList<Facture> list= new ArrayList<Facture>();
         JSONObject json = null;
         try {
-            json = new JSONObject(getJsonFromServer("getFactureCO?CO_No="+CO_No+"&datedeb="+datedeb+"&datefin="+datefin));
+            json = new JSONObject(getJsonFromServer("getFactureCO?CO_No="+CO_No+"&datedeb="+datedeb+"&datefin="+datefin+"&CT_Num="+numClient));
             JSONArray jArray = json.getJSONArray("data");
             Facture facture=null;
             for(int i=0; i<jArray.length(); i++){
@@ -340,6 +333,22 @@ public class outils implements Serializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static cReglement UpdateEntete(String entete, String ref, int montant){
+        JSONObject json = null;
+        cReglement cr =null;
+        try {
+            String url="regleDocentete?DO_Piece="+entete+"&ref="+ref+"&avance="+montant;
+            json = new JSONObject(getJsonFromServer(url));
+            JSONObject jArray = json.getJSONObject("data");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cr;
     }
 
     public static void ModifLigneServeur(int idLigne,int qte){
@@ -589,8 +598,9 @@ public class outils implements Serializable{
         return ldep;
     }
 
-    public static void reglerEntete(String do_piece,String ref,String avance){
+    public static cReglement reglerEntete(String do_piece,String ref,String avance){
         JSONObject json = null;
+        cReglement cr = null;
         try {
             String url="regleDocentete?DO_Piece="+do_piece+"&ref="+ref+"&avance="+avance;
             json = new JSONObject(getJsonFromServer(url));
@@ -598,6 +608,32 @@ public class outils implements Serializable{
 
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cr;
+    }
+    public static cReglement addReglement(String do_piece,String ref,String avance){
+        JSONObject json = null;
+        cReglement cr = null;
+        try {
+            String url="addReglement?DO_Piece="+do_piece+"&libelle="+ref+"&avance="+avance;
+            json = new JSONObject(getJsonFromServer(url));
+            JSONObject jArray = json.getJSONObject("data");
+            cr = new cReglement(jArray.getInt("RG_No"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cr;
+    }
+
+    public static void addEcheance(String cr,String avance,String do_piece){
+        JSONObject json = null;
+        try {
+            String url="addEcheance?cr_no="+cr+"&montant="+avance+"&do_piece="+do_piece;
+            getJsonFromServer(url);
         } catch (IOException e) {
             e.printStackTrace();
         }

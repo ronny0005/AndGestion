@@ -1,8 +1,4 @@
-package com.example.tron.andgestion.bddlocal.facture;
-
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.fonction.outils;
+package com.example.tron.andgestion.modele;
 
 import java.io.Serializable;
 import java.util.ArrayList;

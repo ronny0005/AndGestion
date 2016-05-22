@@ -1,33 +1,18 @@
 package com.example.tron.andgestion;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class LstStockActivity extends AppCompatActivity {
     Button stock;

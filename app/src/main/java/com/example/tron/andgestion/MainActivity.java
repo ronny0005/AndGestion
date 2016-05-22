@@ -1,8 +1,6 @@
 package com.example.tron.andgestion;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,20 +9,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.depot.Depot;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Depot;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,13 +58,25 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
             if(parametre != null){
-                liste_client = ou.listeClientServeur("YDE");
+                switch (parametre.getDo_souche()){
+                    case 1 :
+                        liste_client = ou.listeClientServeur("DLA");
+                        break;
+                    case 2 :
+                        liste_client = ou.listeClientServeur("YDE");
+                        break;
+                    case 3 :
+                        liste_client = ou.listeClientServeur("BAF");
+                        break;
+                    case 4 :
+                        liste_client = ou.listeClientServeur("CO");
+                        break;
+                }
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-                System.out.println("nombre article"+liste_article.size());
                 DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
                 intent.putExtra("liste_facture",ou.listeFacture(parametre.getCo_no(),
-                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()) ));
+                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0" ));
                 intent.putExtra("parametre", parametre);
                 intent.putExtra("outils", ou);
                 intent.putExtra("liste_client", liste_client);

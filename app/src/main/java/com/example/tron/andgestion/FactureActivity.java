@@ -1,59 +1,43 @@
 package com.example.tron.andgestion;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationListener;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tron.andgestion.bddlocal.article.Article;
-import com.example.tron.andgestion.bddlocal.article.ArticleBDD;
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.Article;
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
  * Created by T.Ron$ on 13/03/2016.
  */
 public class FactureActivity extends AppCompatActivity{
-    ArticleBDD donneeBDD;
     ListView lv;
     Button ajouter;
     Button valider;
@@ -63,7 +47,7 @@ public class FactureActivity extends AppCompatActivity{
     AutoCompleteTextView designation;
     ArrayList<Article> list;
     TextView qte;
-    ArticleBDD articleBDD;
+
     ArrayList<ArticleServeur> liste_article;
     ArrayList<String> lstr;
     ArrayAdapter<String> arrayAdapter;
@@ -194,8 +178,6 @@ public class FactureActivity extends AppCompatActivity{
         valider = (Button) findViewById(R.id.facture_valider);
 
         lv.setLongClickable(true);
-        articleBDD = new ArticleBDD(this);
-        articleBDD.open();
         ajoutListe();
         initialise();
         verouille();
@@ -274,12 +256,12 @@ public class FactureActivity extends AppCompatActivity{
                             if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))
                                 art = liste_article.get(i);
                         }
-                        int id_client = 0;
+                        int id_client = -1;
                         for (int i = 0; i < lst_client.size(); i++)
-                            if (lst_client.get(i).getIntitule().equals(client.getText().toString()))
+                            if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
                                 id_client = i;
-
-                        if (art != null && id_client != 0) {
+                            }
+                        if (art != null && id_client != -1) {
                             int id_article = 0;
                             for (int i = 0; i < liste_article.size(); i++)
                                 if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))

@@ -3,8 +3,8 @@ package com.example.tron.andgestion;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 import com.google.android.gms.maps.CameraUpdateFactory;

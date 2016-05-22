@@ -1,26 +1,17 @@
-package com.example.tron.andgestion.bddlocal.vehicule;
+package com.example.tron.andgestion.modele;
 
 /**
  * Created by T.Ron$ on 14/03/2016.
  */
-public class Vehicule {
+public class Affaire {
     private int id;
-    private String ca_num;
     private String ca_intitule;
     private int n_analytique;
 
-    public Vehicule(String ca_num, String ca_intitule, int n_analytique) {
-        this.ca_num = ca_num;
+    public Affaire(int id, String ca_intitule, int n_analytique) {
+        this.id = id;
         this.ca_intitule = ca_intitule;
         this.n_analytique = n_analytique;
-    }
-
-    public String getCa_num() {
-        return ca_num;
-    }
-
-    public void setCa_num(String ca_num) {
-        this.ca_num = ca_num;
     }
 
     public int getId() {

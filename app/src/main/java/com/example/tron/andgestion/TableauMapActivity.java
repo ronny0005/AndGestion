@@ -9,8 +9,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.example.tron.andgestion.Stock.StockEqVendeur;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
@@ -49,7 +48,7 @@ public class TableauMapActivity extends AppCompatActivity {
             DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
             Date deb = format.parse(dt_deb.getText().toString());
             Date fin = format.parse(dt_fin.getText().toString());
-            liste_facture=ou.listeFacture(param.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin));
+            liste_facture=ou.listeFacture(param.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),"0");
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package com.example.tron.andgestion.bddlocal.parametre;
 
-import com.example.tron.andgestion.bddlocal.caisse.Caisse;
+import com.example.tron.andgestion.modele.Caisse;
 
 import java.io.Serializable;
 

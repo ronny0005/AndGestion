@@ -3,14 +3,12 @@ package com.example.tron.andgestion;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
@@ -24,6 +22,7 @@ public class MenuActivity extends AppCompatActivity {
     Button facture;
     Button parametre;
     Button etat;
+    Button recouvrement;
     outils ou;
 
 
@@ -45,6 +44,8 @@ public class MenuActivity extends AppCompatActivity {
         facture = (Button) findViewById(R.id.menu_facturation);
         parametre = (Button) findViewById(R.id.menu_parametre);
         etat = (Button) findViewById(R.id.menu_etats);
+        recouvrement = (Button) findViewById(R.id.menu_recouvrement);
+
 
         etat.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -60,7 +61,12 @@ public class MenuActivity extends AppCompatActivity {
                 passeVariable(intent);
             }
         });
-
+        recouvrement.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MenuActivity.this, RecouvrementActivity.class);
+                passeVariable(intent);
+            }
+        });
         parametre.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, ParametresActivity.class);

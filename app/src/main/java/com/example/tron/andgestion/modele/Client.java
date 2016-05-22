@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.client;
+package com.example.tron.andgestion.modele;
 
 import java.io.Serializable;
 import java.text.DateFormat;

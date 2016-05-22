@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.souche;
+package com.example.tron.andgestion.modele;
 
 /**
  * Created by T.Ron$ on 15/03/2016.

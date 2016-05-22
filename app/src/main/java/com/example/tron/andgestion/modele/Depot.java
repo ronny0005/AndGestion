@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.depot;
+package com.example.tron.andgestion.modele;
 
 /**
  * Created by T.Ron$ on 09/03/2016.

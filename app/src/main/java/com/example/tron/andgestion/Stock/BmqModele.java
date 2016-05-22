@@ -5,14 +5,25 @@ package com.example.tron.andgestion.Stock;
  */
 public class BmqModele {
 
-    private double PR,RECU,RETOUR,AVARI,VENDU,VALEUR,TVA,PRECOMPTE,REMISE,COMPTANT_TTC,MANQUANT;
+    private double PR;
+    private double RECU;
+    private double RETOUR;
+    private double AVARI;
+    private double VENDU;
+    private double VALEUR;
+    private double TVA;
+    private double PRECOMPTE;
+    private double REMISE;
+    private double COMPTANT_TTC;
+    private double MANQUANT;
+    private double MARGE;
     private String AR_Ref,DL_Design;
     private int NBLIGNE;
 
     public BmqModele() {
     }
 
-    public BmqModele(double PR, double RECU, double RETOUR, double AVARI, double VENDU, double VALEUR, double TVA, double PRECOMPTE, double REMISE, double COMPTANT_TTC, double MANQUANT, String AR_Ref, String DL_Design, int NBLIGNE) {
+    public BmqModele(double PR, double RECU, double RETOUR, double AVARI, double VENDU, double VALEUR, double TVA, double PRECOMPTE, double REMISE, double COMPTANT_TTC, double MANQUANT, String AR_Ref, String DL_Design, int NBLIGNE,double marge) {
         this.PR = PR;
         this.RECU = RECU;
         this.RETOUR = RETOUR;
@@ -27,6 +38,7 @@ public class BmqModele {
         this.AR_Ref = AR_Ref;
         this.DL_Design = DL_Design;
         this.NBLIGNE = NBLIGNE;
+        this.setMARGE(marge);
     }
 
     public double getPR() {
@@ -141,6 +153,14 @@ public class BmqModele {
         this.NBLIGNE = NBLIGNE;
     }
 
+    public double getMARGE() {
+        return MARGE;
+    }
+
+    public void setMARGE(double MARGE) {
+        this.MARGE = MARGE;
+    }
+
     @Override
     public String toString() {
         return "BmqModele{" +
@@ -155,6 +175,7 @@ public class BmqModele {
                 ", REMISE=" + REMISE +
                 ", COMPTANT_TTC=" + COMPTANT_TTC +
                 ", MANQUANT=" + MANQUANT +
+                ", MARGE=" + MARGE +
                 ", AR_Ref='" + AR_Ref + '\'' +
                 ", DL_Design='" + DL_Design + '\'' +
                 ", NBLIGNE=" + NBLIGNE +

@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.caisse;
+package com.example.tron.andgestion.modele;
 
 import java.io.Serializable;
 

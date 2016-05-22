@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.manquant;
+package com.example.tron.andgestion.modele;
 
 import java.util.Date;
 

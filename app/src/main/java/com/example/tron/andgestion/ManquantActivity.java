@@ -10,7 +10,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.manquant.ManquantModele;
+import com.example.tron.andgestion.modele.ManquantModele;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
 import java.text.DateFormat;

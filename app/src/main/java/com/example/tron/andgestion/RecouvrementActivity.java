@@ -1,18 +1,23 @@
 package com.example.tron.andgestion;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
@@ -29,10 +34,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class LstFactureActivity extends AppCompatActivity {
+public class RecouvrementActivity extends AppCompatActivity {
     Button nouveau;
+    ArrayList<String> lclient = new ArrayList<String>();
+    AutoCompleteTextView client;
     Button menu;
     Button valide;
+    Button mttvalide;
+    Button rechercher;
     ArrayList<Facture> liste_facture;
     ListView lst_fact;
     ArrayList<String> lstr;
@@ -40,13 +49,14 @@ public class LstFactureActivity extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapter;
     List<Map<String, String>> data;
     outils ou;
-    TextView datedeb;
-    TextView datefin;
+    TextView mtt;
     Map<String, String> datum;
     int compteur = 0;
     Date datecmpt = new Date();
     Parametre parametre;
+    int pos;
     private static final String PREFS_NAME = "compteur";
+    private cReglement cr=null;
 
     private void itemCommun(Intent intent,Facture facture,int idfacture){
         intent.putExtra("liste_facture", liste_facture);
@@ -59,18 +69,9 @@ public class LstFactureActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void valideFacture(){
-        try {
-            DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
-            Date deb = format.parse(datedeb.getText().toString());
-            Date fin = format.parse(datefin.getText().toString());
-            liste_facture=ou.listeFacture(parametre.getCo_no(),
-                    new SimpleDateFormat("yyyy-MM-dd").format(deb),
-                    new SimpleDateFormat("yyyy-MM-dd").format(fin),"0");
-            ajoutListe();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public void valideFacture(String ct_num){
+        liste_facture=ou.listeFacture(parametre.getCo_no(),"0","0",ct_num);
+        ajoutListe();
     }
 
     public void initVariable() {
@@ -91,7 +92,6 @@ public class LstFactureActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(compteur);
     }
 
     private Map<String, ?> createRow(String value1, String value2) {
@@ -123,71 +123,92 @@ public class LstFactureActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.liste_facture);
+        setContentView(R.layout.recouvrement);
         ou = (outils) getIntent().getSerializableExtra("outils");
-        ou.app = LstFactureActivity.this;
+
+        ou.app = RecouvrementActivity.this;
+        pos=-1;
+        final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
         parametre=(Parametre) getIntent().getSerializableExtra("parametre");
-        nouveau = (Button) findViewById(R.id.lstfac_nouveau);
-        menu = (Button) findViewById(R.id.lstfac_menu);
-        valide = (Button) findViewById(R.id.lstfac_valider);
+        menu = (Button) findViewById(R.id.recouvrement_menu);
+        rechercher = (Button) findViewById(R.id.recouvrement_rechercher);
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
-        datedeb = (TextView) findViewById(R.id.lstfac_deb);
-        datefin = (TextView) findViewById(R.id.lstfac_fin);
-        System.out.println("taille liste facture : "+liste_facture.size());
+        mtt = (TextView) findViewById(R.id.recouvrement_mtt);
+
+
+        for (int i = 0; i < lst_client.size(); i++)
+            lclient.add(lst_client.get(i).getIntitule());
+        client = (AutoCompleteTextView) findViewById(R.id.recouvrement_client);
+        client.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, lclient);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        client.setAdapter(adapter);
+
         lst_fact = (ListView) findViewById(R.id.liste_facture);
         ajoutListe();
         initVariable();
 
-        datedeb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
-        datefin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
+        rechercher.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                for(int i=0;i<lst_client.size();i++) {
+
+                    if (lst_client.get(i).getIntitule().equals(client.getText().toString()))
+                        valideFacture(lst_client.get(i).getNum());
+                }
+            }
+        });
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Facture fact = liste_facture.get(position);
-                Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-                itemCommun(intent,fact,position);
+                final Facture fact = liste_facture.get(position);
+                pos = position;
+                new AlertDialog.Builder(RecouvrementActivity.this)
+                        .setTitle("Réglement")
+                        .setMessage("Voulez vous régler la facture " + fact.getEntete() + " ?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                int total = Integer.parseInt(mtt.getText().toString()) -(fact.getTotalTTC()- (int)fact.getMtt_avance());
+                                int regle=  (fact.getTotalTTC()- (int)fact.getMtt_avance()) - Integer.parseInt(mtt.getText().toString());
+                                if(total<0)
+                                    total=0;
+                                if(regle<=0)
+                                    regle=fact.getTotalTTC();
+                                else
+                                    regle =(int)fact.getMtt_avance() + Integer.parseInt(mtt.getText().toString());
+                                if(cr==null) {
+                                    cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, mtt.getText().toString());
+                                    outils.addEcheance(String.valueOf(cr.getCbMarq()),String.valueOf(regle),fact.getEntete());
+                                }
+                                else
+
+                                mtt.setText(""+total);
+                                cr.setCbMarq(0);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         });
-
-        nouveau.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            ArrayList<ArticleServeur> lart = (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
-            Facture fact = new Facture("Fact" + compteur);
-            compteur++;
-            SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putInt("compteur", compteur);
-            editor.commit();
-            editor.putString("datecmpt", new SimpleDateFormat("dd/mm/yyyy").format(datecmpt));
-            editor.commit();
-            Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
-
-            Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-            itemCommun(intent,fact,liste_facture.size() - 1);
-            }
-        });
-
         menu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(LstFactureActivity.this, MenuActivity.class);
+                Intent intent = new Intent(RecouvrementActivity.this, MenuActivity.class);
                 itemCommun(intent,null,0);
             }
         });
-
-        valide.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                valideFacture();
-            }
-        });
-
     }
 
     @Override
     public void onBackPressed()
     {
         outils Ou = new outils();
-        Ou.app = LstFactureActivity.this;
-        Intent intent = new Intent(LstFactureActivity.this, LstFactureActivity.class);
+        Ou.app = RecouvrementActivity.this;
+        Intent intent = new Intent(RecouvrementActivity.this, RecouvrementActivity.class);
         itemCommun(intent,null,0);
         super.onBackPressed();  // optional depending on your needs
     }

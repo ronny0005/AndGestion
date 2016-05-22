@@ -3,28 +3,17 @@ package com.example.tron.andgestion;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.app.Fragment;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
-import android.content.Context;
-import android.widget.Button;
 
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class ApercuActivity extends AppCompatActivity {
@@ -57,7 +46,7 @@ public class ApercuActivity extends AppCompatActivity {
         ou = new outils();//(outils) getIntent().getSerializableExtra("outils");
         ou.app = ApercuActivity.this;
         //parametre=(Parametre) getIntent().getSerializableExtra("parametre");
-        liste_facture = ou.listeFacture(19,"2016-05-03","2016-05-03"); //(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
+        liste_facture = ou.listeFacture(19,"2016-05-03","2016-05-03","0"); //(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         facture = liste_facture.get(0);//(Facture) getIntent().getSerializableExtra("facture");
         //if (savedInstanceState == null) {
         //    getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();

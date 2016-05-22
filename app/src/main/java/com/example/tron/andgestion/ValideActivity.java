@@ -2,12 +2,12 @@ package com.example.tron.andgestion;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -20,14 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.tron.andgestion.bddlocal.article.ArticleServeur;
-import com.example.tron.andgestion.bddlocal.client.Client;
-import com.example.tron.andgestion.bddlocal.facture.Facture;
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,17 +75,19 @@ public class ValideActivity extends AppCompatActivity {
     }
 
     private void createWebPrintJob(WebView webView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
-        PrintManager printManager = (PrintManager) this
+            PrintManager printManager = (PrintManager) this
                 .getSystemService(Context.PRINT_SERVICE);
 
-        PrintDocumentAdapter printAdapter =
-                webView.createPrintDocumentAdapter();
+            PrintDocumentAdapter printAdapter =
+                    webView.createPrintDocumentAdapter();
 
-        String jobName = getString(R.string.app_name) + " Print Test";
+            String jobName = getString(R.string.app_name) + " Print Test";
 
-        printManager.print(jobName, printAdapter,
-                new PrintAttributes.Builder().build());
+            printManager.print(jobName, printAdapter,
+                    new PrintAttributes.Builder().build());
+        }
     }
 
     public void imprime(){
@@ -310,7 +311,8 @@ public class ValideActivity extends AppCompatActivity {
                            else
                            if(!mtt_avance.getText().toString().equals(""))
                                montant=mtt_avance.getText().toString();
-                           ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
+                           if(comptant.isChecked()|| !mtt_avance.getText().toString().equals(""))
+                                ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
                        }
                        Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
                        intent.putExtra("liste_facture", liste_facture);
