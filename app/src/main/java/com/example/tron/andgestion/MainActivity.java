@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     TextView login;
     TextView mdp;
     ArrayList<Facture> liste_facture = new ArrayList<Facture>();
+    ArrayList<Facture> liste_recouvrement = new ArrayList<Facture>();
     ArrayList<Client> liste_client;
     ArrayList<ArticleServeur> liste_article;
     outils ou;
@@ -64,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
                 intent.putExtra("liste_facture",ou.listeFacture(parametre.getCo_no(),
                         new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche()) ));
-                intent.putExtra("parametre", parametre);
+                intent.putExtra("liste_recouvrement",liste_recouvrement);
+                        intent.putExtra("parametre", parametre);
                 intent.putExtra("outils", ou);
                 intent.putExtra("liste_client", liste_client);
                 intent.putExtra("liste_article", liste_article);

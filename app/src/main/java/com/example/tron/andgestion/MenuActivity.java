@@ -30,6 +30,7 @@ public class MenuActivity extends AppCompatActivity {
         intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
         intent.putExtra("outils", ou);
+        intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
         startActivity(intent);

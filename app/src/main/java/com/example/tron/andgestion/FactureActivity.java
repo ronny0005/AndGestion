@@ -65,7 +65,6 @@ public class FactureActivity extends AppCompatActivity{
     Parametre parametre;
     Facture facture;
 
-
     public void verouille(){
         if(!facture.getNouveau()) {
             client.setEnabled(false);
@@ -75,6 +74,7 @@ public class FactureActivity extends AppCompatActivity{
             date.setEnabled(false);
         }
     }
+
     public void ajoutListe() {
         data = new ArrayList<Map<String, String>>();
         for (int i = 0; i < facture.getListe_article().size(); i++) {

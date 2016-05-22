@@ -42,7 +42,7 @@ public class RecouvrementActivity extends AppCompatActivity {
     Button valide;
     Button mttvalide;
     Button rechercher;
-    ArrayList<Facture> liste_facture;
+    ArrayList<Facture> liste_recouvrement;
     ListView lst_fact;
     ArrayList<String> lstr;
     ArrayList<ArticleServeur> liste_article;
@@ -59,7 +59,8 @@ public class RecouvrementActivity extends AppCompatActivity {
     private cReglement cr=null;
 
     private void itemCommun(Intent intent,Facture facture,int idfacture){
-        intent.putExtra("liste_facture", liste_facture);
+        intent.putExtra("liste_recouvrement", liste_recouvrement);
+        intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
         intent.putExtra("outils", ou);
         intent.putExtra("facture", facture);
         intent.putExtra("id_facture", String.valueOf(idfacture));
@@ -70,7 +71,7 @@ public class RecouvrementActivity extends AppCompatActivity {
     }
 
     public void valideFacture(String ct_num){
-        liste_facture=ou.listeFacture(parametre.getCo_no(),"0","0",ct_num,ou.getVille(parametre.getDo_souche()));
+        liste_recouvrement=ou.listeFacture(parametre.getCo_no(),"0","0",ct_num,ou.getVille(parametre.getDo_souche()));
         ajoutListe();
     }
 
@@ -104,15 +105,16 @@ public class RecouvrementActivity extends AppCompatActivity {
     public void ajoutListe() {
         data = new ArrayList<Map<String, String>>();
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
-        for (int i = 0; i < liste_facture.size(); i++) {
+        for (int i = 0; i < liste_recouvrement.size(); i++) {
+            Facture fac =liste_recouvrement.get(i);
             String val="";
             DecimalFormat ttcformat = new DecimalFormat("#");
-            if(liste_facture.get(i).getStatut().equals("avance"))
-                val=" ("+ttcformat.format(liste_facture.get(i).getMtt_avance())+")";
-            data.add(createRow(liste_facture.get(i).getRef() + " - " + liste_facture.get(i).getEntete()+" - " + liste_facture.get(i).getStatut()+val ,
-                    "Client : " + liste_facture.get(i).getId_client().getIntitule()+ "\nTotal TTC : "
-                            + liste_facture.get(i).getTotalTTC()
-                            +"\n"+liste_facture.get(i).getDO_Date() ));
+            if(liste_recouvrement.get(i).getStatut().equals("avance"))
+                val=" ("+ttcformat.format(fac.getMtt_avance())+")";
+            data.add(createRow(fac.getRef() + " - " + fac.getEntete()+" - " + fac.getStatut()+val ,
+                    "Client : " + fac.getId_client().getIntitule()+ "\nTotal TTC : "
+                            + fac.getTotalTTC()
+                            +"\n"+fac.getDO_Date() ));
         }
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};
@@ -133,9 +135,10 @@ public class RecouvrementActivity extends AppCompatActivity {
         menu = (Button) findViewById(R.id.recouvrement_menu);
         rechercher = (Button) findViewById(R.id.recouvrement_rechercher);
         valide = (Button) findViewById(R.id.recouvrement_valide);
-        liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
+        liste_recouvrement =(ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement");
         mtt = (TextView) findViewById(R.id.recouvrement_mtt);
-
+        mtt.setEnabled(false);
+        valide.setEnabled(false);
 
         for (int i = 0; i < lst_client.size(); i++)
             lclient.add(lst_client.get(i).getIntitule());
@@ -154,42 +157,57 @@ public class RecouvrementActivity extends AppCompatActivity {
             public void onClick(View v) {
                 for(int i=0;i<lst_client.size();i++) {
 
-                    if (lst_client.get(i).getIntitule().equals(client.getText().toString()))
+                    if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
+                        lst_fact.setEnabled(true);
                         valideFacture(lst_client.get(i).getNum());
+                        lst_fact.setEnabled(false);
+                        mtt.setEnabled(true);
+                        valide.setEnabled(true);
+
+                    }
                 }
             }
         });
 
         valide.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                lst_fact.setEnabled(true);
                 mtt.setEnabled(false);
             }
         });
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Facture fact = liste_facture.get(position);
+                final Facture fact = liste_recouvrement.get(position);
                 pos = position;
                 new AlertDialog.Builder(RecouvrementActivity.this)
                         .setTitle("Réglement")
                         .setMessage("Voulez vous régler la facture " + fact.getEntete() + " ?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                int total = Integer.parseInt(mtt.getText().toString()) -(fact.getTotalTTC()- (int)fact.getMtt_avance());
-                                int regle=  (fact.getTotalTTC()- (int)fact.getMtt_avance()) - Integer.parseInt(mtt.getText().toString());
-                                if(total<0)
-                                    total=0;
+                                int mtt_regl = Integer.parseInt(mtt.getText().toString());
+                                int total = mtt_regl - (fact.getTotalTTC()- (int)fact.getMtt_avance());
+                                int regle=  (fact.getTotalTTC()- (int)fact.getMtt_avance()) - mtt_regl;
+
+                                mtt.setEnabled(true);
+                                mtt.setText(""+total);
+                                mtt.setEnabled(false);
+                                if(total<0) {
+                                    total = 0;
+                                    mtt.setEnabled(true);
+                                    mtt.setText(""+total);
+                                    lst_fact.setEnabled(false);
+                                }
                                 if(regle<=0)
                                     regle=fact.getTotalTTC();
                                 else
-                                    regle =(int)fact.getMtt_avance() + Integer.parseInt(mtt.getText().toString());
+                                    regle =(int)fact.getMtt_avance() + mtt_regl;
+                                System.out.println(regle+" regle "+mtt_regl+" mtt_regl "+total+" total ");
                                 if(cr==null) {
-                                    cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, mtt.getText().toString());
-                                    outils.addEcheance(String.valueOf(cr.getCbMarq()),String.valueOf(regle),fact.getEntete());
                                 }
                                 else
                                 mtt.setText(""+total);
-                                cr.setCbMarq(0);
+                                //cr.setCbMarq(0);
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
