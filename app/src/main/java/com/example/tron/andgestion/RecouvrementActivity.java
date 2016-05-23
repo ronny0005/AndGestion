@@ -187,27 +187,24 @@ public class RecouvrementActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 int mtt_regl = Integer.parseInt(mtt.getText().toString());
                                 int total = mtt_regl - (fact.getTotalTTC()- (int)fact.getMtt_avance());
-                                int regle=  (fact.getTotalTTC()- (int)fact.getMtt_avance()) - mtt_regl;
-
+                                String dr="0";
+                                if(total>=0)
+                                    dr="1";
                                 mtt.setEnabled(true);
                                 mtt.setText(""+total);
                                 mtt.setEnabled(false);
-                                if(total<0) {
-                                    total = 0;
-                                    mtt.setEnabled(true);
-                                    mtt.setText(""+total);
-                                    lst_fact.setEnabled(false);
-                                }
-                                if(regle<=0)
-                                    regle=fact.getTotalTTC();
-                                else
-                                    regle =(int)fact.getMtt_avance() + mtt_regl;
-                                System.out.println(regle+" regle "+mtt_regl+" mtt_regl "+total+" total ");
+
                                 if(cr==null) {
+                                    cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, mtt.getText().toString());
+                                    outils.addEcheance(String.valueOf(cr.getCbMarq()),String.valueOf(mtt_regl),fact.getEntete(),dr);
+                                    if(total<0){
+                                        total = 0;
+                                        mtt.setEnabled(true);
+                                        mtt.setText(""+total);
+                                        lst_fact.setEnabled(false);
+                                        cr=null;
+                                    }
                                 }
-                                else
-                                mtt.setText(""+total);
-                                //cr.setCbMarq(0);
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

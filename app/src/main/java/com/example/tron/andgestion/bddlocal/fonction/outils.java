@@ -641,10 +641,10 @@ public class outils implements Serializable{
         return cr;
     }
 
-    public static void addEcheance(String cr,String avance,String do_piece){
+    public static void addEcheance(String cr,String avance,String do_piece,String dr){
         JSONObject json = null;
         try {
-            String url="addEcheance?cr_no="+cr+"&montant="+avance+"&do_piece="+do_piece;
+            String url="addEcheance?cr_no="+cr+"&montant="+avance+"&do_piece="+do_piece+"&dr="+dr;
             getJsonFromServer(url);
         } catch (IOException e) {
             e.printStackTrace();
