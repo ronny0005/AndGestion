@@ -1,10 +1,7 @@
 package com.example.tron.andgestion;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -83,37 +80,45 @@ public class BmqActivity extends AppCompatActivity {
     public void ajoutListe(Date deb, Date fin) {
 
         lstk = new ArrayList<BmqModele>();
-        double total_tva = 0,total_precompte=0,total_remise=0,total_comptant=0,total_ht=0,manquant = 0,total_marge=0;
-        lstk = ou.getBmq(19, new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
+        double total_tva = 0,total_precompte=0,total_remise=0,total_comptant=0,total_ht=0,manquant = 0,total_marge=0,total_ventettc=0;
+
+        lstk = ou.getBmq(22, new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
+        System.out.println(lstk);
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
-        for (int i = 0; i < lstk.size(); i++) {
+        if(!lstk.isEmpty()){
+            double comptant = lstk.get(0).getAvance();
+            for (int i = 0; i < lstk.size(); i++) {
 
-            total_tva = total_tva + lstk.get(i).getTVA();
-            total_comptant = total_comptant + lstk.get(i).getCOMPTANT_TTC();
-            total_ht=total_ht+lstk.get(i).getVALEUR();
-            total_precompte=total_precompte+lstk.get(i).getPRECOMPTE();
-            total_remise=total_remise+lstk.get(i).getREMISE();
-            manquant = lstk.get(i).getMANQUANT();
-            total_marge = total_marge+lstk.get(i).getMARGE();
+                total_tva = total_tva + lstk.get(i).getTVA();
+                //total_comptant = total_comptant + lstk.get(i).getAvance();
+                total_ht=total_ht+lstk.get(i).getVALEUR();
+                total_precompte=total_precompte+lstk.get(i).getPRECOMPTE();
+                total_remise=total_remise+lstk.get(i).getREMISE();
+                manquant = lstk.get(i).getMANQUANT();
+                total_marge = total_marge+lstk.get(i).getMARGE();
+                total_ventettc = total_ventettc+lstk.get(i).getVenteTTC();
 
-            data.add(createRow(lstk.get(i).getDL_Design(), " "
-                            + "\n Recu : " + lstk.get(i).getRECU()
-                            + "\n Retour : " + lstk.get(i).getRETOUR()+"  Avari : "+lstk.get(i).getAVARI()
-                            + "\n Total recu : " + (lstk.get(i).getRECU()-(lstk.get(i).getRETOUR()+lstk.get(i).getAVARI()))
-                            + "\n Total vendu : " + lstk.get(i).getVENDU()+"  Valeur : "+lstk.get(i).getVALEUR()
-            ));
+                data.add(createRow(lstk.get(i).getDL_Design(), " "
+                        + "\n Recu : " + lstk.get(i).getRECU()
+                        + "\n Retour : " + lstk.get(i).getRETOUR()+"  Avari : "+lstk.get(i).getAVARI()
+                        + "\n Total recu : " + (lstk.get(i).getRECU()-(lstk.get(i).getRETOUR()+lstk.get(i).getAVARI()))
+                        + "\n Total vendu : " + lstk.get(i).getVENDU()+"  Valeur : "+lstk.get(i).getVALEUR()
+                ));
+            }
+            DecimalFormat decim = new DecimalFormat("#");
+            data.add(createRow("TOTAL HT: " + decim.format(total_ht), ""));
+            data.add(createRow("TOTAL TVA: " + decim.format(total_tva), ""));
+            data.add(createRow("TOTAL PRECOMPTE: " + decim.format(total_precompte), ""));
+            data.add(createRow("TOTAL MARGE: " + decim.format(total_marge), ""));
+            data.add(createRow("TOTAL TTC: " + decim.format(total_ventettc), ""));
+            data.add(createRow("TOTAL COMPTANT: " + decim.format(comptant), ""));
+            data.add(createRow("TOTAL CREDIT: " + decim.format(total_ventettc-comptant), ""));
+            data.add(createRow("MANQUANT : " +decim.format(manquant), ""));
+            data.add(createRow("NET A ENCAISSE : " +decim.format(comptant-manquant), ""));
+            //data.add(createRow("NET VERSER : " +decim.format((total_comptant-manquant)), ""));
         }
-        DecimalFormat decim = new DecimalFormat("#");
-        data.add(createRow("TOTAL HT: " + decim.format(total_ht), ""));
-        data.add(createRow("TOTAL TVA: " + decim.format(total_tva), ""));
-        data.add(createRow("TOTAL PRECOMPTE: " + decim.format(total_precompte), ""));
-        data.add(createRow("TOTAL MARGE: " + decim.format(total_marge), ""));
-        data.add(createRow("TOTAL TTC: " + decim.format(total_ht+total_tva+total_precompte+total_marge), ""));
-        data.add(createRow("TOTAL COMPTANT: " + decim.format(total_comptant), ""));
-        data.add(createRow("TOTAL CREDIT: " + decim.format(((total_ht+total_precompte+total_tva+total_marge)-total_comptant)), ""));
-        data.add(createRow("MANQUANT : " +decim.format(manquant), ""));
-        data.add(createRow("NET A ENCAISSE : " +decim.format(total_comptant), ""));
-        data.add(createRow("NET VERSER : " +decim.format((total_comptant-manquant)), ""));
+
+
 
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};

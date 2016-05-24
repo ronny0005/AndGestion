@@ -52,11 +52,11 @@ public class outils implements Serializable{
         JSONObject json = null;
         ArrayList<BmqModele> ldep = new ArrayList<BmqModele>();
         try {
-            json = new JSONObject(getJsonFromServer("getBmqVendeur?collaborateur_deb=19&debut=" + datedeb + "&fin=" + datefin));
+            json = new JSONObject(getJsonFromServer("getBmqVendeur?depot=22&datedeb=" + datedeb + "&datefin=" + datefin));
             JSONArray jArray = json.getJSONArray("data");
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
-                ldep.add(new BmqModele(json_data.getDouble("PR"),json_data.getDouble("RECU"),json_data.getDouble("RETOUR"),json_data.getDouble("AVARI"),json_data.getDouble("VENDU"),json_data.getDouble("VALEUR"),json_data.getDouble("TVA"),json_data.getDouble("PRECOMPTE"),json_data.getDouble("REMISE"),json_data.getDouble("COMPTANT_TTC"),json_data.getDouble("MANQUANT"),json_data.getString("AR_Ref"),json_data.getString("DL_Design"),json_data.getInt("NBLIGNE"),json_data.getInt("MARGE")));
+                ldep.add(new BmqModele(json_data.getDouble("PR"),json_data.getDouble("RECU"),json_data.getDouble("RETOUR"),json_data.getDouble("AVARI"),json_data.getDouble("VENDU"),json_data.getDouble("VALEUR"),json_data.getDouble("TVA"),json_data.getDouble("PRECOMPTE"),json_data.getDouble("REMISE"),json_data.getDouble("VENTE_TTC"),json_data.getDouble("MANQUANT"),json_data.getString("AR_Ref"),json_data.getString("AR_Design"),1,json_data.getInt("MARGE"),json_data.getDouble("avance")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -617,7 +617,7 @@ public class outils implements Serializable{
             String url="regleDocentete?DO_Piece="+do_piece+"&ref="+ref+"&avance="+avance;
             json = new JSONObject(getJsonFromServer(url));
             JSONObject jArray = json.getJSONObject("data");
-
+            cr = new cReglement(jArray.getInt("RG_No"));
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {

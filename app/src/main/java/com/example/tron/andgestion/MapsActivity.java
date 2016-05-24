@@ -22,7 +22,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private outils ou;
     private ArrayList<Facture> liste_facture;
     private Parametre parametre;
-
+    private int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +33,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = MapsActivity.this;
-        parametre = (Parametre) getIntent().getSerializableExtra("parametre");
+
+        ou = (outils) getIntent().getSerializableExtra("outils");
+        position = getIntent().getIntExtra("position",-1);
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
     }
@@ -58,5 +60,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(sydney).title(fact.getEntete()+" - "+fact.getId_client().getIntitule()));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
+        Facture fact = liste_facture.get(position);
+        LatLng sydney = new LatLng(fact.getLatitude(),fact.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

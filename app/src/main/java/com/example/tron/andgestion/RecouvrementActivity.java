@@ -188,23 +188,36 @@ public class RecouvrementActivity extends AppCompatActivity {
                                 int mtt_regl = Integer.parseInt(mtt.getText().toString());
                                 int total = mtt_regl - (fact.getTotalTTC()- (int)fact.getMtt_avance());
                                 String dr="0";
-                                if(total>=0)
-                                    dr="1";
+                                if(total>=0) {
+                                    dr = "1";
+                                    mtt_regl=fact.getTotalTTC()- (int)fact.getMtt_avance();
+                                }
                                 mtt.setEnabled(true);
                                 mtt.setText(""+total);
                                 mtt.setEnabled(false);
+                                if((int)fact.getMtt_avance()==0){
+                                    cr=ou.reglerEntete(fact.getEntete(), fact.getRef(), String.valueOf(mtt_regl));
+                                }else {
+                                    if (cr == null) {
+                                        cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, String.valueOf(mtt_regl));
+                                    }
+                                    outils.addEcheance(String.valueOf(cr.getCbMarq()), String.valueOf(mtt_regl), fact.getEntete(), dr);
+                                }
+                                for(int i=0;i<lst_client.size();i++) {
 
-                                if(cr==null) {
-                                    cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, mtt.getText().toString());
-                                    outils.addEcheance(String.valueOf(cr.getCbMarq()),String.valueOf(mtt_regl),fact.getEntete(),dr);
-                                    if(total<0){
-                                        total = 0;
-                                        mtt.setEnabled(true);
-                                        mtt.setText(""+total);
-                                        lst_fact.setEnabled(false);
-                                        cr=null;
+                                    if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
+                                        valideFacture(lst_client.get(i).getNum());
                                     }
                                 }
+                                if(total<=0){
+                                    total = 0;
+                                    mtt.setEnabled(true);
+                                    mtt.setText(""+total);
+                                    lst_fact.setEnabled(true);
+                                    cr=null;
+                                }
+
+
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

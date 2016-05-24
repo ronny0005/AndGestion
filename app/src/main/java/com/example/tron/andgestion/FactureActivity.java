@@ -332,6 +332,7 @@ public class FactureActivity extends AppCompatActivity{
                         intent.putExtra("id_facture", String.valueOf(id_facture));
                         intent.putExtra("outils", ou);
                         intent.putExtra("facture",facture);
+                        intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
                         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
                         startActivity(intent);
                     }

@@ -14,16 +14,17 @@ public class BmqModele {
     private double TVA;
     private double PRECOMPTE;
     private double REMISE;
-    private double COMPTANT_TTC;
+    private double VENTE_TTC;
     private double MANQUANT;
     private double MARGE;
+    private double AVANCE;
     private String AR_Ref,DL_Design;
     private int NBLIGNE;
 
     public BmqModele() {
     }
 
-    public BmqModele(double PR, double RECU, double RETOUR, double AVARI, double VENDU, double VALEUR, double TVA, double PRECOMPTE, double REMISE, double COMPTANT_TTC, double MANQUANT, String AR_Ref, String DL_Design, int NBLIGNE,double marge) {
+    public BmqModele(double PR, double RECU, double RETOUR, double AVARI, double VENDU, double VALEUR, double TVA, double PRECOMPTE, double REMISE, double COMPTANT_TTC, double MANQUANT, String AR_Ref, String DL_Design, int NBLIGNE,double marge,double avance) {
         this.PR = PR;
         this.RECU = RECU;
         this.RETOUR = RETOUR;
@@ -33,12 +34,13 @@ public class BmqModele {
         this.TVA = TVA;
         this.PRECOMPTE = PRECOMPTE;
         this.REMISE = REMISE;
-        this.COMPTANT_TTC = COMPTANT_TTC;
+        this.VENTE_TTC = COMPTANT_TTC;
         this.MANQUANT = MANQUANT;
         this.AR_Ref = AR_Ref;
         this.DL_Design = DL_Design;
         this.NBLIGNE = NBLIGNE;
         this.setMARGE(marge);
+        this.AVANCE = avance;
     }
 
     public double getPR() {
@@ -113,12 +115,12 @@ public class BmqModele {
         this.REMISE = REMISE;
     }
 
-    public double getCOMPTANT_TTC() {
-        return COMPTANT_TTC;
+    public double getVenteTTC() {
+        return VENTE_TTC;
     }
 
-    public void setCOMPTANT_TTC(double COMPTANT_TTC) {
-        this.COMPTANT_TTC = COMPTANT_TTC;
+    public void setVenteTTC(double COMPTANT_TTC) {
+        this.VENTE_TTC = COMPTANT_TTC;
     }
 
     public double getMANQUANT() {
@@ -161,6 +163,16 @@ public class BmqModele {
         this.MARGE = MARGE;
     }
 
+    public double getAvance() {
+        return AVANCE;
+    }
+
+    public void setAavance(double avance) {
+        this.MARGE = avance;
+    }
+
+
+
     @Override
     public String toString() {
         return "BmqModele{" +
@@ -173,7 +185,7 @@ public class BmqModele {
                 ", TVA=" + TVA +
                 ", PRECOMPTE=" + PRECOMPTE +
                 ", REMISE=" + REMISE +
-                ", COMPTANT_TTC=" + COMPTANT_TTC +
+                ", COMPTANT_TTC=" + VENTE_TTC +
                 ", MANQUANT=" + MANQUANT +
                 ", MARGE=" + MARGE +
                 ", AR_Ref='" + AR_Ref + '\'' +

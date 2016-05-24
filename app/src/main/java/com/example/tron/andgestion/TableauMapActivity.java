@@ -1,14 +1,18 @@
 package com.example.tron.andgestion;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
@@ -68,6 +72,16 @@ public class TableauMapActivity extends AppCompatActivity {
         lst_equation.setAdapter(adapter);
     }
 
+    private void passeVariable(Intent intent,int pos){
+        intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
+        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+        intent.putExtra("outils", ou);
+        intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
+        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        intent.putExtra("position",pos);
+        startActivity(intent);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +97,7 @@ public class TableauMapActivity extends AppCompatActivity {
         lst_equation = (ListView) findViewById(R.id.map_tableau_lv);
         dt_deb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         dt_fin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
+
         afficher.setOnClickListener(new View.OnClickListener(){
                public void onClick(View v) {
                if(!dt_deb.getText().toString().isEmpty() && !dt_fin.getText().toString().isEmpty()) {
@@ -98,5 +113,14 @@ public class TableauMapActivity extends AppCompatActivity {
                }
            }
         });
-        }
+
+        lst_equation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(TableauMapActivity.this, MapsActivity.class);
+                passeVariable(intent,position);
+            }
+        });
+
+    }
     }
