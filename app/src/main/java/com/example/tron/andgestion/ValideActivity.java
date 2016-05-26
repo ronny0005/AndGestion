@@ -401,6 +401,7 @@ public class ValideActivity extends AppCompatActivity {
                         Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
                         intent.putExtra("liste_facture", liste_facture);
                         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+                        intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
                         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
                         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                         intent.putExtra("outils", ou);
