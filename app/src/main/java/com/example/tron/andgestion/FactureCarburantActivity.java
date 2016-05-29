@@ -141,6 +141,8 @@ public class FactureCarburantActivity extends AppCompatActivity{
         parametre = (Parametre) getIntent().getSerializableExtra("parametre");
         id_facture = Integer.parseInt(getIntent().getStringExtra("id_facture"));
         final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
+        final ArrayList<CompteA> lst_cr = (ArrayList<CompteA>) getIntent().getSerializableExtra("liste_cr");
+        final ArrayList<Vehicule> lst_vehicule = (ArrayList<Vehicule>) getIntent().getSerializableExtra("liste_vehicule");
         facture = (Facture) getIntent().getSerializableExtra("facture");
         annuler = (Button) findViewById(R.id.facture_annuler);
         caisse = (TextView) findViewById(R.id.facture_caisse);
@@ -287,7 +289,20 @@ public class FactureCarburantActivity extends AppCompatActivity{
                             if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
                                 id_client = i;
                             }
-                        if (art != null && id_client != -1) {
+                        int id_cr = -1;
+                        for (int i = 0; i < lst_cr.size(); i++)
+                            if (lst_cr.get(i).getCA_Intitule().equals(cr.getText().toString())) {
+                                id_cr = i;
+                            }
+
+                        int id_vehicule = -1;
+                        for (int i = 0; i < lst_vehicule.size(); i++)
+                            if (lst_vehicule.get(i).getCa_intitule().equals(vehicule.getText().toString())) {
+                                id_vehicule = i;
+                            }
+
+
+                        if (art != null && id_client != -1 && id_vehicule!=-1 && id_cr!=-1) {
                             int id_article = 0;
                             for (int i = 0; i < liste_article.size(); i++)
                                 if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))
@@ -299,17 +314,16 @@ public class FactureCarburantActivity extends AppCompatActivity{
                                 if (qteart >= Integer.parseInt(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
                                         facture.setId_client(lst_client.get(id_client));
+                                        facture.setVehicule(lst_vehicule.get(id_vehicule).getCa_intitule());
+                                        facture.setCr(lst_cr.get(id_cr).getCA_Intitule());
                                         if (ActivityCompat.checkSelfPermission(FactureCarburantActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureCarburantActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                         } else {
-
                                             // check if GPS enabled
                                             if(gps.canGetLocation()){
-
                                                 double latitude = gps.getLatitude();
                                                 double longitude = gps.getLongitude();
                                                 facture.setLatitude(latitude);
                                                 facture.setLongitude(longitude);
-
                                                 // \n is for new line
                                                 Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                                             }else{
@@ -351,7 +365,8 @@ public class FactureCarburantActivity extends AppCompatActivity{
         valider.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                     if (facture.getListe_article().size() > 0) {
-                        Intent intent = new Intent(FactureCarburantActivity.this, ValideActivity.class);
+
+                        Intent intent = new Intent(FactureCarburantActivity.this, ValideCarburantActivity.class);
                         intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
                         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));

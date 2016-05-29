@@ -24,6 +24,7 @@ public class Facture implements Serializable {
     private ArrayList<Integer> liste_ligne;
     private String DO_Date;
     private String vehicule;
+    private String cr;
 
     public Facture(String ref, Client id_client, int id_depot) {
         this.ref = ref;
@@ -35,6 +36,14 @@ public class Facture implements Serializable {
         this.id=0;
         this.entete="";
         this.statut="";
+    }
+
+    public String getCr() {
+        return cr;
+    }
+
+    public void setCr(String cr) {
+        this.cr = cr;
     }
 
     public String getVehicule() {

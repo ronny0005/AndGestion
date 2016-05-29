@@ -19,12 +19,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.example.tron.andgestion.bddlocal.fonction.outils;
+import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
-import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -34,7 +33,7 @@ import java.util.Date;
 /**
  * Created by T.Ron on 19/03/2016.
  */
-public class ValideActivity extends AppCompatActivity {
+public class ValideCarburantActivity extends AppCompatActivity {
     ArrayList<Facture> liste_facture;
     double total_tva = 0;
     double total_precompte = 0;
@@ -164,7 +163,7 @@ public class ValideActivity extends AppCompatActivity {
         facture = (Facture) getIntent().getSerializableExtra("facture");
         id_facture= Integer.parseInt(getIntent().getStringExtra("id_facture"));
         ou = (outils) getIntent().getSerializableExtra("outils");
-        ou.app = ValideActivity.this;
+        ou.app = ValideCarburantActivity.this;
 
         t_marge = (TextView) findViewById(R.id.valide_marge);
         t_ht = (TextView) findViewById(R.id.valide_ht);
@@ -298,7 +297,7 @@ public class ValideActivity extends AppCompatActivity {
                            if(comptant.isChecked())
                                 ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
                        }
-                       Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
+                       Intent intent = new Intent(ValideCarburantActivity.this, LstFactureActivity.class);
                        intent.putExtra("liste_facture", liste_facture);
                        intent.putExtra("facture", facture);
                        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
@@ -309,15 +308,15 @@ public class ValideActivity extends AppCompatActivity {
                        imprime();
                        startActivity(intent);
                    } else {
-                       Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
+                       Toast.makeText(ValideCarburantActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
                    }
                } else {
-                   Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
+                   Toast.makeText(ValideCarburantActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
                            Toast.LENGTH_SHORT).show();
                }
                if (!facture.getNouveau()) {
 
-                   Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
+                   Intent intent = new Intent(ValideCarburantActivity.this, LstFactureActivity.class);
                    intent.putExtra("liste_facture", liste_facture);
                    intent.putExtra("facture", facture);
                    intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
@@ -383,7 +382,7 @@ public class ValideActivity extends AppCompatActivity {
                                     montant=mtt_avance.getText().toString();
                             ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
                         }
-                        Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
+                        Intent intent = new Intent(ValideCarburantActivity.this, LstFactureActivity.class);
                         intent.putExtra("liste_facture", liste_facture);
                         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
@@ -392,10 +391,10 @@ public class ValideActivity extends AppCompatActivity {
                         intent.putExtra("outils", ou);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ValideCarburantActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
+                    Toast.makeText(ValideCarburantActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
                             Toast.LENGTH_SHORT).show();
                 }
             }

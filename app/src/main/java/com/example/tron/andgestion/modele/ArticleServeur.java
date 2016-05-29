@@ -18,7 +18,8 @@ public class ArticleServeur implements Serializable {
     private double taxe1;
     private double taxe2;
     private double taxe3;
-
+    private String vehicule;
+    private String cr;
 
     public ArticleServeur(String ar_ref, String ar_design,double ar_prixach,double taxe1,double taxe2,double taxe3) {
         this.ar_ref = ar_ref;
@@ -37,6 +38,22 @@ public class ArticleServeur implements Serializable {
         this.ar_prixach = ar_prixach;
         this.fa_codefamille = fa_codefamille;
         this.ar_prixven = ar_prixven;
+    }
+
+    public String getVehicule() {
+        return vehicule;
+    }
+
+    public void setVehicule(String vehicule) {
+        this.vehicule = vehicule;
+    }
+
+    public String getCr() {
+        return cr;
+    }
+
+    public void setCr(String cr) {
+        this.cr = cr;
     }
 
     public int getId() {
