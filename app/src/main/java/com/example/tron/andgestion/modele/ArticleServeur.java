@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class ArticleServeur implements Serializable {
     private int id;
-    private int ar_ref;
+    private String ar_ref;
     private String ar_design;
     private float prix_vente;
     private float ar_uniteven;
@@ -20,7 +20,7 @@ public class ArticleServeur implements Serializable {
     private double taxe3;
 
 
-    public ArticleServeur(int ar_ref, String ar_design,double ar_prixach,double taxe1,double taxe2,double taxe3) {
+    public ArticleServeur(String ar_ref, String ar_design,double ar_prixach,double taxe1,double taxe2,double taxe3) {
         this.ar_ref = ar_ref;
         this.ar_design = ar_design;
         this.ar_prixach = ar_prixach;
@@ -29,7 +29,7 @@ public class ArticleServeur implements Serializable {
         this.taxe3 = taxe3;
     }
 
-    public ArticleServeur(int ar_ref, String ar_design, float prix_vente, float ar_uniteven, float ar_prixach, int fa_codefamille, float ar_prixven) {
+    public ArticleServeur(String ar_ref, String ar_design, float prix_vente, float ar_uniteven, float ar_prixach, int fa_codefamille, float ar_prixven) {
         this.ar_ref = ar_ref;
         this.ar_design = ar_design;
         this.prix_vente = prix_vente;
@@ -119,11 +119,11 @@ public class ArticleServeur implements Serializable {
         this.ar_prixven = ar_prixven;
     }
 
-    public int getAr_ref() {
+    public String getAr_ref() {
         return ar_ref;
     }
 
-    public void setAr_ref(int ar_ref) {
+    public void setAr_ref(String ar_ref) {
         this.ar_ref = ar_ref;
     }
 

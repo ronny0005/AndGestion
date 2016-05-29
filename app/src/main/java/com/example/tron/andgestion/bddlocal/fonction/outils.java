@@ -1,6 +1,7 @@
 package com.example.tron.andgestion.bddlocal.fonction;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.StrictMode;
 import android.widget.Toast;
 
@@ -10,6 +11,7 @@ import com.example.tron.andgestion.Stock.Stock;
 import com.example.tron.andgestion.Stock.StockEqVendeur;
 import com.example.tron.andgestion.modele.Affaire;
 import com.example.tron.andgestion.modele.ArticleServeur;
+import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Caisse;
 import com.example.tron.andgestion.modele.Client;
@@ -161,6 +163,37 @@ public class outils implements Serializable{
         return ldep;
     }
 
+
+    public static ArrayList<CompteA> listePlanCR(){
+        JSONObject json = null;
+        ArrayList<CompteA> ldep=null;
+        try {
+            String url = "getPlanCR";
+            json = new JSONObject(getJsonFromServer(url));
+            JSONArray jArray = json.getJSONArray("data");
+            ldep= new ArrayList<CompteA>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                CompteA c = new CompteA();
+                c.setCbMarq(json_data.getInt("cbMarq"));
+                c.setCA_Achat(json_data.getDouble("CA_Achat"));
+                c.setCA_Num(json_data.getString("CA_Num"));
+                c.setCA_Intitule(json_data.getString("CA_Intitule"));
+                c.setN_Analytique(json_data.getInt("n_Analytique"));
+                c.setCA_Type(json_data.getInt("CA_Type"));
+                c.setCA_Report(json_data.getInt("CA_Report"));
+                c.setN_Analyse(json_data.getInt("n_Analyse"));
+                c.setCA_Saut(json_data.getInt("CA_Saut"));
+                ldep.add(c);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
     public boolean verifDate(String date){
 
         return false;
@@ -174,7 +207,7 @@ public class outils implements Serializable{
             lart= new ArrayList<ArticleServeur>();
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getInt("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -194,6 +227,8 @@ public class outils implements Serializable{
             return "BAF";
         if(num==4)
             return "CO";
+        if(num==6)
+            return "CARBURANT";
         return "";
     }
 
@@ -230,7 +265,7 @@ public class outils implements Serializable{
                 JSONArray jArrayFacture = json.getJSONArray("data");
                 for(int j=0; j<jArrayFacture.length(); j++) {
                     JSONObject json_datafact = jArrayFacture.getJSONObject(j);
-                    ArticleServeur art = new ArticleServeur(json_datafact.getInt("AR_Ref"), json_datafact.getString("DL_Design")
+                    ArticleServeur art = new ArticleServeur(json_datafact.getString("AR_Ref"), json_datafact.getString("DL_Design")
                             , json_datafact.getDouble("DL_PrixUnitaire"),json_datafact.getDouble("DL_Taxe1"),json_datafact.getDouble("DL_Taxe2"),
                             json_datafact.getDouble("DL_Taxe3"));
                     art.setQte_vendue(json_datafact.getInt("DL_Qte"));
@@ -297,7 +332,7 @@ public class outils implements Serializable{
             lart= new ArrayList<ArticleServeur>();
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getInt("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -386,7 +421,7 @@ public class outils implements Serializable{
             lart= new ArrayList<ArticleServeur>();
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getInt("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -477,7 +512,7 @@ public class outils implements Serializable{
             lart= new ArrayList<ArticleServeur>();
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getInt("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -508,7 +543,7 @@ public class outils implements Serializable{
         return lart;
     }
 
-    public static int articleDisponibleServeur(int ref_art,int depot){
+    public static int articleDisponibleServeur(String ref_art,int depot){
         JSONObject json = null;
         int qte=0;
         try {
@@ -580,7 +615,7 @@ public class outils implements Serializable{
         return "";
     }
 
-    public static String getPrixclient(int ref_art,int cat_tarif,int cat_compta,ArticleServeur art){
+    public static String getPrixclient(String ref_art,int cat_tarif,int cat_compta,ArticleServeur art){
         JSONObject json = null;
         int qte=0;
         try {
@@ -625,11 +660,34 @@ public class outils implements Serializable{
         }
         return cr;
     }
-    public static cReglement addReglement(String do_piece,String ref,String avance){
+
+    public static void passeVariable(Intent intent,Activity act,ArrayList<Facture> lfact,Parametre parametre,outils ou,ArrayList<Facture> lrecouvrement,ArrayList<Client> lclient,ArrayList<ArticleServeur> lart){
+        intent.putExtra("liste_facture", lfact);
+        intent.putExtra("parametre", parametre);
+        intent.putExtra("outils", ou);
+        intent.putExtra("liste_recouvrement", lrecouvrement);
+        intent.putExtra("liste_client", lclient);
+        intent.putExtra("liste_article", lart);
+        act.startActivity(intent);
+    }
+
+    public static void passeVariableCarburant(Intent intent,Activity act,ArrayList<Facture> lfact,Parametre parametre,outils ou,ArrayList<Facture> lrecouvrement,ArrayList<Client> lclient,ArrayList<ArticleServeur> lart,ArrayList<Vehicule> lvehicule,ArrayList<CompteA> lcr){
+        intent.putExtra("liste_facture", lfact);
+        intent.putExtra("parametre", parametre);
+        intent.putExtra("outils", ou);
+        intent.putExtra("liste_recouvrement", lrecouvrement);
+        intent.putExtra("liste_client", lclient);
+        intent.putExtra("liste_article", lart);
+        intent.putExtra("liste_vehicule", lvehicule);
+        intent.putExtra("liste_cr", lcr);
+        act.startActivity(intent);
+    }
+
+    public static cReglement addReglement(String do_piece,String ref,String avance,String co_no){
         JSONObject json = null;
         cReglement cr = null;
         try {
-            String url="addReglement?DO_Piece="+do_piece+"&libelle="+ref+"&avance="+avance;
+            String url="addReglement?DO_Piece="+do_piece+"&libelle="+ref+"&avance="+avance+"&CO_No="+co_no;
             json = new JSONObject(getJsonFromServer(url));
             JSONObject jArray = json.getJSONObject("data");
             cr = new cReglement(jArray.getInt("RG_No"));

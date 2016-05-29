@@ -1,9 +1,11 @@
 package com.example.tron.andgestion.modele;
 
+import java.io.Serializable;
+
 /**
  * Created by T.Ron$ on 14/03/2016.
  */
-public class Vehicule {
+public class Vehicule implements Serializable {
     private int id;
     private String ca_num;
     private String ca_intitule;

@@ -14,9 +14,11 @@ import android.widget.TextView;
 
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Vehicule;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -57,6 +59,8 @@ public class LstFactureActivity extends AppCompatActivity {
         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        intent.putExtra("liste_vehicule", (ArrayList<Vehicule>) getIntent().getSerializableExtra("liste_vehicule"));
+        intent.putExtra("liste_cr", (ArrayList<CompteA>) getIntent().getSerializableExtra("liste_cr"));
         startActivity(intent);
     }
 
@@ -164,8 +168,9 @@ public class LstFactureActivity extends AppCompatActivity {
             editor.commit();
             Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
 
-            Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-            itemCommun(intent,fact,liste_facture.size() - 1);
+                //Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
+                Intent intent = new Intent(LstFactureActivity.this, FactureCarburantActivity.class);
+                itemCommun(intent,fact,liste_facture.size() - 1);
             }
         });
 

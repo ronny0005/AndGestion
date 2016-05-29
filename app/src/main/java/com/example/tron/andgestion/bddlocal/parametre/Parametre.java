@@ -141,4 +141,23 @@ public class Parametre implements Serializable {
     public void setMdp(String mdp) {
         this.mdp = mdp;
     }
+
+    @Override
+    public String toString() {
+        return "Parametre{" +
+                "de_no=" + de_no +
+                ", ct_num='" + ct_num + '\'' +
+                ", co_no=" + co_no +
+                ", do_souche=" + do_souche +
+                ", affaire='" + affaire + '\'' +
+                ", numdoc='" + numdoc + '\'' +
+                ", vehicule='" + vehicule + '\'' +
+                ", user='" + user + '\'' +
+                ", mdp='" + mdp + '\'' +
+                ", ca_no=" + ca_no +
+                ", Date_facture='" + Date_facture + '\'' +
+                ", R_Facture=" + R_Facture +
+                ", ID_Facture=" + ID_Facture +
+                '}';
+    }
 }

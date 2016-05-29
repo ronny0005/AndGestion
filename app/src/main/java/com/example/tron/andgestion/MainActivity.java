@@ -11,10 +11,12 @@ import android.widget.Toast;
 
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.Depot;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Vehicule;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Facture> liste_facture = new ArrayList<Facture>();
     ArrayList<Facture> liste_recouvrement = new ArrayList<Facture>();
     ArrayList<Client> liste_client;
+    ArrayList<Vehicule> liste_vehicule;
     ArrayList<ArticleServeur> liste_article;
+    ArrayList<CompteA> liste_cr;
     outils ou;
 
     @Override
@@ -59,18 +63,23 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
             if(parametre != null){
-                liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche()));
+                System.out.println(parametre);
+                if(parametre.getDo_souche()==6) {
+                    liste_client = ou.listeClientServeur(parametre.getCt_num());
+                }else {
+                    liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche()));
+                }
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
+                liste_vehicule = ou.listeVehiculeServeur();
+                liste_cr = ou.listePlanCR();
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
-                intent.putExtra("liste_facture",ou.listeFacture(parametre.getCo_no(),
-                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche()) ));
-                intent.putExtra("liste_recouvrement",liste_recouvrement);
-                        intent.putExtra("parametre", parametre);
-                intent.putExtra("outils", ou);
-                intent.putExtra("liste_client", liste_client);
-                intent.putExtra("liste_article", liste_article);
-                startActivity(intent);
+                //ou.passeVariable(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
+                //        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche()) ),parametre,ou,liste_recouvrement,liste_client,liste_article);
+                ou.passeVariableCarburant(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
+                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",
+                        ou.getVille(parametre.getDo_souche())),parametre,ou,liste_recouvrement,liste_client,liste_article,liste_vehicule,liste_cr);
+
             }
             }
         });

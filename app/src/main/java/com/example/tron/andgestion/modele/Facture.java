@@ -23,6 +23,7 @@ public class Facture implements Serializable {
     private int totalTTC;
     private ArrayList<Integer> liste_ligne;
     private String DO_Date;
+    private String vehicule;
 
     public Facture(String ref, Client id_client, int id_depot) {
         this.ref = ref;
@@ -34,6 +35,14 @@ public class Facture implements Serializable {
         this.id=0;
         this.entete="";
         this.statut="";
+    }
+
+    public String getVehicule() {
+        return vehicule;
+    }
+
+    public void setVehicule(String vehicule) {
+        this.vehicule = vehicule;
     }
 
     public int getTotalTTC() {

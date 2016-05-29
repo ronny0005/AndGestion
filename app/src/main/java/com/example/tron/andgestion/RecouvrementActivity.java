@@ -199,7 +199,7 @@ public class RecouvrementActivity extends AppCompatActivity {
                                     cr=ou.reglerEntete(fact.getEntete(), fact.getRef(), String.valueOf(mtt_regl));
                                 }else {
                                     if (cr == null) {
-                                        cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, String.valueOf(mtt_regl));
+                                        cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, String.valueOf(mtt_regl),String.valueOf(parametre.getCo_no()));
                                     }
                                     outils.addEcheance(String.valueOf(cr.getCbMarq()), String.valueOf(mtt_regl), fact.getEntete(), dr);
                                 }
