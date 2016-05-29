@@ -63,12 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
             if(parametre != null){
-                System.out.println(parametre);
-                if(parametre.getDo_souche()==6) {
-                    liste_client = ou.listeClientServeur(parametre.getCt_num());
-                }else {
-                    liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche()));
-                }
+                liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
                 liste_vehicule = ou.listeVehiculeServeur();
                 liste_cr = ou.listePlanCR();
@@ -78,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 //        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche()) ),parametre,ou,liste_recouvrement,liste_client,liste_article);
                 ou.passeVariableCarburant(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
                         new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",
-                        ou.getVille(parametre.getDo_souche())),parametre,ou,liste_recouvrement,liste_client,liste_article,liste_vehicule,liste_cr);
+                        ou.getVille(parametre.getDo_souche(),parametre.getCt_num())),parametre,ou,liste_recouvrement,liste_client,liste_article,liste_vehicule,liste_cr);
 
             }
             }

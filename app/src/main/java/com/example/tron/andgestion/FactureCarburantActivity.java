@@ -45,6 +45,7 @@ public class FactureCarburantActivity extends AppCompatActivity{
     Button valider;
     Button ouvrir;
     Button supprimer;
+    Button nouveau;
     AutoCompleteTextView client;
     AutoCompleteTextView designation;
     AutoCompleteTextView vehicule;
@@ -145,6 +146,7 @@ public class FactureCarburantActivity extends AppCompatActivity{
         final ArrayList<Vehicule> lst_vehicule = (ArrayList<Vehicule>) getIntent().getSerializableExtra("liste_vehicule");
         facture = (Facture) getIntent().getSerializableExtra("facture");
         annuler = (Button) findViewById(R.id.facture_annuler);
+        nouveau = (Button) findViewById(R.id.facture_nouveau);
         caisse = (TextView) findViewById(R.id.facture_caisse);
         total = (TextView) findViewById(R.id.facture_ttc);
         final GPSTracker gps=new GPSTracker(this);
@@ -362,7 +364,24 @@ public class FactureCarburantActivity extends AppCompatActivity{
             }
         });
 
-        valider.setOnClickListener(new View.OnClickListener() {
+        nouveau.setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v) {
+               Intent intent = new Intent(FactureCarburantActivity.this, InfoVehiculeActivity.class);
+               intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
+               intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+               intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+               intent.putExtra("id_facture", String.valueOf(id_facture));
+               intent.putExtra("outils", ou);
+               intent.putExtra("facture",facture);
+               intent.putExtra("liste_cr", (ArrayList<CompteA>) getIntent().getSerializableExtra("liste_cr"));
+               intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
+               intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+               startActivity(intent);
+
+           }
+       });
+
+                valider.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                     if (facture.getListe_article().size() > 0) {
 

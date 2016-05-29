@@ -46,7 +46,7 @@ public class ApercuActivity extends AppCompatActivity {
         ou = new outils();//(outils) getIntent().getSerializableExtra("outils");
         ou.app = ApercuActivity.this;
         //parametre=(Parametre) getIntent().getSerializableExtra("parametre");
-        liste_facture = ou.listeFacture(19,"2016-05-03","2016-05-03","0",ou.getVille(parametre.getDo_souche())); //(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
+        liste_facture = ou.listeFacture(19,"2016-05-03","2016-05-03","0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num())); //(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         facture = liste_facture.get(0);//(Facture) getIntent().getSerializableExtra("facture");
         //if (savedInstanceState == null) {
         //    getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();

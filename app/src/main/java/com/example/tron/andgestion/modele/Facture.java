@@ -210,8 +210,27 @@ public class Facture implements Serializable {
         this.DO_Date = DO_Date;
     }
 
-    public String toString(){
-        return "Id : "+this.getId()+" depot :"+this.getId_depot()+" client:"+this.getId_client().getIntitule()+" statut :"+this.getStatut()
-                +" nouveau :"+this.getNouveau();
+    @Override
+    public String toString() {
+        return "Facture{" +
+                "id=" + id +
+                ", ref='" + ref + '\'' +
+                ", id_client=" + id_client +
+                ", id_depot=" + id_depot +
+                ", liste_article=" + liste_article +
+                ", position_article=" + position_article +
+                ", statut='" + statut + '\'' +
+                ", type_paiement='" + type_paiement + '\'' +
+                ", nouveau=" + nouveau +
+                ", entete='" + entete + '\'' +
+                ", mtt_avance=" + mtt_avance +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", totalTTC=" + totalTTC +
+                ", liste_ligne=" + liste_ligne +
+                ", DO_Date='" + DO_Date + '\'' +
+                ", vehicule='" + vehicule + '\'' +
+                ", cr='" + cr + '\'' +
+                '}';
     }
 }

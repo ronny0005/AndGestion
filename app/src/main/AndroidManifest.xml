@@ -38,6 +38,8 @@
         <activity android:name=".TableauMapActivity" />
         <activity android:name=".RecouvrementActivity" />
         <activity android:name=".FactureCarburantActivity" />
+        <activity android:name=".ValideCarburantActivity" />
+        <activity android:name=".InfoVehiculeActivity" />
         <!--
         !     The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

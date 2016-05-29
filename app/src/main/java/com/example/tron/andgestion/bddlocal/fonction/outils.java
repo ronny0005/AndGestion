@@ -218,7 +218,7 @@ public class outils implements Serializable{
     }
 
 
-    public static String getVille(int num){
+    public static String getVille(int num,String nom){
         if(num==1)
             return "DLA";
         if(num==2)
@@ -228,7 +228,7 @@ public class outils implements Serializable{
         if(num==4)
             return "CO";
         if(num==6)
-            return "CARBURANT";
+            return nom;
         return "";
     }
 
@@ -350,12 +350,25 @@ public class outils implements Serializable{
             json = new JSONObject(getJsonFromServer(res));
             JSONObject jArray = json.getJSONObject("data");
             qte = jArray.getInt("id");
-    } catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return qte;
+    }
+
+    public static void ajoutVehicule(String intitule,String vehicule,String cr){
+        JSONObject json = null;
+        try {
+            String res = "addCompteA?intitule="+intitule+"&vehicule="+vehicule+"&cr="+cr;
+            json = new JSONObject(getJsonFromServer(res));
+            JSONObject jArray = json.getJSONObject("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void SupprLigneServeur(String entete){

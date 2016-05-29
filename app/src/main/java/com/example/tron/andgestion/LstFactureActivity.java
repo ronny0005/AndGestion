@@ -71,7 +71,7 @@ public class LstFactureActivity extends AppCompatActivity {
             Date fin = format.parse(datefin.getText().toString());
             liste_facture=ou.listeFacture(parametre.getCo_no(),
                     new SimpleDateFormat("yyyy-MM-dd").format(deb),
-                    new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(parametre.getDo_souche()));
+                    new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
             ajoutListe();
         } catch (ParseException e) {
             e.printStackTrace();
