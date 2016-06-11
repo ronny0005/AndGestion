@@ -1,4 +1,4 @@
-package com.example.tron.andgestion.bddlocal.parametre;
+package com.example.tron.andgestion.modele;
 
 import com.example.tron.andgestion.modele.Caisse;
 

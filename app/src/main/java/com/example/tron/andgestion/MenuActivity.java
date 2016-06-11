@@ -1,19 +1,18 @@
 package com.example.tron.andgestion;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
-import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
-import com.example.tron.andgestion.modele.Vehicule;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.util.ArrayList;
 
@@ -26,18 +25,15 @@ public class MenuActivity extends AppCompatActivity {
     Button parametre;
     Button etat;
     Button recouvrement;
+    Button avari;
     outils ou;
+    GridLayout grid;
 
 
     private void passeVariable(Intent intent){
-        //ou.passeVariable(intent, MenuActivity.this,(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"),
-        //      (Parametre) getIntent().getSerializableExtra("parametre"),ou,(ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"),
-        //    (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"),(ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-        ou.passeVariableCarburant(intent, MenuActivity.this,(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"),
+        ou.passeVariable(intent, MenuActivity.this,(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"),
               (Parametre) getIntent().getSerializableExtra("parametre"),ou,(ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"),
-            (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"),(ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"),
-                (ArrayList<Vehicule>) getIntent().getSerializableExtra("liste_vehicule"),(ArrayList<CompteA>) getIntent().getSerializableExtra("liste_cr"));
-
+            (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"),(ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
     }
 
     @Override
@@ -46,11 +42,11 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.menu);
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app=MenuActivity.this;
-        facture = (Button) findViewById(R.id.menu_facturation);
-        parametre = (Button) findViewById(R.id.menu_parametre);
+        facture = (Button) findViewById(R.id.menu_facture);
+        parametre = (Button) findViewById(R.id.menu_parametres);
         etat = (Button) findViewById(R.id.menu_etats);
+        avari = (Button) findViewById(R.id.menu_avaris);
         recouvrement = (Button) findViewById(R.id.menu_recouvrement);
-
 
         etat.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

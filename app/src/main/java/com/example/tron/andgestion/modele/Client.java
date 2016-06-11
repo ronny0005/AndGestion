@@ -77,4 +77,16 @@ public class Client implements Serializable{
     public void setCatcompta(int catcompta) {
         this.catcompta = catcompta;
     }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", intitule='" + intitule + '\'' +
+                ", num='" + num + '\'' +
+                ", numprinc='" + numprinc + '\'' +
+                ", cattarif=" + cattarif +
+                ", catcompta=" + catcompta +
+                '}';
+    }
 }

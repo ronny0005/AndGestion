@@ -24,7 +24,7 @@ import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -283,7 +283,7 @@ public class ValideActivity extends AppCompatActivity {
                            facture.setEntete(entete);
                            for (int i = 0; i < facture.getListe_article().size(); i++) {
                                ArticleServeur article = facture.getListe_article().get(i);
-                               ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
+                               ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
                            }
                            facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                            liste_facture.add(facture);
@@ -369,7 +369,7 @@ public class ValideActivity extends AppCompatActivity {
                             facture.setEntete(entete);
                             for (int i = 0; i < facture.getListe_article().size(); i++) {
                                 ArticleServeur article = facture.getListe_article().get(i);
-                                ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0);
+                                ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
                             }
                             facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                             liste_facture.add(facture);

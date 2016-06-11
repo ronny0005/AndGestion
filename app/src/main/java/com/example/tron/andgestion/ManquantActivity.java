@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.ManquantModele;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.text.DateFormat;
 import java.text.ParseException;

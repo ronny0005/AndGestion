@@ -35,7 +35,11 @@ public class Depot {
         return nom;
     }
 
-    public String toString(){
-        return "Depot : Nom"+this.getNom();
+    @Override
+    public String toString() {
+        return "Depot{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                '}';
     }
 }

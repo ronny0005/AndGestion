@@ -10,7 +10,7 @@ import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.util.ArrayList;
 
@@ -28,6 +28,7 @@ public class LstStockActivity extends AppCompatActivity {
         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
         intent.putExtra("outils", ou);
         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
+        intent.putExtra("position", 0);
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
         startActivity(intent);
@@ -40,11 +41,11 @@ public class LstStockActivity extends AppCompatActivity {
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app=LstStockActivity.this;
         stock = (Button) findViewById(R.id.lststk_stock);
-        vendeur = (Button) findViewById(R.id.lststk_vendeur);
+        vendeur = (Button) findViewById(R.id.lststk_eqvendeur);
         maps = (Button) findViewById(R.id.lststk_map);
         manquant = (Button) findViewById(R.id.lststk_manquant);
         bmq = (Button) findViewById(R.id.lststk_bmq);
-        tmap = (Button) findViewById(R.id.lststk_tabeau);
+        tmap = (Button) findViewById(R.id.lststk_tmap);
 
         bmq.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -84,7 +85,7 @@ public class LstStockActivity extends AppCompatActivity {
         maps.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LstStockActivity.this, MapsActivity.class);
-                intent.putExtra("position",-1);
+                intent.putExtra("position",0);
                 passeVariable(intent);
             }
         });

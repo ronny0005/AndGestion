@@ -1,80 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    android:padding="4dp"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
-    android:alignmentMode="alignBounds"
-    android:columnCount="2"
-    android:rowOrderPreserved="false"
-    android:useDefaultMargins="true">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dp">
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:text="Paramètres"
-        android:id="@+id/menu_parametre"
-        android:layout_row="0"
-        android:layout_column="0"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal" />
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="Parametres"
+            android:id="@+id/menu_parametres" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:text="Facturation"
-        android:id="@+id/menu_facturation"
-        android:layout_row="0"
-        android:layout_column="1"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal" />
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="Facture"
+            android:id="@+id/menu_facture" />
+    </LinearLayout>
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:text="Retours"
-        android:id="@+id/menu_retours"
-        android:layout_row="1"
-        android:layout_column="0"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dp" >
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:text="Avaries"
-        android:id="@+id/menu_avaries"
-        android:layout_row="1"
-        android:layout_column="1"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal" />
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="avaris"
+            android:id="@+id/menu_avaris" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:text="recouvrement"
-        android:id="@+id/menu_recouvrement"
-        android:layout_row="2"
-        android:layout_column="0"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal" />
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="retours"
+            android:id="@+id/menu_retours" />
+    </LinearLayout>
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:text="Etats"
-        android:id="@+id/menu_etats"
-        android:layout_row="2"
-        android:layout_column="1"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dp" >
 
-</GridLayout>
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="recouvrement"
+            android:id="@+id/menu_recouvrement" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="etats"
+            android:id="@+id/menu_etats" />
+    </LinearLayout>
+</LinearLayout>

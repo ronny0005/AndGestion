@@ -7,7 +7,7 @@ import android.widget.Spinner;
 
 
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.util.ArrayList;
 

@@ -58,4 +58,15 @@ public class Caisse implements Serializable {
     public void setNocaissier(int nocaissier) {
         this.nocaissier = nocaissier;
     }
+
+    @Override
+    public String toString() {
+        return "Caisse{" +
+                "id=" + id +
+                ", jo_num='" + jo_num + '\'' +
+                ", ca_intitule='" + ca_intitule + '\'' +
+                ", ca_no=" + ca_no +
+                ", nocaissier=" + nocaissier +
+                '}';
+    }
 }

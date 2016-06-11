@@ -21,7 +21,7 @@ import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -57,6 +57,7 @@ public class RecouvrementActivity extends AppCompatActivity {
     int pos;
     private static final String PREFS_NAME = "compteur";
     private cReglement cr=null;
+    ArrayList<Client> lst_client;
 
     private void itemCommun(Intent intent,Facture facture,int idfacture){
         intent.putExtra("liste_recouvrement", liste_recouvrement);
@@ -68,6 +69,19 @@ public class RecouvrementActivity extends AppCompatActivity {
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
         startActivity(intent);
+    }
+
+    private void AfficheFacture(){
+        for(int i=0;i<lst_client.size();i++) {
+            if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
+                lst_fact.setEnabled(true);
+                valideFacture(lst_client.get(i).getNum());
+                lst_fact.setEnabled(false);
+                mtt.setEnabled(true);
+                valide.setEnabled(true);
+
+            }
+        }
     }
 
     public void valideFacture(String ct_num){
@@ -109,11 +123,13 @@ public class RecouvrementActivity extends AppCompatActivity {
             Facture fac =liste_recouvrement.get(i);
             String val="";
             DecimalFormat ttcformat = new DecimalFormat("#");
+            int reste = (int) (fac.getTotalTTC()-fac.getMtt_avance());
             if(liste_recouvrement.get(i).getStatut().equals("avance"))
                 val=" ("+ttcformat.format(fac.getMtt_avance())+")";
             data.add(createRow(fac.getRef() + " - " + fac.getEntete()+" - " + fac.getStatut()+val ,
                     "Client : " + fac.getId_client().getIntitule()+ "\nTotal TTC : "
                             + fac.getTotalTTC()
+                            +"\nReste à payer : "+reste
                             +"\n"+fac.getDO_Date() ));
         }
         String[] from = {"value1", "value2"};
@@ -130,12 +146,12 @@ public class RecouvrementActivity extends AppCompatActivity {
 
         ou.app = RecouvrementActivity.this;
         pos=-1;
-        final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
         parametre=(Parametre) getIntent().getSerializableExtra("parametre");
         menu = (Button) findViewById(R.id.recouvrement_menu);
         rechercher = (Button) findViewById(R.id.recouvrement_rechercher);
         valide = (Button) findViewById(R.id.recouvrement_valide);
-        liste_recouvrement =(ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement");
+        lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
+        liste_recouvrement = new ArrayList<Facture>();
         mtt = (TextView) findViewById(R.id.recouvrement_mtt);
         mtt.setEnabled(false);
         valide.setEnabled(false);
@@ -153,24 +169,28 @@ public class RecouvrementActivity extends AppCompatActivity {
         ajoutListe();
         initVariable();
 
+
         rechercher.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                for(int i=0;i<lst_client.size();i++) {
-
-                    if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
-                        lst_fact.setEnabled(true);
-                        valideFacture(lst_client.get(i).getNum());
-                        lst_fact.setEnabled(false);
-                        mtt.setEnabled(true);
-                        valide.setEnabled(true);
-
-                    }
-                }
+                AfficheFacture();
             }
         });
 
         valide.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                String clt = "";
+                for(int i=0;i<lst_client.size();i++) {
+                    if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
+                        clt = lst_client.get(i).getNum();
+                    }
+                }
+                System.out.println(clt);
+                System.out.println(String.valueOf(parametre.getCa_no().getCa_no()));
+                System.out.println(String.valueOf(parametre.getCo_no()));
+                System.out.println(Integer.parseInt(mtt.getText().toString()));
+               cr =  outils.addReglement(clt, "RGT" , String.valueOf( Integer.parseInt(mtt.getText().toString())),String.valueOf(parametre.getCo_no()),String.valueOf(parametre.getCa_no().getCa_no()));
+                System.out.println(cr);
                 lst_fact.setEnabled(true);
                 mtt.setEnabled(false);
             }
@@ -199,7 +219,7 @@ public class RecouvrementActivity extends AppCompatActivity {
                                     cr=ou.reglerEntete(fact.getEntete(), fact.getRef(), String.valueOf(mtt_regl));
                                 }else {
                                     if (cr == null) {
-                                        cr = outils.addReglement(fact.getEntete(), "RGT" /*+ fact.getId_client().getIntitule()*/, String.valueOf(mtt_regl),String.valueOf(parametre.getCo_no()));
+                                        //cr = outils.addReglement(fact.getEn), "RGT" /*+ fact.getId_client().getIntitule()*/, String.valueOf(mtt_regl),String.valueOf(parametre.getCo_no()));
                                     }
                                     outils.addEcheance(String.valueOf(cr.getCbMarq()), String.valueOf(mtt_regl), fact.getEntete(), dr);
                                 }
@@ -214,9 +234,10 @@ public class RecouvrementActivity extends AppCompatActivity {
                                     mtt.setEnabled(true);
                                     mtt.setText(""+total);
                                     lst_fact.setEnabled(true);
+                                    outils.updateRgImpute(String.valueOf(cr.getCbMarq()));
                                     cr=null;
                                 }
-
+                                AfficheFacture();
 
                             }
                         })

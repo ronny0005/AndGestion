@@ -17,7 +17,7 @@ import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.Vehicule;
 
 import java.text.DateFormat;
@@ -141,11 +141,15 @@ public class LstFactureActivity extends AppCompatActivity {
         datefin = (TextView) findViewById(R.id.lstfac_fin);
         System.out.println("taille liste facture : "+liste_facture.size());
         lst_fact = (ListView) findViewById(R.id.liste_facture);
-        ajoutListe();
-        initVariable();
 
         datedeb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         datefin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
+        liste_facture=ou.listeFacture(parametre.getCo_no(),
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
+        ajoutListe();
+        initVariable();
+
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -168,8 +172,7 @@ public class LstFactureActivity extends AppCompatActivity {
             editor.commit();
             Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
 
-                //Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-                Intent intent = new Intent(LstFactureActivity.this, FactureCarburantActivity.class);
+                Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
                 itemCommun(intent,fact,liste_facture.size() - 1);
             }
         });

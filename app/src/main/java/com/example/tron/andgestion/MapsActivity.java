@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -35,7 +35,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ou.app = MapsActivity.this;
 
         ou = (outils) getIntent().getSerializableExtra("outils");
-        position = getIntent().getIntExtra("position",-1);
+        position = getIntent().getIntExtra("position",0);
+
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
     }
@@ -60,8 +61,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(sydney).title(fact.getEntete()+" - "+fact.getId_client().getIntitule()));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
-        Facture fact = liste_facture.get(position);
-        LatLng sydney = new LatLng(fact.getLatitude(),fact.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        if(liste_facture.size()>0) {
+            Facture fact = liste_facture.get(position);
+            LatLng sydney = new LatLng(fact.getLatitude(), fact.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        }
     }
 }

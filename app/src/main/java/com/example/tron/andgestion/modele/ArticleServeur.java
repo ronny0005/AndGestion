@@ -1,11 +1,12 @@
 package com.example.tron.andgestion.modele;
 
+import java.io.Closeable;
 import java.io.Serializable;
 
 /**
  * Created by T.Ron on 18/03/2016.
  */
-public class ArticleServeur implements Serializable {
+public class ArticleServeur implements Serializable,Cloneable {
     private int id;
     private String ar_ref;
     private String ar_design;
@@ -20,6 +21,7 @@ public class ArticleServeur implements Serializable {
     private double taxe3;
     private String vehicule;
     private String cr;
+
 
     public ArticleServeur(String ar_ref, String ar_design,double ar_prixach,double taxe1,double taxe2,double taxe3) {
         this.ar_ref = ar_ref;
@@ -150,5 +152,29 @@ public class ArticleServeur implements Serializable {
 
     public void setAr_design(String ar_design) {
         this.ar_design = ar_design;
+    }
+
+    @Override
+    public String toString() {
+        return "ArticleServeur{" +
+                "id=" + id +
+                ", ar_ref='" + ar_ref + '\'' +
+                ", ar_design='" + ar_design + '\'' +
+                ", prix_vente=" + prix_vente +
+                ", ar_uniteven=" + ar_uniteven +
+                ", ar_prixach=" + ar_prixach +
+                ", fa_codefamille=" + fa_codefamille +
+                ", ar_prixven=" + ar_prixven +
+                ", qte_vendue=" + qte_vendue +
+                ", taxe1=" + taxe1 +
+                ", taxe2=" + taxe2 +
+                ", taxe3=" + taxe3 +
+                ", vehicule='" + vehicule + '\'' +
+                ", cr='" + cr + '\'' +
+                '}';
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

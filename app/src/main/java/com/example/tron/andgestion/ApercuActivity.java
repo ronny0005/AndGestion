@@ -12,7 +12,7 @@ import android.print.PrintManager;
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.util.ArrayList;
 

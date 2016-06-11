@@ -7,9 +7,8 @@ import android.widget.ListView;
 
 import com.example.tron.andgestion.Stock.ListAdapter;
 import com.example.tron.andgestion.Stock.Stock;
-import com.example.tron.andgestion.Stock.Util;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.util.ArrayList;
 

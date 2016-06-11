@@ -24,7 +24,7 @@ import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -297,7 +297,11 @@ public class FactureActivity extends AppCompatActivity{
                                     art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
                                     ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
                                     if (!modif) {
-                                        facture.getListe_article().add(art);
+                                        try {
+                                            facture.getListe_article().add((ArticleServeur)art.clone());
+                                        } catch (CloneNotSupportedException e) {
+                                            e.printStackTrace();
+                                        }
                                     } else {
                                         modif = false;
                                         ajouter.setText("Ajouter");

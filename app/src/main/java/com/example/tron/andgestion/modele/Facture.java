@@ -36,6 +36,8 @@ public class Facture implements Serializable {
         this.id=0;
         this.entete="";
         this.statut="";
+        this.vehicule="";
+        this.cr="";
     }
 
     public String getCr() {
@@ -116,6 +118,8 @@ public class Facture implements Serializable {
         this.setNouveau(true);
         this.entete="";
         this.statut="";
+        this.vehicule="";
+        this.cr="";
     }
 
     public Facture(String ref) {
@@ -128,10 +132,14 @@ public class Facture implements Serializable {
         this.setNouveau(true);
         this.entete="";
         this.statut="";
+        this.vehicule="";
+        this.cr="";
     }
 
     public Facture() {
         this.liste_article= new  ArrayList<ArticleServeur>();
+        this.vehicule="";
+        this.cr="";
     }
 
     public String getType_paiement() {

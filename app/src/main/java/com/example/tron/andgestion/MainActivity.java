@@ -15,7 +15,7 @@ import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.Depot;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.Vehicule;
 
 import java.text.DateFormat;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         ou.app=MainActivity.this;
         connexion = (Button) findViewById(R.id.connexion_button);
-        facture = (Button) findViewById(R.id.menu_facturation);
         login =(TextView) findViewById(R.id.connexion_login);
         mdp =(TextView) findViewById(R.id.connexion_mdp);
         login.requestFocus();
@@ -69,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
                 liste_cr = ou.listePlanCR();
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
-                //ou.passeVariable(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
-                //        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche()) ),parametre,ou,liste_recouvrement,liste_client,liste_article);
-                ou.passeVariableCarburant(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
-                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",
-                        ou.getVille(parametre.getDo_souche(),parametre.getCt_num())),parametre,ou,liste_recouvrement,liste_client,liste_article,liste_vehicule,liste_cr);
+                ou.passeVariable(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
+                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()) ),parametre,ou,liste_recouvrement,liste_client,liste_article);
+                //ou.passeVariableCarburant(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
+                //        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",
+                 //       ou.getVille(parametre.getDo_souche(),parametre.getCt_num())),parametre,ou,liste_recouvrement,liste_client,liste_article,liste_vehicule,liste_cr);
 
             }
             }

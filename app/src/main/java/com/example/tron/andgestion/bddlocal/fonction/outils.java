@@ -18,7 +18,7 @@ import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Depot;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.modele.ManquantModele;
-import com.example.tron.andgestion.bddlocal.parametre.Parametre;
+import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.Souche;
 import com.example.tron.andgestion.modele.Vehicule;
 
@@ -342,11 +342,11 @@ public class outils implements Serializable{
         return lart;
     }
 
-    public static int ajoutLigneServeur(String no_fac,String ref_fac,int no_ligne,int dl_qte,int dl_remise){
+    public static int ajoutLigneServeur(String no_fac,String ref_fac,int no_ligne,int dl_qte,int dl_remise,String vehicule,String cr){
         JSONObject json = null;
         int qte=0;
         try {
-            String res = "addDocligne?DO_Piece=" + no_fac + "&AR_Ref=" + ref_fac + "&DL_Ligne=" + no_ligne+"&DL_Qte=" + dl_qte+"&DL_Remise=" + dl_remise;
+            String res = "addDocligne?DO_Piece=" + no_fac + "&AR_Ref=" + ref_fac + "&DL_Ligne=" + no_ligne+"&DL_Qte=" + dl_qte+"&DL_Remise=" + dl_remise+"&vehicule=" + vehicule+"&cr=" + cr;
             json = new JSONObject(getJsonFromServer(res));
             JSONObject jArray = json.getJSONObject("data");
             qte = jArray.getInt("id");
@@ -696,11 +696,11 @@ public class outils implements Serializable{
         act.startActivity(intent);
     }
 
-    public static cReglement addReglement(String do_piece,String ref,String avance,String co_no){
+    public static cReglement addReglement(String client,String ref,String avance,String co_no,String CA_No){
         JSONObject json = null;
         cReglement cr = null;
         try {
-            String url="addReglement?DO_Piece="+do_piece+"&libelle="+ref+"&avance="+avance+"&CO_No="+co_no;
+            String url="addReglement?client="+client+"&libelle="+ref+"&avance="+avance+"&CO_No="+co_no+"&CA_No="+CA_No;
             json = new JSONObject(getJsonFromServer(url));
             JSONObject jArray = json.getJSONObject("data");
             cr = new cReglement(jArray.getInt("RG_No"));
@@ -716,6 +716,16 @@ public class outils implements Serializable{
         JSONObject json = null;
         try {
             String url="addEcheance?cr_no="+cr+"&montant="+avance+"&do_piece="+do_piece+"&dr="+dr;
+            getJsonFromServer(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateRgImpute(String cr){
+        JSONObject json = null;
+        try {
+            String url="updateRgImpute?RG_No="+cr;
             getJsonFromServer(url);
         } catch (IOException e) {
             e.printStackTrace();
