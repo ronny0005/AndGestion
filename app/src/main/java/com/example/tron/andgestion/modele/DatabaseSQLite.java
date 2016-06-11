@@ -175,28 +175,30 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         return bdd.delete(TABLE_CAISSE, id + " = " +id, null);
     }
 
-    public long insertCaisse(Caisse caisse){
+    public long insertClient(Client client){
         SQLiteDatabase bdd = this.getWritableDatabase();
         //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
         //on lui ajoute une valeur associé à une clé (qui est le nom de la colonne dans laquelle on veut mettre la valeur)
-        values.put(caisse_jo_num, caisse.getJo_num());
-        values.put(caisse_ca_intitule, caisse.getCa_intitule());
-        values.put(caisse_ca_no, caisse.getCa_no());
-        values.put(caisse_nocaissier, caisse.getNocaissier());
+        values.put(client_id,client.getId());
+        values.put(client_catcompta,client.getCatcompta());
+        values.put(client_cattarif, client.getCattarif());
+        values.put(client_intitule, client.getIntitule());
+        values.put(client_num, client.getNum());
+        values.put(client_numprinc, client.getNumprinc());
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_CAISSE, null, values);
     }
 
-    public Caisse getCaisseWithId(int id_c){
+    public Client getClientWithId(int id_c){
         //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
         SQLiteDatabase bdd = this.getReadableDatabase();
-        Cursor c = bdd.query(TABLE_CAISSE, new String[] {caisse_id,caisse_jo_num,caisse_ca_intitule,caisse_ca_no,caisse_nocaissier}, caisse_ca_no+ " = " + id_c, null, null, null, null);
-        return cursorToCaisse(c);
+        Cursor c = bdd.query(TABLE_CLIENT, new String[] {client_id,client_cattarif,client_intitule,client_catcompta,client_numprinc,client_num}, client_num+ " = " + id_c, null, null, null, null);
+        return cursorToClient(c);
     }
 
     //Cette méthode permet de convertir un cursor en un livre
-    private Caisse cursorToCaisse(Cursor c){
+    private Client cursorToClient(Cursor c){
         //si aucun élément n'a été retourné dans la requête, on renvoie null
         if (c.getCount() == 0)
             return null;
@@ -204,14 +206,14 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //Sinon on se place sur le premier élément
         c.moveToFirst();
         //On créé un livre
-        Caisse caisse = new Caisse(c.getString(c.getColumnIndex(caisse_jo_num)), c.getString(c.getColumnIndex(caisse_ca_intitule)),
-                c.getInt(c.getColumnIndex(caisse_ca_no)),c.getInt(c.getColumnIndex(caisse_nocaissier)));
+        Client client = new Client (c.getString(c.getColumnIndex(client_intitule)),c.getString(c.getColumnIndex(client_num)), c.getString(c.getColumnIndex(client_numprinc)),
+                c.getInt(c.getColumnIndex(client_cattarif)),c.getInt(c.getColumnIndex(client_catcompta)));
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
         c.close();
 
         //On retourne le livre
-        return caisse;
+        return client;
     }
 
     public int updateClient(int id, Client client){
@@ -219,10 +221,11 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //il faut simple préciser quelle livre on doit mettre à jour grâce à l'ID
         SQLiteDatabase bdd = this.getReadableDatabase();
         ContentValues values = new ContentValues();
-        values.put(caisse_jo_num, caisse.getJo_num());
-        values.put(caisse_ca_intitule, caisse.getCa_intitule());
-        values.put(caisse_ca_no, caisse.getCa_no());
-        values.put(caisse_nocaissier, caisse.getNocaissier());
+        values.put(client_catcompta,client.getCatcompta());
+        values.put(client_cattarif, client.getCattarif());
+        values.put(client_intitule, client.getIntitule());
+        values.put(client_num, client.getNum());
+        values.put(client_numprinc, client.getNumprinc());
         return bdd.update(TABLE_CLIENT, values, client_id + " = " +id, null);
     }
 
