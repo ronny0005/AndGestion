@@ -354,7 +354,7 @@ public class outils implements Serializable{
         return lart;
     }
 
-    public static int ajoutLigneServeur(String no_fac,String ref_fac,int no_ligne,int dl_qte,int dl_remise,String vehicule,String cr){
+    public static int ajoutLigneServeur (String no_fac,String ref_fac,int no_ligne,int dl_qte,int dl_remise,String vehicule,String cr) throws IOException {
         JSONObject json = null;
         int qte=0;
         try {
@@ -363,8 +363,6 @@ public class outils implements Serializable{
             JSONObject jArray = json.getJSONObject("data");
             qte = jArray.getInt("id");
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return qte;
@@ -623,7 +621,7 @@ public class outils implements Serializable{
         }
     }
 
-    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon){
+    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon) throws IOException {
         JSONObject json = null;
         int qte=0;
         try {
@@ -631,8 +629,6 @@ public class outils implements Serializable{
             json = new JSONObject(getJsonFromServer(url));
             return json.getJSONObject("data").getString("DO_Piece");
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return "";

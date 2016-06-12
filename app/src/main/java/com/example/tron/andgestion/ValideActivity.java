@@ -29,6 +29,7 @@ import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.QteStock;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -230,12 +231,6 @@ public class ValideActivity extends AppCompatActivity {
             total_marge += Math.round(article.getQte_vendue() * article.getTaxe3());
             total_ht += prix;
             System.out.println(article.getAr_design() + " total :" + prix);
-            Ligne ligne = new Ligne(facture.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getPrix_vente()),String.valueOf(article.getTaxe1())
-                    , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000");
-            ou.data.insertLigne(ligne);
-            QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
-            stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
-            ou.data.updateStock(article.getAr_ref(),stock);
         }
 
 
@@ -287,23 +282,49 @@ public class ValideActivity extends AppCompatActivity {
                        }
 
                        if (facture.getNouveau()) {
-
-                           String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
-                           facture.setEntete(entete);
-                           for (int i = 0; i < facture.getListe_article().size(); i++) {
-                               ArticleServeur article = facture.getListe_article().get(i);
-                               ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
-                           }
-                           facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-                           liste_facture.add(facture);
-                           facture.setNouveau(false);
-                           facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
                            String montant = "0";
                            if(comptant.isChecked())
                                montant=ttcformat.format(total_ttc);
                            else
                            if(!mtt_avance.getText().toString().equals(""))
                                montant=mtt_avance.getText().toString();
+                           String nouv="";
+                           if(facture.getNouveau()==true)
+                               nouv="true";
+                           else
+                               nouv="false";
+                           String entete="";
+                           Entete b_entete = new Entete(facture.getRef(), facture.getEntete(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                           facture.getId_client().getNum(),nouv,facture.getStatut(),facture.getType_paiement(),
+                           montant, String.valueOf(facture.getLatitude()),String.valueOf(facture.getLongitude()),String.valueOf(facture.getTotalTTC()));
+
+                           try {
+                               entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude());
+                           }catch(IOException e){
+                               b_entete.setCommit("non");
+                               ou.data.insertEntete(b_entete);
+                           }
+
+                           facture.setEntete(entete);
+
+                           for (int i = 0; i < facture.getListe_article().size(); i++) {
+                               ArticleServeur article = facture.getListe_article().get(i);
+                               Ligne ligne = new Ligne(facture.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getPrix_vente()),String.valueOf(article.getTaxe1())
+                                       , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000");
+
+                               try {
+                                   ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0, facture.getVehicule(), facture.getCr());
+                               }catch (IOException e) {
+                                   ou.data.insertLigne(ligne);
+                                   QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
+                                   stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
+                                   ou.data.updateStock(article.getAr_ref(),stock);
+                               }
+                           }
+                           facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+                           liste_facture.add(facture);
+                           facture.setNouveau(false);
+                           facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
                            if(comptant.isChecked())
                                 ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
                        }
@@ -373,28 +394,58 @@ public class ValideActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-*/                          String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
+*/
+                            String montant = "0";
+                            if(comptant.isChecked())
+                                montant=ttcformat.format(total_ttc);
+                            else
+                            if(!mtt_avance.getText().toString().equals(""))
+                                montant=mtt_avance.getText().toString();
+                            String nouv="";
+                            if(facture.getNouveau()==true)
+                                nouv="true";
+                            else
+                                nouv="false";
+                            String entete="";
+                            Entete b_entete = new Entete(facture.getRef(), facture.getEntete(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                                    facture.getId_client().getNum(),nouv,facture.getStatut(),facture.getType_paiement(),
+                                    montant, String.valueOf(facture.getLatitude()),String.valueOf(facture.getLongitude()),String.valueOf(facture.getTotalTTC()));
+
+                            try {
+                                entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
+                            }catch(IOException e){
+                                b_entete.setCommit("non");
+                                ou.data.insertEntete(b_entete);
+                            }
                             facture.setEntete(entete);
                             for (int i = 0; i < facture.getListe_article().size(); i++) {
                                 ArticleServeur article = facture.getListe_article().get(i);
-                                ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
+                                Ligne ligne = new Ligne(facture.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getPrix_vente()),String.valueOf(article.getTaxe1())
+                                        , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000");
+                                try{
+                                    ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
+                                }catch(IOException e){
+                                    ou.data.insertLigne(ligne);
+                                    QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
+                                    stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
+                                    ou.data.updateStock(article.getAr_ref(),stock);
+                                }
                             }
                             facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                             liste_facture.add(facture);
                             facture.setNouveau(false);
                             facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
-                            String montant = "0";
+                            montant = "0";
                             if(comptant.isChecked())
                                 montant=ttcformat.format(total_ttc);
                             else
                                 if(!mtt_avance.getText().toString().equals(""))
                                     montant=mtt_avance.getText().toString();
-                            String nouv;
                             if(facture.getNouveau()==true)
                                 nouv="true";
                             else
                                 nouv="false";
-                            Entete b_entete = new Entete(facture.getRef(), facture.getEntete(), facture.getDO_Date(), facture.getId_client().getNum(), nouv, facture.getStatut(), facture.getType_paiement(), montant, String.valueOf(facture.getLatitude()), String.valueOf(facture.getLongitude()), String.valueOf(facture.getTotalTTC()));
+                            b_entete = new Entete(facture.getRef(), facture.getEntete(), facture.getDO_Date(), facture.getId_client().getNum(), nouv, facture.getStatut(), facture.getType_paiement(), montant, String.valueOf(facture.getLatitude()), String.valueOf(facture.getLongitude()), String.valueOf(facture.getTotalTTC()));
                             ou.data.insertEntete(b_entete);
                             ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
                         }
