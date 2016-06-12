@@ -27,6 +27,7 @@ import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.Parametre;
+import com.example.tron.andgestion.modele.QteStock;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -232,6 +233,9 @@ public class ValideActivity extends AppCompatActivity {
             Ligne ligne = new Ligne(facture.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getPrix_vente()),String.valueOf(article.getTaxe1())
                     , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000");
             ou.data.insertLigne(ligne);
+            QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
+            stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
+            ou.data.updateStock(article.getAr_ref(),stock);
         }
 
 

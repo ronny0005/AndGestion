@@ -54,7 +54,11 @@ public class outils implements Serializable{
         data.recreate();
     }
     public static Parametre connexion(String login,String mdp) {
-        return getParametre(login,mdp);
+        try{
+            return getParametre(login,mdp);
+        }catch (IOException e ){
+            return data.getParametreWithUser(login,mdp);
+        }
     }
 
     public static ArrayList<BmqModele> getBmq(int cono, String datedeb, String datefin) {
@@ -132,7 +136,7 @@ public class outils implements Serializable{
     }
 
     public static String getJsonFromServer(String url) throws IOException {
-        try {
+        //try {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
             System.out.println(lien + url);
@@ -144,10 +148,10 @@ public class outils implements Serializable{
                 result += line;
             }
             return result;
-        }catch(IOException e){
-            Toast.makeText(app,"Problème de connexion! Veuillez réessayer plus tard !", Toast.LENGTH_SHORT).show();
-        }
-        return "";
+       // }catch(IOException e){
+         //   Toast.makeText(app,"Problème de connexion! Veuillez réessayer plus tard !", Toast.LENGTH_SHORT).show();
+        //}
+        //return "oups";
     }
 
     public static ArrayList<Depot> listeDepotServeur(){
@@ -574,13 +578,13 @@ public class outils implements Serializable{
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            return Integer.parseInt(data.getStockWithARRef(ref_art).getAS_QteSto());
         }
         return qte;
     }
 
 
-    public static Parametre getParametre(String password,String nomUser) {
+    public static Parametre getParametre(String password,String nomUser) throws IOException{
         JSONObject json = null;
         int qte=0;
         try {
@@ -600,8 +604,6 @@ public class outils implements Serializable{
                 Toast.makeText(app, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;

@@ -17,6 +17,7 @@ public class Entete {
     private String latitude;
     private String longitude;
     private String totalTTC;
+    private String commit;
 
     public Entete(String ref, String entete, String DO_Date, String id_client, String nouveau, String statut, String type_paiement, String mtt_avance, String latitude, String longitude, String totalTTC) {
         this.ref = ref;
@@ -34,6 +35,14 @@ public class Entete {
 
     public Entete(){
 
+    }
+
+    public String getCommit() {
+        return commit;
+    }
+
+    public void setCommit(String commit) {
+        this.commit = commit;
     }
 
     public String getId() {
@@ -147,6 +156,7 @@ public class Entete {
                 ", latitude='" + latitude + '\'' +
                 ", longitude='" + longitude + '\'' +
                 ", totalTTC='" + totalTTC + '\'' +
+                ", commit='" + commit + '\'' +
                 '}';
     }
 }

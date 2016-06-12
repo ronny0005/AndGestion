@@ -31,7 +31,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     // Database Name
     private static final String DATABASE_NAME = "etatCamlait.db";
-    public final static String DATABASE_PATH = "/data/data/com.kan.linnaeus/databases/";
+    public final static String DATABASE_PATH = "/data/data/com.example.tron.andgestion/databases/";
 
     // Table Names
     private static final String TABLE_DEPOT = "table_depot";
@@ -220,7 +220,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.dbContext = context;
         // checking database and open it if exists
-        if (checkDataBase()) {
+        /*if (checkDataBase()) {
             openDataBase();
         } else
         {
@@ -234,7 +234,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
                 throw new Error("Error copying database");
             }
             Toast.makeText(context, "Initial database is created", Toast.LENGTH_LONG).show();
-        }
+        }*/
     }
 
     private void copyDataBase() throws IOException {
@@ -285,6 +285,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         db.execSQL(CREATE_DEPOT);
         db.execSQL(CREATE_ENTETE);
         db.execSQL(CREATE_LIGNE);
+        db.execSQL(CREATE_ARTSTOCK);
     }
 
     @Override
@@ -298,6 +299,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTICLE + ";");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENTETE + ";");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIGNE + ";");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTSTOCK + ";");
         onCreate(db);
     }
 
@@ -310,6 +312,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTICLE + ";");
         bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_ENTETE + ";");
         bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_LIGNE + ";");
+        bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTSTOCK + ";");
         onCreate(bdd);
     }
 
@@ -743,6 +746,15 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         values.put(stock_DE_No, stock.getDE_No());
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_ARTSTOCK, null, values);
+    }
+
+    public int updateStock(String id, QteStock stock){
+        //La mise à jour d'un livre dans la BDD fonctionne plus ou moins comme une insertion
+        //il faut simple préciser quelle livre on doit mettre à jour grâce à l'ID
+        SQLiteDatabase bdd = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(stock_AS_QteSto,stock.getAS_QteSto());
+        return bdd.update(TABLE_ARTSTOCK, values, stock_AR_Ref + " = '" +id+"'", null);
     }
 
     public QteStock getStockWithARRef(String id_c){
