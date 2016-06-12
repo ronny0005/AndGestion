@@ -16,8 +16,10 @@ import com.example.tron.andgestion.modele.Depot;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.Parametre;
+import com.example.tron.andgestion.modele.QteStock;
 import com.example.tron.andgestion.modele.Vehicule;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,22 +59,32 @@ public class MainActivity extends AppCompatActivity {
             // ! à enlever
             Parametre parametre=null;
                 if(!login.getText().toString().isEmpty() && !mdp.getText().toString().isEmpty()) {
-                        parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
+                        ou.demarreBase(getApplicationContext());
+                    parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
+                    ou.data.insertParametre(parametre);
                 }else {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
             if(parametre != null){
                 liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
+                for(int i=0;i<liste_client.size();i++)
+                    ou.data.insertClient(liste_client.get(i));
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
+                for(int i=0;i<liste_article.size();i++) {
+                    ou.data.insertArticle(liste_article.get(i));
+                    QteStock qte = new QteStock();
+                    qte.setAS_QteSto(String.valueOf(ou.articleDisponibleServeur(liste_article.get(i).getAr_ref(),Integer.valueOf(parametre.getDe_no()))));
+                    qte.setAR_Ref(liste_article.get(i).getAr_ref());
+                    qte.setDE_No(String.valueOf(parametre.getDe_no()));
+                    qte.setAS_MontSto("");
+                    ou.data.insertStock(qte);
+                }
                 liste_vehicule = ou.listeVehiculeServeur();
                 liste_cr = ou.listePlanCR();
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
                 ou.passeVariable(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
                         new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()) ),parametre,ou,liste_recouvrement,liste_client,liste_article);
-                //ou.passeVariableCarburant(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
-                //        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",
-                 //       ou.getVille(parametre.getDo_souche(),parametre.getCt_num())),parametre,ou,liste_recouvrement,liste_client,liste_article,liste_vehicule,liste_cr);
 
             }
             }

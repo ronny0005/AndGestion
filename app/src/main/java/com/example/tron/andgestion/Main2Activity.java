@@ -1,6 +1,5 @@
 package com.example.tron.andgestion;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,13 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.tron.andgestion.bddlocal.fonction.outils;
+import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Caisse;
-import com.example.tron.andgestion.modele.CaisseBDD;
+import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.DatabaseSQLite;
 import com.example.tron.andgestion.modele.Depot;
-import com.example.tron.andgestion.modele.DepotBDD;
+import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.modele.Parametre;
-import com.example.tron.andgestion.modele.ParametreBDD;
 
 import java.util.ArrayList;
 
@@ -35,6 +34,32 @@ public class Main2Activity extends AppCompatActivity {
         for(int i=0;i<lcaisse.size();i++) {
             data.insertCaisse(lcaisse.get(i));
             System.out.println(data.getCaisseWithId(lcaisse.get(i).getCa_no()));
+        }
+
+
+        ArrayList<Depot> ldepot =outils.listeDepotServeur();
+        for(int i=0;i<ldepot.size();i++) {
+            data.insertDepot(ldepot.get(i));
+            System.out.println(data.getDepotWithId(ldepot.get(i).getId()));
+        }
+
+        ArrayList<ArticleServeur> larticle =outils.listeArticleServeur();
+        for(int i=0;i<larticle.size();i++) {
+            data.insertArticle(larticle.get(i));
+            System.out.println(data.getArticleWithId(larticle.get(i).getAr_ref()));
+        }
+
+        ArrayList<Client> lclient =outils.listeClientServeur("YDE");
+        for(int i=0;i<lclient.size();i++) {
+            data.insertClient(lclient.get(i));
+            System.out.println(data.getClientWithId(lclient.get(i).getNum()));
+        }
+
+
+        ArrayList<Facture> facture =outils.listeFacture(19,"","","","");
+        for(int i=0;i<lclient.size();i++) {
+            data.insertClient(lclient.get(i));
+            System.out.println(data.getClientWithId(lclient.get(i).getNum()));
         }
 
        System.out.println(data.getParametreWithUser("wokam","wokam"));

@@ -22,8 +22,10 @@ import android.widget.Toast;
 
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.Entete;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
+import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.Parametre;
 
 import java.text.DecimalFormat;
@@ -227,6 +229,9 @@ public class ValideActivity extends AppCompatActivity {
             total_marge += Math.round(article.getQte_vendue() * article.getTaxe3());
             total_ht += prix;
             System.out.println(article.getAr_design() + " total :" + prix);
+            Ligne ligne = new Ligne(facture.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getPrix_vente()),String.valueOf(article.getTaxe1())
+                    , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000");
+            ou.data.insertLigne(ligne);
         }
 
 
@@ -364,8 +369,7 @@ public class ValideActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-*/
-                            String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
+*/                          String entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
                             facture.setEntete(entete);
                             for (int i = 0; i < facture.getListe_article().size(); i++) {
                                 ArticleServeur article = facture.getListe_article().get(i);
@@ -381,6 +385,13 @@ public class ValideActivity extends AppCompatActivity {
                             else
                                 if(!mtt_avance.getText().toString().equals(""))
                                     montant=mtt_avance.getText().toString();
+                            String nouv;
+                            if(facture.getNouveau()==true)
+                                nouv="true";
+                            else
+                                nouv="false";
+                            Entete b_entete = new Entete(facture.getRef(), facture.getEntete(), facture.getDO_Date(), facture.getId_client().getNum(), nouv, facture.getStatut(), facture.getType_paiement(), montant, String.valueOf(facture.getLatitude()), String.valueOf(facture.getLongitude()), String.valueOf(facture.getTotalTTC()));
+                            ou.data.insertEntete(b_entete);
                             ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
                         }
                         Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);

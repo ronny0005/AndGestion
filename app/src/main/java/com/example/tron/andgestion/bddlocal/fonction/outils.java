@@ -1,6 +1,7 @@
 package com.example.tron.andgestion.bddlocal.fonction;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.StrictMode;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.example.tron.andgestion.Stock.StockEqVendeur;
 import com.example.tron.andgestion.modele.Affaire;
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.CompteA;
+import com.example.tron.andgestion.modele.DatabaseSQLite;
 import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Caisse;
 import com.example.tron.andgestion.modele.Client;
@@ -45,7 +47,12 @@ public class outils implements Serializable{
 
     public static Activity app=null;
     public static String lien="http://192.168.1.14:8083/api/";
+    public static DatabaseSQLite data;
 
+    public static void demarreBase(Context context){
+        data = new DatabaseSQLite(context);
+        data.recreate();
+    }
     public static Parametre connexion(String login,String mdp) {
         return getParametre(login,mdp);
     }
@@ -332,7 +339,8 @@ public class outils implements Serializable{
             lart= new ArrayList<ArticleServeur>();
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),
+                        json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -14,7 +14,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity">
+       </activity>
         <activity android:name=".ServeurActivity">
 
         </activity>
@@ -24,7 +25,8 @@
         <activity android:name=".StockActivity" />
         <activity android:name=".FactureActivity" />
         <activity android:name=".LstFactureActivity" />
-        <activity android:name=".MenuActivity" />
+        <activity android:name=".MenuActivity">
+            </activity>
         <activity android:name=".ParametresActivity" />
         <activity android:name=".ValideActivity" />
         <activity android:name=".ManquantActivity" />
@@ -54,7 +56,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.tron.andgestion.ServeurActivity" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

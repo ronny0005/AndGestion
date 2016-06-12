@@ -19,7 +19,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tron.andgestion.modele.Article;
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
@@ -45,7 +44,6 @@ public class FactureActivity extends AppCompatActivity{
     Button supprimer;
     AutoCompleteTextView client;
     AutoCompleteTextView designation;
-    ArrayList<Article> list;
     TextView qte;
 
     ArrayList<ArticleServeur> liste_article;
