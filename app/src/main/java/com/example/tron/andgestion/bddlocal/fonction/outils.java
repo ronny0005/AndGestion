@@ -14,6 +14,8 @@ import com.example.tron.andgestion.modele.Affaire;
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.DatabaseSQLite;
+import com.example.tron.andgestion.modele.Entete;
+import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Caisse;
 import com.example.tron.andgestion.modele.Client;
@@ -243,41 +245,40 @@ public class outils implements Serializable{
         return "";
     }
 
-    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient,String ville){
-        ArrayList<Facture> list= new ArrayList<Facture>();
+    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient,String ville) {
+        ArrayList<Facture> list = new ArrayList<Facture>();
         JSONObject json = null;
         try {
-            json = new JSONObject(getJsonFromServer("getFactureCO?CO_No="+CO_No+"&datedeb="+datedeb+"&datefin="+datefin+"&CT_Num="+numClient));
+            json = new JSONObject(getJsonFromServer("getFactureCO?CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
             JSONArray jArray = json.getJSONArray("data");
-            Facture facture=null;
-            for(int i=0; i<jArray.length(); i++){
+            Facture facture = null;
+            for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
                 facture = new Facture();
                 facture.setNouveau(false);
                 ArrayList<Client> lclient = listeClientServeur(ville);
 
-                for(int c=0;c<lclient.size();c++)
-                    if(lclient.get(c).getNum().compareTo(json_data.getString("CT_Num"))==0)
+                for (int c = 0; c < lclient.size(); c++)
+                    if (lclient.get(c).getNum().compareTo(json_data.getString("CT_Num")) == 0)
                         facture.setId_client(lclient.get(c));
                 facture.setStatut("");
                 facture.setDO_Date(json_data.getString("DO_Date"));
                 facture.setTotalTTC((int) Math.round(json_data.getDouble("ttc")));
                 facture.setMtt_avance((int) Math.round(json_data.getDouble("avance")));
-                if((int)facture.getMtt_avance()>=(int)facture.getTotalTTC() && (int)facture.getMtt_avance()>0){
+                if ((int) facture.getMtt_avance() >= (int) facture.getTotalTTC() && (int) facture.getMtt_avance() > 0) {
                     facture.setStatut("comptant");
-                }else
-                if((int)facture.getMtt_avance()>0)
+                } else if ((int) facture.getMtt_avance() > 0)
                     facture.setStatut("avance");
                 else
                     facture.setStatut("credit");
                 facture.setRef(json_data.getString("DO_Ref"));
-                    facture.setEntete(json_data.getString("DO_Piece"));
-                json = new JSONObject(getJsonFromServer("getLigneFacture?DO_Piece="+json_data.getString("DO_Piece")));
+                facture.setEntete(json_data.getString("DO_Piece"));
+                json = new JSONObject(getJsonFromServer("getLigneFacture?DO_Piece=" + json_data.getString("DO_Piece")));
                 JSONArray jArrayFacture = json.getJSONArray("data");
-                for(int j=0; j<jArrayFacture.length(); j++) {
+                for (int j = 0; j < jArrayFacture.length(); j++) {
                     JSONObject json_datafact = jArrayFacture.getJSONObject(j);
                     ArticleServeur art = new ArticleServeur(json_datafact.getString("AR_Ref"), json_datafact.getString("DL_Design")
-                            , json_datafact.getDouble("DL_PrixUnitaire"),json_datafact.getDouble("DL_Taxe1"),json_datafact.getDouble("DL_Taxe2"),
+                            , json_datafact.getDouble("DL_PrixUnitaire"), json_datafact.getDouble("DL_Taxe1"), json_datafact.getDouble("DL_Taxe2"),
                             json_datafact.getDouble("DL_Taxe3"));
                     art.setQte_vendue(json_datafact.getInt("DL_Qte"));
                     art.setAr_prixven((float) json_datafact.getDouble("DL_PrixUnitaire"));
@@ -288,10 +289,44 @@ public class outils implements Serializable{
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            list = new ArrayList<Facture>();
+            ArrayList<Entete> lentete = data.getEnteteWithDate(datedeb);
+            for (int i = 0; i < lentete.size(); i++) {
+                Entete entete = lentete.get(i);
+                Facture facture = new Facture();
+                System.out.println(entete);
+                facture.setNouveau(false);
+                facture.setId_client(data.getClientWithId(entete.getId_client()));
+                facture.setStatut(entete.getStatut());
+                facture.setDO_Date(facture.getDO_Date());
+                facture.setTotalTTC(Integer.parseInt(entete.getTotalTTC()));
+                facture.setMtt_avance(Double.parseDouble(entete.getMtt_avance()));
+                if ((int) facture.getMtt_avance() >= (int) facture.getTotalTTC() && (int) facture.getMtt_avance() > 0) {
+                    facture.setStatut("comptant");
+                } else if ((int) facture.getMtt_avance() > 0)
+                    facture.setStatut("avance");
+                else
+                    facture.setStatut("credit");
+                facture.setRef(entete.getRef());
+                facture.setEntete(entete.getEntete());
+                ArrayList<Ligne> lligne = data.getLigneWithId(facture.getEntete());
+                for (int j = 0; j < lligne.size(); j++) {
+                    Ligne ligne = lligne.get(j);
+                    System.out.println(ligne);
+                    ArticleServeur art = new ArticleServeur(ligne.getAR_Ref(), ligne.getAR_Design()
+                            , Double.parseDouble(ligne.getDL_PrixUnitaire()), Double.parseDouble(ligne.getDL_Taxe1()), Double.parseDouble(ligne.getDL_Taxe2()),
+                            Double.parseDouble(ligne.getDL_Taxe3()));
+                    System.out.println(art);
+                    art.setQte_vendue(Integer.parseInt(ligne.getDL_Qte()));
+                    art.setAr_prixven((float) Double.parseDouble(ligne.getDL_PrixVente()));
+                    facture.getListe_article().add(art);
+                }
+                list.add(facture);
+            }
         }
         return list;
     }
+
     public static ArrayList<StockEqVendeur> eqStkVendeur(String depot,String date_deb,String date_fin) {
         JSONObject json = null;
         System.out.println(escapeHtml(depot));
@@ -576,6 +611,7 @@ public class outils implements Serializable{
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            System.out.println(ref_art+" reecchhhh");
             return Integer.parseInt(data.getStockWithARRef(ref_art).getAS_QteSto());
         }
         return qte;

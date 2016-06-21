@@ -67,6 +67,7 @@ public class ValideActivity extends AppCompatActivity {
     private DecimalFormat decim = new DecimalFormat("#.##");
     private DecimalFormat ttcformat = new DecimalFormat("#");
     private WebView myWebView;
+    private String ref;
 
     public void active_avance(boolean active){
         if(active) {
@@ -94,6 +95,106 @@ public class ValideActivity extends AppCompatActivity {
         }
     }
 
+
+    public void calcule(boolean press){
+        DecimalFormat decim = new DecimalFormat("#.##");
+        Double d;
+        if (mtt_avance.getText().toString().equals(""))
+            d = Double.MIN_VALUE;
+        else d = Double.parseDouble(mtt_avance.getText().toString());
+
+        if (Double.compare(total_ttc, d) >= 0) {
+            if (comptant.isChecked() || credit.isChecked()) {
+                if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
+                        && Double.compare(total_ttc, d) >= 0) {
+                    facture.setStatut("avance");
+                    facture.setMtt_avance(d);
+                }
+
+                if (facture.getNouveau()) {
+                    String montant = "0";
+                    if(comptant.isChecked())
+                        montant=ttcformat.format(total_ttc);
+                    else
+                    if(!mtt_avance.getText().toString().equals(""))
+                        montant=mtt_avance.getText().toString();
+                    String nouv="";
+                    if(facture.getNouveau()==true)
+                        nouv="true";
+                    else
+                        nouv="false";
+                    String entete="";
+                    Entete b_entete = new Entete(facture.getRef(), facture.getEntete(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                            facture.getId_client().getNum(),nouv,facture.getStatut(),facture.getType_paiement(),
+                            montant, String.valueOf(facture.getLatitude()),String.valueOf(facture.getLongitude()),t_ttc.getText().toString());
+System.out.println(b_entete);
+                    try {
+                        entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
+                        b_entete.setCommit("oui");
+                        b_entete.setEntete(entete);
+                        ou.data.insertEntete(b_entete);
+                    }catch(IOException e){
+                        b_entete.setEntete(ref);
+                        b_entete.setCommit("non");
+                        ou.data.insertEntete(b_entete);
+                    }
+
+                    System.out.println(b_entete);
+                    //facture.setEntete(entete+"  liste "+facture.getListe_article().size());
+                    for (int i = 0; i < facture.getListe_article().size(); i++) {
+                        ArticleServeur article = facture.getListe_article().get(i);
+                        System.out.println(article);
+                        Ligne ligne = new Ligne(b_entete.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getAr_prixven()),String.valueOf(article.getTaxe1())
+                                , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000",String.valueOf(article.getAr_prixven()),"");
+                        System.out.println(ligne);
+                        try{
+                            ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
+                            ligne.setEntete(entete);
+                            ou.data.insertLigne(ligne);
+                        }catch(IOException e){
+                            ou.data.insertLigne(ligne);
+                            ligne.setEntete(ref);
+                            QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
+                            stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
+                            ou.data.updateStock(article.getAr_ref(),stock);
+                        }
+                    }
+                    facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+                    System.out.println("sorit ca !!!!!");
+                    liste_facture.add(facture);
+                    facture.setNouveau(false);
+                    facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
+                    montant = "0";
+                    if(comptant.isChecked())
+                        montant=ttcformat.format(total_ttc);
+                    else
+                    if(!mtt_avance.getText().toString().equals(""))
+                        montant=mtt_avance.getText().toString();
+                    if(facture.getNouveau()==true)
+                        nouv="true";
+                    else
+                        nouv="false";
+                    //b_entete = new Entete(facture.getRef(), facture.getEntete(), facture.getDO_Date(), facture.getId_client().getNum(), nouv, facture.getStatut(), facture.getType_paiement(), montant, String.valueOf(facture.getLatitude()), String.valueOf(facture.getLongitude()), String.valueOf(facture.getTotalTTC()));
+                    ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
+                }
+                Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
+                intent.putExtra("liste_facture", liste_facture);
+                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+                intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
+                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+                intent.putExtra("outils", ou);
+                startActivity(intent);
+            } else {
+                Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
+                    Toast.LENGTH_SHORT).show();
+        }
+        if(press)
+            imprime();
+    }
     public void imprime(){
         WebView webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient() {
@@ -169,7 +270,7 @@ public class ValideActivity extends AppCompatActivity {
         id_facture= Integer.parseInt(getIntent().getStringExtra("id_facture"));
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = ValideActivity.this;
-
+        ref="AND000"+liste_facture.size();
         t_marge = (TextView) findViewById(R.id.valide_marge);
         t_ht = (TextView) findViewById(R.id.valide_ht);
         t_tva = (TextView) findViewById(R.id.valide_tva);
@@ -267,203 +368,13 @@ public class ValideActivity extends AppCompatActivity {
 
         imprime.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v) {
-               DecimalFormat decim = new DecimalFormat("#.##");
-               Double d;
-               if (mtt_avance.getText().toString().equals(""))
-                   d = Double.MIN_VALUE;
-               else d = Double.parseDouble(mtt_avance.getText().toString());
-
-               if (Double.compare(total_ttc, d) >= 0) {
-                   if (comptant.isChecked() || credit.isChecked()) {
-                       if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
-                               && Double.compare(total_ttc, d) >= 0) {
-                           facture.setStatut("avance");
-                           facture.setMtt_avance(d);
-                       }
-
-                       if (facture.getNouveau()) {
-                           String montant = "0";
-                           if(comptant.isChecked())
-                               montant=ttcformat.format(total_ttc);
-                           else
-                           if(!mtt_avance.getText().toString().equals(""))
-                               montant=mtt_avance.getText().toString();
-                           String nouv="";
-                           if(facture.getNouveau()==true)
-                               nouv="true";
-                           else
-                               nouv="false";
-                           String entete="";
-                           Entete b_entete = new Entete(facture.getRef(), facture.getEntete(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
-                           facture.getId_client().getNum(),nouv,facture.getStatut(),facture.getType_paiement(),
-                           montant, String.valueOf(facture.getLatitude()),String.valueOf(facture.getLongitude()),String.valueOf(facture.getTotalTTC()));
-
-                           try {
-                               entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude());
-                           }catch(IOException e){
-                               b_entete.setCommit("non");
-                               ou.data.insertEntete(b_entete);
-                           }
-
-                           facture.setEntete(entete);
-
-                           for (int i = 0; i < facture.getListe_article().size(); i++) {
-                               ArticleServeur article = facture.getListe_article().get(i);
-                               Ligne ligne = new Ligne(facture.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getPrix_vente()),String.valueOf(article.getTaxe1())
-                                       , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000");
-
-                               try {
-                                   ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0, facture.getVehicule(), facture.getCr());
-                               }catch (IOException e) {
-                                   ou.data.insertLigne(ligne);
-                                   QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
-                                   stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
-                                   ou.data.updateStock(article.getAr_ref(),stock);
-                               }
-                           }
-                           facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-                           liste_facture.add(facture);
-                           facture.setNouveau(false);
-                           facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
-                           if(comptant.isChecked())
-                                ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
-                       }
-                       Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
-                       intent.putExtra("liste_facture", liste_facture);
-                       intent.putExtra("facture", facture);
-                       intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                       intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-                       intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                       intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                       intent.putExtra("outils", ou);
-                       imprime();
-                       startActivity(intent);
-                   } else {
-                       Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
-                   }
-               } else {
-                   Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
-                           Toast.LENGTH_SHORT).show();
-               }
-               if (!facture.getNouveau()) {
-
-                   Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
-                   intent.putExtra("liste_facture", liste_facture);
-                   intent.putExtra("facture", facture);
-                   intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                   intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-                   intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                   intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                   intent.putExtra("outils", ou);
-                   imprime();
-                   startActivity(intent);
-               }
-        }
+               calcule(true);
+            }
         });
 
         valider.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DecimalFormat decim = new DecimalFormat("#.##");
-                Double d;
-                if (mtt_avance.getText().toString().equals(""))
-                    d = Double.MIN_VALUE;
-                else d = Double.parseDouble(mtt_avance.getText().toString());
-
-                if (Double.compare(total_ttc, d) >= 0) {
-                    if (comptant.isChecked() || credit.isChecked()) {
-                        if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
-                                && Double.compare(total_ttc, d) >= 0) {
-                            facture.setStatut("avance");
-                            facture.setMtt_avance(d);
-                        }
-
-                        if (facture.getNouveau()) {
-                           /* parametre= ou.getParametre(parametre.getUser(),parametre.getMdp());
-                            try {
-                                Date dt = new SimpleDateFormat("yyyy-MM-dd").parse(parametre.getDate_facture());
-                                if(dt.compareTo(new Date())==0){
-                                    facture.setRef("Fact"+parametre.getID_Facture());
-                                    parametre.setID_Facture(parametre.getID_Facture()+1);
-                                }else{
-                                    facture.setRef("Fact1");
-                                    parametre.setDate_facture(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-                                    parametre.setID_Facture(2);
-                                    System.out.println("vloop");
-                                }
-                                ou.setParametre(parametre.getMdp(),parametre.getUser(),parametre.getDate_facture(),String.valueOf(parametre.getID_Facture()));
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-*/
-                            String montant = "0";
-                            if(comptant.isChecked())
-                                montant=ttcformat.format(total_ttc);
-                            else
-                            if(!mtt_avance.getText().toString().equals(""))
-                                montant=mtt_avance.getText().toString();
-                            String nouv="";
-                            if(facture.getNouveau()==true)
-                                nouv="true";
-                            else
-                                nouv="false";
-                            String entete="";
-                            Entete b_entete = new Entete(facture.getRef(), facture.getEntete(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
-                                    facture.getId_client().getNum(),nouv,facture.getStatut(),facture.getType_paiement(),
-                                    montant, String.valueOf(facture.getLatitude()),String.valueOf(facture.getLongitude()),String.valueOf(facture.getTotalTTC()));
-
-                            try {
-                                entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
-                            }catch(IOException e){
-                                b_entete.setCommit("non");
-                                ou.data.insertEntete(b_entete);
-                            }
-                            facture.setEntete(entete);
-                            for (int i = 0; i < facture.getListe_article().size(); i++) {
-                                ArticleServeur article = facture.getListe_article().get(i);
-                                Ligne ligne = new Ligne(facture.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getPrix_vente()),String.valueOf(article.getTaxe1())
-                                        , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000");
-                                try{
-                                    ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
-                                }catch(IOException e){
-                                    ou.data.insertLigne(ligne);
-                                    QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
-                                    stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
-                                    ou.data.updateStock(article.getAr_ref(),stock);
-                                }
-                            }
-                            facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-                            liste_facture.add(facture);
-                            facture.setNouveau(false);
-                            facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
-                            montant = "0";
-                            if(comptant.isChecked())
-                                montant=ttcformat.format(total_ttc);
-                            else
-                                if(!mtt_avance.getText().toString().equals(""))
-                                    montant=mtt_avance.getText().toString();
-                            if(facture.getNouveau()==true)
-                                nouv="true";
-                            else
-                                nouv="false";
-                            b_entete = new Entete(facture.getRef(), facture.getEntete(), facture.getDO_Date(), facture.getId_client().getNum(), nouv, facture.getStatut(), facture.getType_paiement(), montant, String.valueOf(facture.getLatitude()), String.valueOf(facture.getLongitude()), String.valueOf(facture.getTotalTTC()));
-                            ou.data.insertEntete(b_entete);
-                            ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
-                        }
-                        Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
-                        intent.putExtra("liste_facture", liste_facture);
-                        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                        intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-                        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                        intent.putExtra("outils", ou);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(ValideActivity.this, "Choississez un mode de règlement.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(ValideActivity.this, "le montant de l'avance ne peut pas être supérieur au montant TTC.",
-                            Toast.LENGTH_SHORT).show();
-                }
+               calcule(false);
             }
         });
     }

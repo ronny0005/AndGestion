@@ -16,7 +16,9 @@ import com.example.tron.andgestion.modele.Depot;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.modele.Parametre;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -26,43 +28,15 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Parametre parametre = outils.connexion("wokam","wokam");
+      //  Parametre parametre = outils.connexion("wokam","wokam");
         DatabaseSQLite data = new DatabaseSQLite(getApplicationContext());
         data.recreate();
         ArrayList<Caisse> lcaisse =outils.listeCaisseServeur();
-        data.insertParametre(parametre);
-        for(int i=0;i<lcaisse.size();i++) {
-            data.insertCaisse(lcaisse.get(i));
-            System.out.println(data.getCaisseWithId(lcaisse.get(i).getCa_no()));
-        }
+     //   data.insertParametre(parametre);
+        ArrayList<Facture> liste = outils.listeFacture(19,new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0","19");
+        System.out.println(liste.size());
 
-
-        ArrayList<Depot> ldepot =outils.listeDepotServeur();
-        for(int i=0;i<ldepot.size();i++) {
-            data.insertDepot(ldepot.get(i));
-            System.out.println(data.getDepotWithId(ldepot.get(i).getId()));
-        }
-
-        ArrayList<ArticleServeur> larticle =outils.listeArticleServeur();
-        for(int i=0;i<larticle.size();i++) {
-            data.insertArticle(larticle.get(i));
-            System.out.println(data.getArticleWithId(larticle.get(i).getAr_ref()));
-        }
-
-        ArrayList<Client> lclient =outils.listeClientServeur("YDE");
-        for(int i=0;i<lclient.size();i++) {
-            data.insertClient(lclient.get(i));
-            System.out.println(data.getClientWithId(lclient.get(i).getNum()));
-        }
-
-
-        ArrayList<Facture> facture =outils.listeFacture(19,"","","","");
-        for(int i=0;i<lclient.size();i++) {
-            data.insertClient(lclient.get(i));
-            System.out.println(data.getClientWithId(lclient.get(i).getNum()));
-        }
-
-       System.out.println(data.getParametreWithUser("wokam","wokam"));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

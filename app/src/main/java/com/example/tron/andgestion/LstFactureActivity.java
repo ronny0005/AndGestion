@@ -112,6 +112,7 @@ public class LstFactureActivity extends AppCompatActivity {
         System.out.println(liste_facture.size()+" liste");
         for (int i = 0; i < liste_facture.size(); i++) {
             Facture fac = liste_facture.get(i);
+            System.out.println(fac);
             String val="";
             DecimalFormat ttcformat = new DecimalFormat("#");
             if(fac.getStatut().equals("avance"))
@@ -144,8 +145,7 @@ public class LstFactureActivity extends AppCompatActivity {
 
         datedeb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         datefin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
-        liste_facture=ou.listeFacture(parametre.getCo_no(),
-                new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+        liste_facture=ou.listeFacture(parametre.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
                 new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
         ajoutListe();
         initVariable();

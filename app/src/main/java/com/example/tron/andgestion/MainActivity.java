@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             if(parametre != null){
                 liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
-                for(int i=0;i<liste_client.size();i++)
+                for(int i=0;i<liste_client.size();i++) {
                     ou.data.insertClient(liste_client.get(i));
+                }
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
                 for(int i=0;i<liste_article.size();i++) {
                     ou.data.insertArticle(liste_article.get(i));

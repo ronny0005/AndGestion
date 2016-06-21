@@ -71,6 +71,8 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
     private static final String ligne_DL_Taxe3="DL_Taxe3";
     private static final String ligne_DL_MontantTTC="DL_MontantTTC";
     private static final String ligne_DL_Ligne="DL_Ligne";
+    private static final String ligne_DL_PrixVente="DL_PrixVente";
+
 
 
 
@@ -158,6 +160,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
             + ligne_DL_Taxe2+ " TEXT NOT NULL,"
             + ligne_DL_Taxe3+ " TEXT NOT NULL,"
             + ligne_DL_MontantTTC+ " TEXT NOT NULL,"
+            + ligne_DL_PrixVente+ " TEXT NOT NULL,"
             + ligne_DL_Ligne + " TEXT NOT NULL);";
 
     private static final String CREATE_CAISSE = "CREATE TABLE " + TABLE_CAISSE + " ("
@@ -170,6 +173,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
             + stock_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + stock_DE_No+ " TEXT NOT NULL,"
             + stock_AR_Ref+ " TEXT NOT NULL,"
+            + stock_AS_MontSto+ " TEXT NOT NULL,"
             + stock_AS_QteSto+ " TEXT NOT NULL);";
 
     private static final String CREATE_DEPOT = "CREATE TABLE " + TABLE_DEPOT+ " ("
@@ -241,13 +245,11 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         InputStream myInput = dbContext.getAssets().open(DATABASE_NAME);
         String outFileName = DATABASE_PATH + DATABASE_NAME;
         OutputStream myOutput = new FileOutputStream(outFileName);
-
         byte[] buffer = new byte[1024];
         int length;
         while ((length = myInput.read(buffer))>0){
             myOutput.write(buffer, 0, length);
         }
-
         myOutput.flush();
         myOutput.close();
         myInput.close();
@@ -341,7 +343,6 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //si aucun élément n'a été retourné dans la requête, on renvoie null
         if (c.getCount() == 0)
             return null;
-
         //Sinon on se place sur le premier élément
         c.moveToFirst();
         //On créé un livre
@@ -350,7 +351,6 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
         c.close();
-
         //On retourne le livre
         return caisse;
     }
@@ -396,7 +396,6 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //si aucun élément n'a été retourné dans la requête, on renvoie null
         if (c.getCount() == 0)
             return null;
-
         //Sinon on se place sur le premier élément
         c.moveToFirst();
         //On créé un livre
@@ -404,7 +403,6 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
         c.close();
-
         //On retourne le livre
         return depot;
     }
@@ -561,6 +559,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
 
 
     public long insertParametre(Parametre parametre){
+        System.out.println(parametre);
         SQLiteDatabase bdd = this.getWritableDatabase();
         //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
@@ -654,15 +653,21 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         values.put(ligne_DL_Taxe3, ligne.getDL_Taxe3());
         values.put(ligne_DO_Date, ligne.getDO_Date());
         values.put(ligne_entete , ligne.getEntete());
+        values.put(ligne_DL_PrixVente , ligne.getDL_PrixVente());
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_LIGNE, null, values);
     }
 
-    public Ligne getLigneWithId(String id_c){
+    public ArrayList<Ligne> getLigneWithId(String id_c){
         //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
+        ArrayList<Ligne>  list = new ArrayList<Ligne>();
         SQLiteDatabase bdd = this.getReadableDatabase();
-        Cursor c = bdd.query(TABLE_LIGNE, new String[] {ligne_id,ligne_entete,ligne_DO_Date,ligne_AR_Ref,ligne_AR_Design,ligne_DL_Qte,ligne_DL_PrixUnitaire,ligne_DL_Taxe1,ligne_DL_Taxe2,ligne_DL_Taxe3,ligne_DL_MontantTTC,ligne_DL_Ligne}, ligne_entete+ " = '" + id_c+"'", null, null, null, null);
-        return cursorToLigne(c);
+        Cursor c = bdd.query(TABLE_LIGNE, new String[] {ligne_id,ligne_entete,ligne_DO_Date,ligne_AR_Ref,ligne_AR_Design,ligne_DL_Qte,ligne_DL_PrixUnitaire,ligne_DL_Taxe1,ligne_DL_Taxe2,ligne_DL_Taxe3,ligne_DL_MontantTTC,ligne_DL_Ligne,ligne_DL_PrixVente}, ligne_entete+ " = '" + id_c+"'", null, null, null, null);
+        while(c.moveToNext()){
+            list.add(cursorToLigne(c));
+        }
+        c.close();
+        return list;
     }
 
     //Cette méthode permet de convertir un cursor en un livre
@@ -672,15 +677,14 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
             return null;
 
         //Sinon on se place sur le premier élément
-        c.moveToFirst();
         //On créé un livre
         Ligne ligne = new Ligne(c.getString(c.getColumnIndex(ligne_id)), c.getString(c.getColumnIndex(ligne_entete)),
                 c.getString(c.getColumnIndex(ligne_DO_Date)), c.getString(c.getColumnIndex(ligne_AR_Ref)),c.getString(c.getColumnIndex(ligne_AR_Design)), c.getString(c.getColumnIndex(ligne_DL_Qte)),
                 c.getString(c.getColumnIndex(ligne_DL_PrixUnitaire)), c.getString(c.getColumnIndex(ligne_DL_Taxe1)),c.getString(c.getColumnIndex(ligne_DL_Taxe2)), c.getString(c.getColumnIndex(ligne_DL_Taxe3)),
-                c.getString(c.getColumnIndex(ligne_DL_MontantTTC)), c.getString(c.getColumnIndex(ligne_DL_Ligne)));
+                c.getString(c.getColumnIndex(ligne_DL_MontantTTC)), c.getString(c.getColumnIndex(ligne_DL_Ligne)), c.getString(c.getColumnIndex(ligne_DL_PrixVente)));
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
-        c.close();
+
 
         //On retourne le livre
         return ligne;
@@ -706,11 +710,16 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         return bdd.insert(TABLE_ENTETE, null, values);
     }
 
-    public Entete getEnteteWithDate(String id_c){
+    public ArrayList<Entete> getEnteteWithDate(String id_c){
         //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
         SQLiteDatabase bdd = this.getReadableDatabase();
+        ArrayList<Entete>  list = new ArrayList<Entete>();
         Cursor c = bdd.query(TABLE_ENTETE, new String[] {entete_id,entete_ref,entete_entete,entete_DO_Date,entete_id_client,entete_nouveau,entete_statut,entete_type_paiement,entete_mtt_avance,entete_latitude,entete_longitude,entete_totalTTC}, ligne_DO_Date+ " = '" + id_c+"'", null, null, null, null);
-        return cursorToEntete(c);
+        while(c.moveToNext()){
+            list.add(cursorToEntete(c));
+        }
+        c.close();
+        return list;
     }
 
     //Cette méthode permet de convertir un cursor en un livre
@@ -718,9 +727,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //si aucun élément n'a été retourné dans la requête, on renvoie null
         if (c.getCount() == 0)
             return null;
-
         //Sinon on se place sur le premier élément
-        c.moveToFirst();
         //On créé un livre
         Entete entete= new Entete(c.getString(c.getColumnIndex(entete_ref)), c.getString(c.getColumnIndex(entete_entete)), c.getString(c.getColumnIndex(entete_DO_Date)),
                 c.getString(c.getColumnIndex(entete_id_client)), c.getString(c.getColumnIndex(entete_nouveau)),c.getString(c.getColumnIndex(entete_statut)), c.getString(c.getColumnIndex(entete_type_paiement)),
@@ -728,7 +735,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
                 c.getString(c.getColumnIndex(entete_totalTTC)));
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
-        c.close();
+
 
         //On retourne le livre
         return entete;
