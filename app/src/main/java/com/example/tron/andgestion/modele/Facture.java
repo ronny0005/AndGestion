@@ -25,6 +25,8 @@ public class Facture implements Serializable {
     private String DO_Date;
     private String vehicule;
     private String cr;
+	private boolean commit;
+	
 
     public Facture(String ref, Client id_client, int id_depot) {
         this.ref = ref;
@@ -102,6 +104,14 @@ public class Facture implements Serializable {
 
     public void setStatut(String statut) {
         this.statut = statut;
+    }
+	
+	public boolean getCommit() {
+        return commit;
+    }
+
+    public void setCommit(boolean commit) {
+        this.commit = commit;
     }
 
     public int getId() {
@@ -239,6 +249,7 @@ public class Facture implements Serializable {
                 ", DO_Date='" + DO_Date + '\'' +
                 ", vehicule='" + vehicule + '\'' +
                 ", cr='" + cr + '\'' +
+				", commit='" + commit + '\'' +
                 '}';
     }
 }

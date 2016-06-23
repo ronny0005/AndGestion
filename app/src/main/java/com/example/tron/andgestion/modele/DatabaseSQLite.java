@@ -56,7 +56,8 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
     private static final String entete_mtt_avance="mtt_avance";
     private static final String entete_latitude="latitude";
     private static final String entete_longitude="longitude";
-    private static final String entete_totalTTC="totalTTC";
+    private static final String entete_totalTTC="totalTTC";    
+	private static final String entete_commit="entete_commit";
 
     //ligne
     private static final String ligne_id="id";
@@ -146,6 +147,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
             + entete_mtt_avance + " TEXT NOT NULL,"
             + entete_latitude + " TEXT NOT NULL,"
             + entete_longitude + " TEXT NOT NULL,"
+            + entete_commit + " TEXT NOT NULL,"
             + entete_totalTTC + " TEXT NOT NULL);";
 
     private static final String CREATE_LIGNE = "CREATE TABLE " + TABLE_LIGNE + " ("
@@ -594,7 +596,6 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //si aucun élément n'a été retourné dans la requête, on renvoie null
         if (c.getCount() == 0)
             return null;
-
         //Sinon on se place sur le premier élément
         c.moveToFirst();
         //On créé un livre
@@ -605,7 +606,6 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
         c.close();
-
         //On retourne le livre
         return parametre;
     }
@@ -670,6 +670,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         return list;
     }
 
+
     //Cette méthode permet de convertir un cursor en un livre
     private Ligne cursorToLigne(Cursor c){
         //si aucun élément n'a été retourné dans la requête, on renvoie null
@@ -678,16 +679,35 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
 
         //Sinon on se place sur le premier élément
         //On créé un livre
+        System.out.println(c.getString(c.getColumnIndex(ligne_id)));
         Ligne ligne = new Ligne(c.getString(c.getColumnIndex(ligne_id)), c.getString(c.getColumnIndex(ligne_entete)),
                 c.getString(c.getColumnIndex(ligne_DO_Date)), c.getString(c.getColumnIndex(ligne_AR_Ref)),c.getString(c.getColumnIndex(ligne_AR_Design)), c.getString(c.getColumnIndex(ligne_DL_Qte)),
                 c.getString(c.getColumnIndex(ligne_DL_PrixUnitaire)), c.getString(c.getColumnIndex(ligne_DL_Taxe1)),c.getString(c.getColumnIndex(ligne_DL_Taxe2)), c.getString(c.getColumnIndex(ligne_DL_Taxe3)),
                 c.getString(c.getColumnIndex(ligne_DL_MontantTTC)), c.getString(c.getColumnIndex(ligne_DL_Ligne)), c.getString(c.getColumnIndex(ligne_DL_PrixVente)));
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
-
-
         //On retourne le livre
         return ligne;
+    }
+	
+	public int updateLigne(String ent, Ligne ligne){
+        //La mise à jour d'un livre dans la BDD fonctionne plus ou moins comme une insertion
+        //il faut simple préciser quelle livre on doit mettre à jour grâce à l'ID
+        SQLiteDatabase bdd = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+		values.put(ligne_AR_Design, ligne.getAR_Design());
+        values.put(ligne_AR_Ref, ligne.getAR_Ref());
+        values.put(ligne_DL_Ligne, ligne.getDL_Ligne());
+        values.put(ligne_DL_MontantTTC, ligne.getDL_MontantTTC());
+        values.put(ligne_DL_PrixUnitaire, ligne.getDL_PrixUnitaire());
+        values.put(ligne_DL_Qte, ligne.getDL_Qte());
+        values.put(ligne_DL_Taxe1, ligne.getDL_Taxe1());
+        values.put(ligne_DL_Taxe2, ligne.getDL_Taxe2());
+        values.put(ligne_DL_Taxe3, ligne.getDL_Taxe3());
+        values.put(ligne_DO_Date, ligne.getDO_Date());
+        values.put(ligne_entete , ligne.getEntete());
+        values.put(ligne_DL_PrixVente , ligne.getDL_PrixVente());
+        return bdd.update(TABLE_LIGNE, values, ligne_id + " = " +ent, null);
     }
 
     public long insertEntete(Entete entete){
@@ -706,6 +726,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         values.put(entete_statut, entete.getStatut());
         values.put(entete_totalTTC, entete.getTotalTTC());
         values.put(entete_type_paiement, entete.getType_paiement());
+        values.put(entete_commit, entete.getCommit());
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_ENTETE, null, values);
     }
@@ -714,7 +735,19 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
         SQLiteDatabase bdd = this.getReadableDatabase();
         ArrayList<Entete>  list = new ArrayList<Entete>();
-        Cursor c = bdd.query(TABLE_ENTETE, new String[] {entete_id,entete_ref,entete_entete,entete_DO_Date,entete_id_client,entete_nouveau,entete_statut,entete_type_paiement,entete_mtt_avance,entete_latitude,entete_longitude,entete_totalTTC}, ligne_DO_Date+ " = '" + id_c+"'", null, null, null, null);
+        Cursor c = bdd.query(TABLE_ENTETE, new String[] {entete_id,entete_ref,entete_entete,entete_DO_Date,entete_id_client,entete_nouveau,entete_statut,entete_type_paiement,entete_mtt_avance,entete_latitude,entete_longitude,entete_commit,entete_totalTTC}, entete_DO_Date+ " = '" + id_c+"'", null, null, null, null);
+        while(c.moveToNext()){
+            list.add(cursorToEntete(c));
+        }
+        c.close();
+        return list;
+    }
+
+    public ArrayList<Entete> getEnteteWithEntete(String id_c){
+        //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
+        SQLiteDatabase bdd = this.getReadableDatabase();
+        ArrayList<Entete>  list = new ArrayList<Entete>();
+        Cursor c = bdd.query(TABLE_ENTETE, new String[] {entete_id,entete_ref,entete_entete,entete_DO_Date,entete_id_client,entete_nouveau,entete_statut,entete_type_paiement,entete_mtt_avance,entete_latitude,entete_longitude,entete_commit,entete_totalTTC}, entete_entete+ " = '" + id_c+"'", null, null, null, null);
         while(c.moveToNext()){
             list.add(cursorToEntete(c));
         }
@@ -741,7 +774,26 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         return entete;
     }
 
-
+	public int updateEntete(String ent, Entete entete){
+        //La mise à jour d'un livre dans la BDD fonctionne plus ou moins comme une insertion
+        //il faut simple préciser quelle livre on doit mettre à jour grâce à l'ID
+        SQLiteDatabase bdd = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+		values.put(entete_entete, entete.getEntete());
+        values.put(entete_DO_Date,entete.getDO_Date());
+        values.put(entete_id_client, entete.getId_client());
+        values.put(entete_latitude, entete.getLatitude());
+        values.put(entete_longitude, entete.getLongitude());
+        values.put(entete_mtt_avance, entete.getMtt_avance());
+        values.put(entete_nouveau, entete.getNouveau());
+        values.put(entete_ref, entete.getRef());
+        values.put(entete_statut, entete.getStatut());
+        values.put(entete_totalTTC, entete.getTotalTTC());
+        values.put(entete_type_paiement, entete.getType_paiement());
+		values.put(entete_commit, entete.getCommit());
+        return bdd.update(TABLE_ENTETE, values, entete_entete + " = " +ent, null);
+    }
+	
     public long insertStock(QteStock stock){
         SQLiteDatabase bdd = this.getWritableDatabase();
         //Création d'un ContentValues (fonctionne comme une HashMap)

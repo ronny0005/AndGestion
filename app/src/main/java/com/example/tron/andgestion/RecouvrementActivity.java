@@ -215,13 +215,13 @@ public class RecouvrementActivity extends AppCompatActivity {
                                 mtt.setEnabled(true);
                                 mtt.setText(""+total);
                                 mtt.setEnabled(false);
+                                outils.addEcheance(String.valueOf(cr.getCbMarq()), String.valueOf(mtt_regl), fact.getEntete(), dr);
                                 if((int)fact.getMtt_avance()==0){
-                                    cr=ou.reglerEntete(fact.getEntete(), fact.getRef(), String.valueOf(mtt_regl));
+                                //    cr=ou.reglerEntete(fact.getEntete(), fact.getRef(), String.valueOf(mtt_regl));
                                 }else {
                                     if (cr == null) {
                                         //cr = outils.addReglement(fact.getEn), "RGT" /*+ fact.getId_client().getIntitule()*/, String.valueOf(mtt_regl),String.valueOf(parametre.getCo_no()));
                                     }
-                                    outils.addEcheance(String.valueOf(cr.getCbMarq()), String.valueOf(mtt_regl), fact.getEntete(), dr);
                                 }
                                 for(int i=0;i<lst_client.size();i++) {
 
@@ -229,6 +229,7 @@ public class RecouvrementActivity extends AppCompatActivity {
                                         valideFacture(lst_client.get(i).getNum());
                                     }
                                 }
+                                System.out.println("total "+total);
                                 if(total<=0){
                                     total = 0;
                                     mtt.setEnabled(true);

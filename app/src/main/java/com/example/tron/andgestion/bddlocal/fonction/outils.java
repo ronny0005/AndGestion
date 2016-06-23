@@ -63,6 +63,34 @@ public class outils implements Serializable{
         }
     }
 
+	public static void commit(Facture facture,Parametre parametre){
+		String entete="";
+        ArrayList<Entete> lentete= data.getEnteteWithEntete(facture.getEntete());
+        Entete b_entete = lentete.get(0);
+        String old_entete=b_entete.getEntete();
+        if(!facture.getCommit()) {
+            try {
+                entete = ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude());
+                b_entete.setCommit("oui");
+                b_entete.setEntete(entete);
+                data.updateEntete(b_entete.getEntete(), b_entete);
+            } catch (IOException e) {
+            }
+            ArrayList<Ligne> lligne = data.getLigneWithId(old_entete);
+            for (int i = 0; i < facture.getListe_article().size(); i++) {
+                ArticleServeur article = facture.getListe_article().get(i);
+                try {
+                    ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * (i + 1), article.getQte_vendue(), 0, facture.getVehicule(), facture.getCr());
+                    Ligne l = lligne.get(i);
+                    l.setEntete(entete);
+                    data.updateLigne(String.valueOf(l.getId()), l);
+                } catch (IOException e) {
+                }
+            }
+            reglerEntete(facture.getEntete(), facture.getRef(), String.valueOf(facture.getMtt_avance()));
+        }
+	}
+	
     public static ArrayList<BmqModele> getBmq(int cono, String datedeb, String datefin) {
         JSONObject json = null;
         ArrayList<BmqModele> ldep = new ArrayList<BmqModele>();
@@ -618,7 +646,7 @@ public class outils implements Serializable{
     }
 
 
-    public static Parametre getParametre(String password,String nomUser) throws IOException{
+    public static Parametre getParametre(String nomUser,String password) throws IOException{
         JSONObject json = null;
         int qte=0;
         try {

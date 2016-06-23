@@ -105,8 +105,7 @@ public class ValideActivity extends AppCompatActivity {
 
         if (Double.compare(total_ttc, d) >= 0) {
             if (comptant.isChecked() || credit.isChecked()) {
-                if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty()
-                        && Double.compare(total_ttc, d) >= 0) {
+                if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty() && Double.compare(total_ttc, d) >= 0) {
                     facture.setStatut("avance");
                     facture.setMtt_avance(d);
                 }
@@ -127,28 +126,25 @@ public class ValideActivity extends AppCompatActivity {
                     Entete b_entete = new Entete(facture.getRef(), facture.getEntete(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
                             facture.getId_client().getNum(),nouv,facture.getStatut(),facture.getType_paiement(),
                             montant, String.valueOf(facture.getLatitude()),String.valueOf(facture.getLongitude()),t_ttc.getText().toString());
-System.out.println(b_entete);
                     try {
                         entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
+                        facture.setEntete(entete);
                         b_entete.setCommit("oui");
                         b_entete.setEntete(entete);
                         ou.data.insertEntete(b_entete);
                     }catch(IOException e){
                         b_entete.setEntete(ref);
                         b_entete.setCommit("non");
+						facture.setCommit(false);
                         ou.data.insertEntete(b_entete);
                     }
 
-                    System.out.println(b_entete);
-                    //facture.setEntete(entete+"  liste "+facture.getListe_article().size());
                     for (int i = 0; i < facture.getListe_article().size(); i++) {
                         ArticleServeur article = facture.getListe_article().get(i);
-                        System.out.println(article);
                         Ligne ligne = new Ligne(b_entete.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getAr_prixven()),String.valueOf(article.getTaxe1())
                                 , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000",String.valueOf(article.getAr_prixven()));
-                        System.out.println(ligne);
                         try{
-                            ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * i, article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
+                            ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * (i+1), article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
                             ligne.setEntete(entete);
                             ou.data.insertLigne(ligne);
                         }catch(IOException e){
@@ -160,23 +156,24 @@ System.out.println(b_entete);
                         }
                     }
                     facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-                    System.out.println("sorit ca !!!!!");
                     liste_facture.add(facture);
                     facture.setNouveau(false);
                     facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
                     montant = "0";
-                    if(comptant.isChecked())
-                        montant=ttcformat.format(total_ttc);
-                    else
-                    if(!mtt_avance.getText().toString().equals(""))
-                        montant=mtt_avance.getText().toString();
-                    if(facture.getNouveau()==true)
-                        nouv="true";
-                    else
-                        nouv="false";
-                    //b_entete = new Entete(facture.getRef(), facture.getEntete(), facture.getDO_Date(), facture.getId_client().getNum(), nouv, facture.getStatut(), facture.getType_paiement(), montant, String.valueOf(facture.getLatitude()), String.valueOf(facture.getLongitude()), String.valueOf(facture.getTotalTTC()));
-                    ou.reglerEntete(facture.getEntete(), facture.getRef(),montant);
-                }
+                    if(comptant.isChecked()) {
+                        montant = ttcformat.format(total_ttc);
+                        //ou.reglerEntete(facture.getEntete(), facture.getRef(), montant);
+                    }
+                        else
+                        if (!mtt_avance.getText().toString().equals(""))
+                            montant = mtt_avance.getText().toString();
+                        if (facture.getNouveau() == true)
+                            nouv = "true";
+                        else
+                            nouv = "false";
+                        if (!mtt_avance.getText().toString().equals(""))
+                            ou.reglerEntete(facture.getEntete(), facture.getRef(), montant);
+                   }
                 Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
                 intent.putExtra("liste_facture", liste_facture);
                 intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
@@ -295,6 +292,7 @@ System.out.println(b_entete);
                     credit.setChecked(true);
                 else
                     comptant.setChecked(true);
+                    comptant.setChecked(true);
         }
 
         facture.setType_paiement("espece");
@@ -331,7 +329,6 @@ System.out.println(b_entete);
             total_precompte += Math.round(prix * article.getTaxe2() / 100);
             total_marge += Math.round(article.getQte_vendue() * article.getTaxe3());
             total_ht += prix;
-            System.out.println(article.getAr_design() + " total :" + prix);
         }
 
 

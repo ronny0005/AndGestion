@@ -49,23 +49,7 @@ public class Ligne {
         this.DL_Ligne = DL_Ligne;
         this.DL_PrixVente = DL_PrixVente;
     }
-/*
-    public Ligne(String id, String entete, String DO_Date, String AR_Ref, String AR_Design, String DL_Qte, String DL_PrixUnitaire, String DL_Taxe1, String DL_Taxe2, String DL_Taxe3, String DL_MontantTTC, String DL_Ligne, String DL_PrixVente) {
-        this.id = id;
-        this.entete = entete;
-        this.DO_Date = DO_Date;
-        this.AR_Ref = AR_Ref;
-        this.AR_Design = AR_Design;
-        this.DL_Qte = DL_Qte;
-        this.DL_PrixUnitaire = DL_PrixUnitaire;
-        this.DL_Taxe1 = DL_Taxe1;
-        this.DL_Taxe2 = DL_Taxe2;
-        this.DL_Taxe3 = DL_Taxe3;
-        this.DL_MontantTTC = DL_MontantTTC;
-        this.DL_Ligne = DL_Ligne;
-        this.DL_PrixVente = DL_PrixVente;
-    }
-*/
+
     public String getDL_PrixVente() {
         return DL_PrixVente;
     }
