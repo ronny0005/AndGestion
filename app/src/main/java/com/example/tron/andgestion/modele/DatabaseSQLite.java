@@ -226,7 +226,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.dbContext = context;
         // checking database and open it if exists
-        /*if (checkDataBase()) {
+        if (checkDataBase()) {
             openDataBase();
         } else
         {
@@ -240,7 +240,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
                 throw new Error("Error copying database");
             }
             Toast.makeText(context, "Initial database is created", Toast.LENGTH_LONG).show();
-        }*/
+        }
     }
 
     private void copyDataBase() throws IOException {
@@ -743,8 +743,22 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<Entete> getEnteteWithCommit(){
+        //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
+        SQLiteDatabase bdd = this.getReadableDatabase();
+        ArrayList<Entete>  list = new ArrayList<Entete>();
+        Cursor c = bdd.query(TABLE_ENTETE, new String[] {entete_id,entete_ref,entete_entete,entete_DO_Date,entete_id_client,entete_nouveau,entete_statut,entete_type_paiement,entete_mtt_avance,entete_latitude,entete_longitude,entete_commit,entete_totalTTC}, entete_commit+ " = 'true'", null, null, null, null);
+        while(c.moveToNext()){
+            list.add(cursorToEntete(c));
+        }
+        c.close();
+        return list;
+    }
+
     public ArrayList<Entete> getEnteteWithEntete(String id_c){
         //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
+        System.out.println(id_c+" cool");
+
         SQLiteDatabase bdd = this.getReadableDatabase();
         ArrayList<Entete>  list = new ArrayList<Entete>();
         Cursor c = bdd.query(TABLE_ENTETE, new String[] {entete_id,entete_ref,entete_entete,entete_DO_Date,entete_id_client,entete_nouveau,entete_statut,entete_type_paiement,entete_mtt_avance,entete_latitude,entete_longitude,entete_commit,entete_totalTTC}, entete_entete+ " = '" + id_c+"'", null, null, null, null);
@@ -791,7 +805,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         values.put(entete_totalTTC, entete.getTotalTTC());
         values.put(entete_type_paiement, entete.getType_paiement());
 		values.put(entete_commit, entete.getCommit());
-        return bdd.update(TABLE_ENTETE, values, entete_entete + " = " +ent, null);
+        return bdd.update(TABLE_ENTETE, values, entete_entete + " = '" +ent+"'", null);
     }
 	
     public long insertStock(QteStock stock){

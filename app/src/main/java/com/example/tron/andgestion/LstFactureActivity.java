@@ -149,8 +149,11 @@ public class LstFactureActivity extends AppCompatActivity {
                 new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
         ajoutListe();
         initVariable();
-        for(int i=0;i<liste_facture.size();i++)
-//        ou.commit(liste_facture.get(i),parametre);
+        System.out.println(liste_facture.size()+" taille");
+    //    if(ou.data.getEnteteWithDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date())).size()>0)
+    //   for(int i=0;i<liste_facture.size();i++)
+    //       ou.commit(parametre);
+
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

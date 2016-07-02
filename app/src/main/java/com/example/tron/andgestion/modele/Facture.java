@@ -252,4 +252,8 @@ public class Facture implements Serializable {
 				", commit='" + commit + '\'' +
                 '}';
     }
+
+    public void setid(int id) {
+        this.id = id;
+    }
 }

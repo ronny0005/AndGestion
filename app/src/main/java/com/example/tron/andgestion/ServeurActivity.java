@@ -31,7 +31,6 @@ public class ServeurActivity extends AppCompatActivity {
         final SharedPreferences.Editor editor = mSettings.edit();
 
         data= mSettings.getString(DATA_TAG, null);
-        System.out.println(data);
         if(data!=null){
             ou.lien=data;
             Intent intent = new Intent(ServeurActivity.this, MainActivity.class);

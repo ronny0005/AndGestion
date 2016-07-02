@@ -131,12 +131,12 @@ public class ValideActivity extends AppCompatActivity {
                         facture.setEntete(entete);
                         b_entete.setCommit("oui");
                         b_entete.setEntete(entete);
-                        ou.data.insertEntete(b_entete);
+            //            ou.data.insertEntete(b_entete);
                     }catch(IOException e){
                         b_entete.setEntete(ref);
                         b_entete.setCommit("non");
 						facture.setCommit(false);
-                        ou.data.insertEntete(b_entete);
+            //            ou.data.insertEntete(b_entete);
                     }
 
                     for (int i = 0; i < facture.getListe_article().size(); i++) {
@@ -146,13 +146,13 @@ public class ValideActivity extends AppCompatActivity {
                         try{
                             ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * (i+1), article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
                             ligne.setEntete(entete);
-                            ou.data.insertLigne(ligne);
+            //                ou.data.insertLigne(ligne);
                         }catch(IOException e){
-                            ou.data.insertLigne(ligne);
-                            ligne.setEntete(ref);
-                            QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
-                            stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
-                            ou.data.updateStock(article.getAr_ref(),stock);
+            //                ou.data.insertLigne(ligne);
+            //                ligne.setEntete(ref);
+            //                QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
+            //                stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
+            //                ou.data.updateStock(article.getAr_ref(),stock);
                         }
                     }
                     facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));

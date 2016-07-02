@@ -82,7 +82,7 @@ public class BmqActivity extends AppCompatActivity {
         lstk = new ArrayList<BmqModele>();
         double total_tva = 0,total_precompte=0,total_remise=0,total_comptant=0,total_ht=0,manquant = 0,total_marge=0,total_ventettc=0;
 
-        lstk = ou.getBmq(22, new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
+        lstk = ou.getBmq(param.getDe_no(), new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
         System.out.println(lstk);
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         if(!lstk.isEmpty()){

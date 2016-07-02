@@ -37,6 +37,7 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -63,31 +64,35 @@ public class outils implements Serializable{
         }
     }
 
-	public static void commit(Facture facture,Parametre parametre){
+   public static void commit(Parametre parametre){
 		String entete="";
-        ArrayList<Entete> lentete= data.getEnteteWithEntete(facture.getEntete());
-        Entete b_entete = lentete.get(0);
+       // ArrayList<Entete> lentete=
+        data.getEnteteWithDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        ArrayList<Entete> lentete=
+                data.getEnteteWithDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+         Entete b_entete = lentete.get(0);
         String old_entete=b_entete.getEntete();
-        if(!facture.getCommit()) {
+        if(b_entete.getCommit().equals("false")) {
             try {
-                entete = ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude());
+                entete = ajoutEnteteServeur(parametre.getCo_no(), data.getClientWithId(b_entete.getId_client()).getNum(), b_entete.getRef(), "1", Float.parseFloat(b_entete.getLatitude()),Float.parseFloat(b_entete.getLongitude()));
                 b_entete.setCommit("oui");
                 b_entete.setEntete(entete);
                 data.updateEntete(b_entete.getEntete(), b_entete);
             } catch (IOException e) {
             }
             ArrayList<Ligne> lligne = data.getLigneWithId(old_entete);
-            for (int i = 0; i < facture.getListe_article().size(); i++) {
-                ArticleServeur article = facture.getListe_article().get(i);
+            for (int i = 0; i < lligne.size(); i++) {
+                Ligne article = lligne.get(i);
                 try {
-                    ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * (i + 1), article.getQte_vendue(), 0, facture.getVehicule(), facture.getCr());
+                    ajoutLigneServeur(entete, article.getAR_Ref(), 10000 * (i + 1), Integer.parseInt(article.getDL_Qte()), 0, "","");
                     Ligne l = lligne.get(i);
                     l.setEntete(entete);
                     data.updateLigne(String.valueOf(l.getId()), l);
                 } catch (IOException e) {
                 }
             }
-            reglerEntete(facture.getEntete(), facture.getRef(), String.valueOf(facture.getMtt_avance()));
+            reglerEntete(b_entete.getEntete(), b_entete.getRef(), String.valueOf(b_entete
+                    .getMtt_avance()));
         }
 	}
 	
@@ -95,7 +100,7 @@ public class outils implements Serializable{
         JSONObject json = null;
         ArrayList<BmqModele> ldep = new ArrayList<BmqModele>();
         try {
-            json = new JSONObject(getJsonFromServer("getBmqVendeur?depot=22&datedeb=" + datedeb + "&datefin=" + datefin));
+            json = new JSONObject(getJsonFromServer("getBmqVendeur?depot="+cono+"&datedeb=" + datedeb + "&datefin=" + datefin));
             JSONArray jArray = json.getJSONArray("data");
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
@@ -113,7 +118,7 @@ public class outils implements Serializable{
         JSONObject json = null;
         ArrayList<ManquantModele> ldep = new ArrayList<ManquantModele>();
         try {
-            json = new JSONObject(getJsonFromServer("manquantVendeur?collaborateur_deb=19&debut="+datedeb+"&fin="+datefin));
+            json = new JSONObject(getJsonFromServer("manquantVendeur?collaborateur_deb="+cono+"&debut="+datedeb+"&fin="+datefin));
             JSONArray jArray = json.getJSONArray("data");
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
@@ -301,6 +306,8 @@ public class outils implements Serializable{
                     facture.setStatut("credit");
                 facture.setRef(json_data.getString("DO_Ref"));
                 facture.setEntete(json_data.getString("DO_Piece"));
+                facture.setLatitude(Double.parseDouble(json_data.getString("latitude")));
+                facture.setLongitude(Double.parseDouble(json_data.getString("longitude")));
                 json = new JSONObject(getJsonFromServer("getLigneFacture?DO_Piece=" + json_data.getString("DO_Piece")));
                 JSONArray jArrayFacture = json.getJSONArray("data");
                 for (int j = 0; j < jArrayFacture.length(); j++) {

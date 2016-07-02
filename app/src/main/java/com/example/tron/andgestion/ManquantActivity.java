@@ -79,7 +79,7 @@ public class ManquantActivity extends AppCompatActivity {
         lstk = new ArrayList<ManquantModele>();
         double total=0;
         //data = new ArrayList<Map<String, String>>();
-        lstk = ou.getManquant(19,new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
+        lstk = ou.getManquant(parametre.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(deb), new SimpleDateFormat("yyyy-MM-dd").format(fin));
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for (int i = 0; i < lstk.size(); i++) {
             total = total + lstk.get(i).getMontant();
