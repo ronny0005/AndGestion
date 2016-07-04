@@ -65,8 +65,8 @@ public class EtatReglementActivity extends AppCompatActivity {
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         valideFacture();
         for(int i=0;i<liste_reglement.size();i++) {
-            data.add(createRow(liste_facture.get(i).getRef(), " N°  : " + liste_reglement.get(i).getRG_No()+"\n Client : " + liste_reglement.get(i).getRG_Date()
-            +"\n Position : " + liste_reglement.get(i).getRG_Libelle()+"," + liste_reglement.get(i).getCT_Intitule()+","+ liste_reglement.get(i).getMontant()));
+            data.add(createRow(liste_reglement.get(i).getRG_No(), "Date : " + liste_reglement.get(i).getRG_Date()
+            +"\nLibelle : " + liste_reglement.get(i).getRG_Libelle()+"\nClient : " + liste_reglement.get(i).getCT_Intitule()+"\nMontant : "+ liste_reglement.get(i).getMontant()));
         }
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};

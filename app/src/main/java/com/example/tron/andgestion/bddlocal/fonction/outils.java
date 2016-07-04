@@ -389,7 +389,7 @@ public class outils implements Serializable{
         ArrayList<ReglementModele> ldep = null;
         try {
             String url = "getAllArticleDispoByArRef";
-            json = new JSONObject(getJsonFromServer("getReglement?CO_No="+co_no+"&date_deb="+date_deb+"&date_fin="+date_fin));
+            json = new JSONObject(getJsonFromServer("getReglement?CO_No="+co_no+"&datedeb="+date_deb+"&datefin="+date_fin));
             JSONArray jArray = json.getJSONArray("data");
             ldep= new ArrayList<ReglementModele>();
             for(int i=0; i<jArray.length(); i++){

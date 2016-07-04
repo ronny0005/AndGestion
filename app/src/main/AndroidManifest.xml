@@ -30,6 +30,7 @@
         <activity android:name=".StockActivity" />
         <activity android:name=".FactureActivity" />
         <activity android:name=".LstFactureActivity" />
+        <activity android:name=".EtatReglementActivity" />
         <activity android:name=".MenuActivity">
 
             </activity>
