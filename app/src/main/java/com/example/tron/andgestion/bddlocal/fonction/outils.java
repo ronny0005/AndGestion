@@ -74,7 +74,7 @@ public class outils implements Serializable{
         String old_entete=b_entete.getEntete();
         if(b_entete.getCommit().equals("false")) {
             try {
-                entete = ajoutEnteteServeur(parametre.getCo_no(), data.getClientWithId(b_entete.getId_client()).getNum(), b_entete.getRef(), "1", Float.parseFloat(b_entete.getLatitude()),Float.parseFloat(b_entete.getLongitude()));
+                entete = ajoutEnteteServeur(parametre.getCo_no(), data.getClientWithId(b_entete.getId_client()).getNum(), b_entete.getRef(), "1", Float.parseFloat(b_entete.getLatitude()),Float.parseFloat(b_entete.getLongitude()),b_entete.getDO_Date());
                 b_entete.setCommit("oui");
                 b_entete.setEntete(entete);
                 data.updateEntete(b_entete.getEntete(), b_entete);
@@ -692,11 +692,11 @@ public class outils implements Serializable{
         }
     }
 
-    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon) throws IOException {
+    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon,String date) throws IOException {
         JSONObject json = null;
         int qte=0;
         try {
-            String url="addDocentete?CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac+"&N_Reglement="+reg+"&Latitude=" + lat+"&Longitude=" + lon;
+            String url="addDocentete?CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac+"&N_Reglement="+reg+"&Latitude=" + lat+"&Longitude=" + lon+"&date=" + date;
             json = new JSONObject(getJsonFromServer(url));
             return json.getJSONObject("data").getString("DO_Piece");
         } catch (JSONException e) {
@@ -773,11 +773,11 @@ public class outils implements Serializable{
         act.startActivity(intent);
     }
 
-    public static cReglement addReglement(String client,String ref,String avance,String co_no,String CA_No){
+    public static cReglement addReglement(String client,String ref,String avance,String co_no,String CA_No,String date){
         JSONObject json = null;
         cReglement cr = null;
         try {
-            String url="addReglement?client="+client+"&libelle="+ref+"&avance="+avance+"&CO_No="+co_no+"&CA_No="+CA_No;
+            String url="addReglement?client="+client+"&libelle="+ref+"&avance="+avance+"&CO_No="+co_no+"&CA_No="+CA_No+"&date="+date;
             json = new JSONObject(getJsonFromServer(url));
             JSONObject jArray = json.getJSONObject("data");
             cr = new cReglement(jArray.getInt("RG_No"));

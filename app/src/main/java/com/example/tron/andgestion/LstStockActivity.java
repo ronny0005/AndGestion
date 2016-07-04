@@ -21,10 +21,12 @@ public class LstStockActivity extends AppCompatActivity {
     Button manquant;
     Button bmq;
     Button tmap;
+    Button tmapclient;
     outils ou;
 
     private void passeVariable(Intent intent){
         intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
+        System.out.println("liste article"+ ((ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture")).size());
         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
         intent.putExtra("outils", ou);
         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
@@ -46,6 +48,7 @@ public class LstStockActivity extends AppCompatActivity {
         manquant = (Button) findViewById(R.id.lststk_manquant);
         bmq = (Button) findViewById(R.id.lststk_bmq);
         tmap = (Button) findViewById(R.id.lststk_tmap);
+        tmapclient = (Button) findViewById(R.id.lststk_tmapclient);
 
         bmq.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -57,6 +60,13 @@ public class LstStockActivity extends AppCompatActivity {
         tmap.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LstStockActivity.this, TableauMapActivity.class);
+                passeVariable(intent);
+            }
+        });
+
+        tmapclient.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LstStockActivity.this, TableauMapClientActivity.class);
                 passeVariable(intent);
             }
         });

@@ -25,12 +25,15 @@ import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.Parametre;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -90,10 +93,14 @@ public class FactureActivity extends AppCompatActivity{
                 new int[]{android.R.id.text1, android.R.id.text2});
 
         lv.setAdapter(adapter);
-        if (facture.getListe_article().size() > 0)  // disable editing password
+        if (facture.getListe_article().size() > 0) { // disable editing password
             client.setEnabled(false);
-            else  // enable editing of password
+            date.setEnabled(false);
+        }
+            else { // enable editing of password
             client.setEnabled(true);
+            date.setEnabled(true);
+        }
     }
 
     public void initialise() {
@@ -139,7 +146,6 @@ public class FactureActivity extends AppCompatActivity{
 
         caisse.setText(parametre.getCa_no().getCa_intitule());
         date = (TextView) findViewById(R.id.facture_date);
-        date.setEnabled(false);
         caisse.setEnabled(false);
         date.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
 
@@ -271,6 +277,15 @@ public class FactureActivity extends AppCompatActivity{
                                 if (qteart >= Integer.parseInt(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
                                         facture.setId_client(lst_client.get(id_client));
+                                        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH);
+                                        Date deb = new Date();
+                                        try {
+                                             deb = format.parse(date.getText().toString());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(deb));
                                         if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                         } else {
 
@@ -283,7 +298,7 @@ public class FactureActivity extends AppCompatActivity{
                                                 facture.setLongitude(longitude);
 
                                                 // \n is for new line
-                                                Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                                            //    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                                             }else{
                                                 // can't get location
                                                 // GPS or Network is not enabled

@@ -127,7 +127,7 @@ public class ValideActivity extends AppCompatActivity {
                             facture.getId_client().getNum(),nouv,facture.getStatut(),facture.getType_paiement(),
                             montant, String.valueOf(facture.getLatitude()),String.valueOf(facture.getLongitude()),t_ttc.getText().toString());
                     try {
-                        entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude());
+                        entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude(),facture.getDO_Date());
                         facture.setEntete(entete);
                         b_entete.setCommit("oui");
                         b_entete.setEntete(entete);
@@ -214,6 +214,7 @@ public class ValideActivity extends AppCompatActivity {
                 "bp : BP 1838 DOUALA <br/>" +
                 "vendeur : "+parametre.getUser()+"<br/>";
         htmlDocument+="Fact N = "+facture.getEntete()+"<br/>";
+        htmlDocument+=facture.getDO_Date()+"<br/>";
         htmlDocument+="Client = ("+facture.getId_client().getIntitule()+")<br/><br/>";
         htmlDocument+="<table>";
         double total_tva=0;

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tron.andgestion.modele.ArticleServeur;
 import com.example.tron.andgestion.modele.cReglement;
@@ -50,6 +51,7 @@ public class RecouvrementActivity extends AppCompatActivity {
     List<Map<String, String>> data;
     outils ou;
     TextView mtt;
+    TextView date;
     Map<String, String> datum;
     int compteur = 0;
     Date datecmpt = new Date();
@@ -153,6 +155,8 @@ public class RecouvrementActivity extends AppCompatActivity {
         lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
         liste_recouvrement = new ArrayList<Facture>();
         mtt = (TextView) findViewById(R.id.recouvrement_mtt);
+        date = (TextView) findViewById(R.id.recouvrement_date);
+        date.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         mtt.setEnabled(false);
         valide.setEnabled(false);
 
@@ -189,10 +193,21 @@ public class RecouvrementActivity extends AppCompatActivity {
                 System.out.println(String.valueOf(parametre.getCa_no().getCa_no()));
                 System.out.println(String.valueOf(parametre.getCo_no()));
                 System.out.println(Integer.parseInt(mtt.getText().toString()));
-               cr =  outils.addReglement(clt, "RGT" , String.valueOf( Integer.parseInt(mtt.getText().toString())),String.valueOf(parametre.getCo_no()),String.valueOf(parametre.getCa_no().getCa_no()));
-                System.out.println(cr);
-                lst_fact.setEnabled(true);
-                mtt.setEnabled(false);
+
+                DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
+                format.setLenient(false);
+                Date deb = new Date();
+                try {
+                    deb = format.parse(date.getText().toString());
+                    cr =  outils.addReglement(clt, "RGT" , String.valueOf( Integer.parseInt(mtt.getText().toString())),String.valueOf(parametre.getCo_no()),String.valueOf(parametre.getCa_no().getCa_no()),new SimpleDateFormat("yyyy-MM-dd").format(deb));
+                    System.out.println(cr);
+                    lst_fact.setEnabled(true);
+                    mtt.setEnabled(false);
+                } catch (ParseException e) {
+                    Toast.makeText(getApplicationContext(), "Le format de date est incorrect !", Toast.LENGTH_LONG).show();
+
+                }
+
             }
         });
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {

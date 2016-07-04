@@ -77,7 +77,6 @@ public class EquationActivity extends AppCompatActivity {
                public void onClick(View v) {
                if(!dt_deb.getText().toString().isEmpty() && !dt_fin.getText().toString().isEmpty()) {
                    try {
-
                        DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
                        Date deb = format.parse(dt_deb.getText().toString());
                        Date fin = format.parse(dt_fin.getText().toString());

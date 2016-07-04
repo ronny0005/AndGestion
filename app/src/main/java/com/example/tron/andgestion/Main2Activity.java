@@ -36,7 +36,7 @@ public class Main2Activity extends AppCompatActivity {
         String old_entete=b_entete.getEntete();
         if(!facture.getCommit()) {
             try {
-                entete = ou.ajoutEnteteServeur(19/*parametre.getCo_no()*/, facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude());
+                entete = ou.ajoutEnteteServeur(19/*parametre.getCo_no()*/, facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude(),"2016-01-01");
                 b_entete.setCommit("oui");
                 b_entete.setEntete(entete);
                 data.updateEntete(b_entete.getEntete(), b_entete);
@@ -100,7 +100,7 @@ facture.setEntete("AND0001");
         String old_entete=b_entete.getEntete();
         if(!facture.getCommit()) {
             try {
-                entete = ou.ajoutEnteteServeur(19/*parametre.getCo_no()*/, facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude());
+                entete = ou.ajoutEnteteServeur(19/*parametre.getCo_no()*/, facture.getId_client().getNum(), facture.getRef(), "1", (float) facture.getLatitude(), (float) facture.getLongitude(),"2016-01-01");
                 b_entete.setCommit("oui");
                 b_entete.setEntete(entete);
                 data.updateEntete(b_entete.getEntete(), b_entete);

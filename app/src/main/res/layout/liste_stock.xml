@@ -60,4 +60,18 @@
             android:text="tableau map"
             android:id="@+id/lststk_tmap" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dp" >
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="TABLEAU MAP CLIENT"
+            android:id="@+id/lststk_tmapclient" />
+
+    </LinearLayout>
+
 </LinearLayout>
