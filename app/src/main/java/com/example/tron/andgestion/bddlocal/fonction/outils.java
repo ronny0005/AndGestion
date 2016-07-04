@@ -16,6 +16,7 @@ import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.DatabaseSQLite;
 import com.example.tron.andgestion.modele.Entete;
 import com.example.tron.andgestion.modele.Ligne;
+import com.example.tron.andgestion.modele.ReglementModele;
 import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Caisse;
 import com.example.tron.andgestion.modele.Client;
@@ -374,6 +375,26 @@ public class outils implements Serializable{
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
                 ldep.add(new StockEqVendeur(json_data.getString("AR_Design"), json_data.getInt("STOCKS"), json_data.getInt("ENTREES"), json_data.getInt("RETOURS"), json_data.getInt("AVARIS"), json_data.getInt("STOCK_FINAL"), json_data.getInt("QTE_VENDUES"), json_data.getInt("STOCK_RESTANTS")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
+    public static ArrayList<ReglementModele> listeReglement(String date_deb, String date_fin,int co_no) {
+        JSONObject json = null;
+        ArrayList<ReglementModele> ldep = null;
+        try {
+            String url = "getAllArticleDispoByArRef";
+            json = new JSONObject(getJsonFromServer("getReglement?CO_No="+co_no+"&date_deb="+date_deb+"&date_fin="+date_fin));
+            JSONArray jArray = json.getJSONArray("data");
+            ldep= new ArrayList<ReglementModele>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                ldep.add(new ReglementModele(json_data.getString("RG_No"), json_data.getString("RG_Date"), json_data.getString("CT_Intitule"), json_data.getString("RG_Libelle"), json_data.getDouble("montant")));
             }
         } catch (JSONException e) {
             e.printStackTrace();

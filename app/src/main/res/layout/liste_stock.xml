@@ -62,8 +62,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="100dp" >
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal">
 
         <Button
             android:layout_width="fill_parent"
@@ -72,6 +73,12 @@
             android:text="TABLEAU MAP CLIENT"
             android:id="@+id/lststk_tmapclient" />
 
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="REGLEMENT"
+            android:id="@+id/lststk_reglemnt" />
     </LinearLayout>
 
 </LinearLayout>

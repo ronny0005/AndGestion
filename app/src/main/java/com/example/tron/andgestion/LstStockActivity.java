@@ -22,6 +22,7 @@ public class LstStockActivity extends AppCompatActivity {
     Button bmq;
     Button tmap;
     Button tmapclient;
+    Button reglement;
     outils ou;
 
     private void passeVariable(Intent intent){
@@ -49,6 +50,7 @@ public class LstStockActivity extends AppCompatActivity {
         bmq = (Button) findViewById(R.id.lststk_bmq);
         tmap = (Button) findViewById(R.id.lststk_tmap);
         tmapclient = (Button) findViewById(R.id.lststk_tmapclient);
+        reglement = (Button) findViewById(R.id.lststk_reglemnt);
 
         bmq.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -96,6 +98,13 @@ public class LstStockActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LstStockActivity.this, MapsActivity.class);
                 intent.putExtra("position",0);
+                passeVariable(intent);
+            }
+        });
+
+        reglement.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LstStockActivity.this, EtatReglementActivity.class);
                 passeVariable(intent);
             }
         });
