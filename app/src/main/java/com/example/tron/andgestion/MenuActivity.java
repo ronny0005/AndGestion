@@ -45,7 +45,6 @@ public class MenuActivity extends AppCompatActivity {
         facture = (Button) findViewById(R.id.menu_facture);
         parametre = (Button) findViewById(R.id.menu_parametres);
         etat = (Button) findViewById(R.id.menu_etats);
-        avari = (Button) findViewById(R.id.menu_avaris);
         recouvrement = (Button) findViewById(R.id.menu_recouvrement);
 
         etat.setOnClickListener(new View.OnClickListener() {
