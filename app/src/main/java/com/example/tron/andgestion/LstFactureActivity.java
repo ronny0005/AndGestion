@@ -117,8 +117,10 @@ public class LstFactureActivity extends AppCompatActivity {
             DecimalFormat ttcformat = new DecimalFormat("#");
             if(fac.getStatut().equals("avance"))
                 val=" ("+ttcformat.format(fac.getMtt_avance())+")";
+
+            String nomclient = fac.getId_client().getIntitule();
             data.add(createRow(fac.getRef() + " - " + fac.getEntete()+" - " + fac.getStatut()+val ,
-                    "Client : " + fac.getId_client().getIntitule()+ "\nTotal TTC : "+ fac.getTotalTTC()
+                    "Client : " + nomclient+ "\nTotal TTC : "+ fac.getTotalTTC()
                             +"\n"+fac.getDO_Date() ));
         }
         String[] from = {"value1", "value2"};

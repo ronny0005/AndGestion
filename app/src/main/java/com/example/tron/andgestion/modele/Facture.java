@@ -25,6 +25,7 @@ public class Facture implements Serializable {
     private String DO_Date;
     private String vehicule;
     private String cr;
+    private Vehicule vehicule_objet;
 	private boolean commit;
 	
 
@@ -40,6 +41,21 @@ public class Facture implements Serializable {
         this.statut="";
         this.vehicule="";
         this.cr="";
+    }
+
+    public void init(){
+        this.id_client = new Client("","");
+    }
+    public Vehicule getVehicule_objet() {
+        return vehicule_objet;
+    }
+
+    public void setVehicule_objet(Vehicule vehicule_objet) {
+        this.vehicule_objet = vehicule_objet;
+    }
+
+    public boolean isCommit() {
+        return commit;
     }
 
     public String getCr() {
@@ -137,7 +153,7 @@ public class Facture implements Serializable {
         this.liste_article= new ArrayList<ArticleServeur>();
         this.position_article= new  ArrayList<Integer>();
         this.liste_ligne= new  ArrayList<Integer>();
-        this.id_client=null;
+        init();
         this.id=0;
         this.setNouveau(true);
         this.entete="";
@@ -150,6 +166,7 @@ public class Facture implements Serializable {
         this.liste_article= new  ArrayList<ArticleServeur>();
         this.vehicule="";
         this.cr="";
+        init();
     }
 
     public String getType_paiement() {
