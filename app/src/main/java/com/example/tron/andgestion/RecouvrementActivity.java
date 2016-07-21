@@ -254,6 +254,10 @@ public class RecouvrementActivity extends AppCompatActivity {
                                     cr=null;
                                 }
                                 AfficheFacture();
+                                if(total>0) {
+                                    lst_fact.setEnabled(true);
+                                    mtt.setEnabled(false);
+                                }
 
                             }
                         })
