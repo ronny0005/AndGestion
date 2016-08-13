@@ -272,9 +272,19 @@ public class outils implements Serializable{
             return "YDE";
         if(num==3)
             return "BAF";
+        if(num==6)
+            return "NKO";
+        if(num==5)
+            return "KUM";
+        if(num==8)
+            return "BMD";
+        if(num==7)
+            return "BER";
+        if(num==10)
+            return "NGA";
         if(num==4)
             return "CO";
-        if(num==6)
+        if(num==11)
             return nom;
         return "";
     }
@@ -309,60 +319,30 @@ public class outils implements Serializable{
                 facture.setEntete(json_data.getString("DO_Piece"));
                 facture.setLatitude(Double.parseDouble(json_data.getString("latitude")));
                 facture.setLongitude(Double.parseDouble(json_data.getString("longitude")));
-                json = new JSONObject(getJsonFromServer("getLigneFacture?DO_Piece=" + json_data.getString("DO_Piece")));
-                JSONArray jArrayFacture = json.getJSONArray("data");
-                for (int j = 0; j < jArrayFacture.length(); j++) {
-                    JSONObject json_datafact = jArrayFacture.getJSONObject(j);
-                    ArticleServeur art = new ArticleServeur(json_datafact.getString("AR_Ref"), json_datafact.getString("DL_Design")
-                            , json_datafact.getDouble("DL_PrixUnitaire"), json_datafact.getDouble("DL_Taxe1"), json_datafact.getDouble("DL_Taxe2"),
-                            json_datafact.getDouble("DL_Taxe3"));
-                    art.setQte_vendue(json_datafact.getInt("DL_Qte"));
-                    art.setAr_prixven((float) json_datafact.getDouble("DL_PrixUnitaire"));
-                    facture.getListe_article().add(art);
-                }
                 list.add(facture);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            list = new ArrayList<Facture>();
-            ArrayList<Entete> lentete = data.getEnteteWithDate(datedeb);
-            for (int i = 0; i < lentete.size(); i++) {
-                Entete entete = lentete.get(i);
-                Facture facture = new Facture();
-                System.out.println(entete);
-                facture.setNouveau(false);
-                facture.setId_client(data.getClientWithId(entete.getId_client()));
-                facture.setStatut(entete.getStatut());
-                facture.setDO_Date(facture.getDO_Date());
-                facture.setTotalTTC(Integer.parseInt(entete.getTotalTTC()));
-                facture.setMtt_avance(Double.parseDouble(entete.getMtt_avance()));
-                if ((int) facture.getMtt_avance() >= (int) facture.getTotalTTC() && (int) facture.getMtt_avance() > 0) {
-                    facture.setStatut("comptant");
-                } else if ((int) facture.getMtt_avance() > 0)
-                    facture.setStatut("avance");
-                else
-                    facture.setStatut("credit");
-                facture.setRef(entete.getRef());
-                facture.setEntete(entete.getEntete());
-                ArrayList<Ligne> lligne = data.getLigneWithId(facture.getEntete());
-                for (int j = 0; j < lligne.size(); j++) {
-                    Ligne ligne = lligne.get(j);
-                    System.out.println(ligne);
-                    ArticleServeur art = new ArticleServeur(ligne.getAR_Ref(), ligne.getAR_Design()
-                            , Double.parseDouble(ligne.getDL_PrixUnitaire()), Double.parseDouble(ligne.getDL_Taxe1()), Double.parseDouble(ligne.getDL_Taxe2()),
-                            Double.parseDouble(ligne.getDL_Taxe3()));
-                    System.out.println(art);
-                    art.setQte_vendue(Integer.parseInt(ligne.getDL_Qte()));
-                    art.setAr_prixven((float) Double.parseDouble(ligne.getDL_PrixVente()));
-                    facture.getListe_article().add(art);
-                }
-                list.add(facture);
-            }
+            
         }
         return list;
     }
 
+    public static void LigneFacture(Facture facture) throws IOException, JSONException {
+        JSONObject json = new JSONObject(getJsonFromServer("getLigneFacture?DO_Piece=" +facture.getEntete()));
+        JSONArray jArrayFacture = json.getJSONArray("data");
+        for (int j = 0; j < jArrayFacture.length(); j++) {
+            JSONObject json_datafact = jArrayFacture.getJSONObject(j);
+            ArticleServeur art = new ArticleServeur(json_datafact.getString("AR_Ref"), json_datafact.getString("DL_Design")
+                    , json_datafact.getDouble("DL_PrixUnitaire"), json_datafact.getDouble("DL_Taxe1"), json_datafact.getDouble("DL_Taxe2"),
+                    json_datafact.getDouble("DL_Taxe3"));
+            art.setQte_vendue(json_datafact.getInt("DL_Qte"));
+            art.setAr_prixven((float) json_datafact.getDouble("DL_PrixUnitaire"));
+            facture.getListe_article().add(art);
+        }
+    }
+    
     public static ArrayList<StockEqVendeur> eqStkVendeur(String depot,String date_deb,String date_fin) {
         JSONObject json = null;
         System.out.println(escapeHtml(depot));
@@ -690,6 +670,32 @@ public class outils implements Serializable{
                 return new Parametre(ob.getInt("DE_No"), ob.getString("CT_Num"), ob.getInt("CO_No"), ob.getInt("DO_Souche"),
                         ob.getString("affaire"), ob.getString("numDoc"), ob.getString("vehicule"),
                         nomUser, password, c,ob.getString("date_facture"),ob.getInt("r_Facture"),ob.getInt("ID_Facture"));
+            }else {
+                Toast.makeText(app, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public static Parametre changePassword(String login,String oldPwd ,String newPwd) throws IOException{
+        JSONObject json = null;
+        int qte=0;
+        try {
+            String url="changePwd?login="+login+"&oldPwd="+oldPwd+"&newPwd="+newPwd;
+            json = new JSONObject(getJsonFromServer(url));
+            JSONObject ob =json.getJSONObject("data");
+            ArrayList<Caisse> lcaisse = listeCaisseServeur();
+            Caisse c =null;
+            if(ob.getInt("id_parametre")!=0) {
+                for (int i = 0; i < lcaisse.size(); i++)
+                    if (lcaisse.get(i).getCa_no() == ob.getInt("CA_No"))
+                        c = lcaisse.get(i);
+                return new Parametre(ob.getInt("DE_No"), ob.getString("CT_Num"), ob.getInt("CO_No"), ob.getInt("DO_Souche"),
+                        ob.getString("affaire"), ob.getString("numDoc"), ob.getString("vehicule"),
+                        login, newPwd, c,ob.getString("date_facture"),ob.getInt("r_Facture"),ob.getInt("ID_Facture"));
             }else {
                 Toast.makeText(app, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
             }

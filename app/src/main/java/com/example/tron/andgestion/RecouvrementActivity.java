@@ -239,7 +239,6 @@ public class RecouvrementActivity extends AppCompatActivity {
                                     }
                                 }
                                 for(int i=0;i<lst_client.size();i++) {
-
                                     if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
                                         valideFacture(lst_client.get(i).getNum());
                                     }

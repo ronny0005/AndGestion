@@ -20,6 +20,9 @@ import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.Vehicule;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -159,9 +162,17 @@ public class LstFactureActivity extends AppCompatActivity {
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Facture fact = liste_facture.get(position);
-                Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-                itemCommun(intent,fact,position);
+                try {
+                    Facture fact = liste_facture.get(position);
+                    outils.LigneFacture(fact);
+                    Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
+                    itemCommun(intent,fact,position);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 

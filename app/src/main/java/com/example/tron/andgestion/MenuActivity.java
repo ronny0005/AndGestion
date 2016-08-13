@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
  */
 public class MenuActivity extends AppCompatActivity {
     Button facture;
-    Button parametre;
+   // Button parametre;
     Button etat;
     Button recouvrement;
     Button avari;
@@ -43,7 +45,7 @@ public class MenuActivity extends AppCompatActivity {
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app=MenuActivity.this;
         facture = (Button) findViewById(R.id.menu_facture);
-        parametre = (Button) findViewById(R.id.menu_parametres);
+       // parametre = (Button) findViewById(R.id.menu_parametres);
         etat = (Button) findViewById(R.id.menu_etats);
         recouvrement = (Button) findViewById(R.id.menu_recouvrement);
 
@@ -67,13 +69,53 @@ public class MenuActivity extends AppCompatActivity {
                 passeVariable(intent);
             }
         });
-        parametre.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this, ParametresActivity.class);
-                passeVariable(intent);
-            }
-        });
+        //parametre.setOnClickListener(new View.OnClickListener() {
+          //  public void onClick(View v) {
+               /// Intent intent = new Intent(MenuActivity.this, ParametresActivity.class);
+              //  passeVariable(intent);
+          //  }
+       // });
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        //outils Ou = new outils();
+        //Ou.app = MenuActivity.this;
+        Intent intent = new Intent(MenuActivity.this, MenuActivity.class);
+        startActivity(intent);
+        //itemCommun(intent,null,0);
+        super.onBackPressed();  // optional depending on your needs
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+       MenuItem deconnexion =  menu.add(Menu.NONE,1, Menu.NONE, "Déconnexion");
+       // MenuItem password =  menu.add(Menu.NONE,2, Menu.NONE, "Changer Mot de Passe");
+        deconnexion.setIcon(R.drawable.deconnexion);
+       /// password.setIcon(R.drawable.password);
+        deconnexion.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        //password.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 1:
+                System.out.println("deconnxion");
+                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            //case 2:
+              //  System.out.println("change password");
+               // Intent intent2 = new Intent(MenuActivity.this, ChangePassword.class);
+               // startActivity(intent2);
+               // return true;
+
+            default:
+                return false;
+        }
+    }
 
 }
