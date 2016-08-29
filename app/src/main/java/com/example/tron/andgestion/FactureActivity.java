@@ -65,6 +65,7 @@ public class FactureActivity extends AppCompatActivity{
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     Parametre parametre;
     Facture facture;
+    Boolean annule=true;
 
     public void verouille(){
         if(!facture.getNouveau()) {
@@ -202,6 +203,7 @@ public class FactureActivity extends AppCompatActivity{
                     total.setText(calculPrix());
                     facture.setListe_ligne(new ArrayList<Integer>());
                     facture.setListe_article(new ArrayList<ArticleServeur>());
+                    annule=true;
                 }
             }
         });
@@ -323,6 +325,7 @@ public class FactureActivity extends AppCompatActivity{
                                     total.setText(calculPrix());
                                     clear();
                                     designation.requestFocus();
+                                    annule=false;
                                 } else {
 
                                     DecimalFormat ttcformat = new DecimalFormat("#");
@@ -356,5 +359,15 @@ public class FactureActivity extends AppCompatActivity{
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if(annule) {
+            super.onBackPressed();  // optional depending on your needs
+        }else {
+            Toast.makeText(FactureActivity.this, "Veuillez annuler la facture.", Toast.LENGTH_SHORT).show();
+        }
     }
 }
