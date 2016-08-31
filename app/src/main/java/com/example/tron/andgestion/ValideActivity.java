@@ -2,6 +2,7 @@ package com.example.tron.andgestion;
 
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.usb.UsbDevice;
 import android.os.Build;
 import android.os.Bundle;
 import android.print.PrintAttributes;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,8 @@ import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.QteStock;
+import com.zj.usbsdk.PrintPic;
+import com.zj.usbsdk.UsbController;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -45,6 +49,12 @@ public class ValideActivity extends AppCompatActivity {
     double total_marge = 0;
     double total_ttc = 0;
     double total_ht = 0;
+
+    private int[][] u_infor;
+    UsbController usbCtrl = null;
+    UsbDevice dev = null;
+    private Button btnSend = null;
+    private EditText txt_content = null;
     TextView t_marge;
     TextView t_ht;
     TextView t_tva;
@@ -193,22 +203,6 @@ public class ValideActivity extends AppCompatActivity {
             imprime();
     }
     public void imprime(){
-        WebView webView = new WebView(this);
-        webView.setWebViewClient(new WebViewClient() {
-
-            public boolean shouldOverrideUrlLoading(WebView view,
-                                                    String url)
-            {
-                return false;
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url)
-            {
-                createWebPrintJob(view);
-                myWebView = null;
-            }
-        });
         String htmlDocument =   "<html><body><h3>CAMLAIT S.A.</h3>" +
                 "tel : 237 33400093<br/>" +
                 "bp : BP 1838 DOUALA <br/>" +
@@ -248,9 +242,56 @@ public class ValideActivity extends AppCompatActivity {
         htmlDocument +="<tr><td>Nous vous remercions<br/> de votre fidélité</td></tr>";
         htmlDocument+="</table>";
         htmlDocument+= "</body></html>";
-        webView.loadDataWithBaseURL(null, htmlDocument,"text/HTML", "UTF-8", null);
-        myWebView = webView;
+        byte isHasPaper;
+        isHasPaper = usbCtrl.revByte(dev);
+        if( isHasPaper == 0x38 ){
+            Toast.makeText(getApplicationContext(), "The printer has no paper",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String txt_msg = txt_content.getText().toString();
+            if( CheckUsbPermission() == true ){
+                usbCtrl.sendMsg(htmlDocument, "GBK", dev);
+            }
+        }
+
+    private void printImage() {
+        int i = 0,s = 0,j = 0,index = 0;
+        byte[] temp = new byte[56];
+        byte[] sendData = null;
+        PrintPic pg = new PrintPic();
+        pg.initCanvas(384);
+        pg.initPaint();
+        pg.drawImage(0, 0, "/mnt/sdcard/icon.jpg");
+        sendData = pg.printDraw();
+
+        for( i = 0 ; i < pg.getLength() ; i++ ){
+            s = 0;
+            temp[s++] = 0x1D;
+            temp[s++] = 0x76;
+            temp[s++] = 0x30;
+            temp[s++] = 0x00;
+            temp[s++] = (byte)(pg.getWidth() / 8);
+            temp[s++] = 0x00;
+            temp[s++] = 0x01;
+            temp[s++] = 0x00;
+            for( j = 0 ; j < (pg.getWidth() / 8) ; j++ )
+                temp[s++] = sendData[index++];
+            usbCtrl.sendByte(temp, dev);
+        }
     }
+
+    public boolean CheckUsbPermission(){
+        if( dev != null ){
+            if( usbCtrl.isHasPermission(dev)){
+                return true;
+            }
+        }
+        Toast.makeText(getApplicationContext(), "connexion",
+                Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
     public void bloqueBox(){
         if(!facture.getNouveau()) {
             credit.setEnabled(false);

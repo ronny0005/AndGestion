@@ -288,7 +288,7 @@ public class FactureActivity extends AppCompatActivity{
                                         }
 
                                         facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(deb));
-                                        if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        /*if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                         } else {
 
                                             // check if GPS enabled
@@ -307,7 +307,7 @@ public class FactureActivity extends AppCompatActivity{
                                                 // Ask user to enable GPS/network in settings
                                                 gps.showSettingsAlert();
                                             }
-                                        }
+                                        }*/
                                     }
                                     art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
                                     ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
