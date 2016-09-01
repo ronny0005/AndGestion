@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             Parametre parametre=null;
                 if(!login.getText().toString().isEmpty() && !mdp.getText().toString().isEmpty()) {
 //                        ou.demarreBase(getApplicationContext());
+
                     parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
           //
                     System.out.println(parametre);
