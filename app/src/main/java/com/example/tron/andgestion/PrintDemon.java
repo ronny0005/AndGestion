@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.zj.btsdk.BluetoothService;
+
 public class PrintDemon extends Activity {
     Button btnSearch;
     Button btnSendDraw;

@@ -17,7 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name=".ServeurActivity"></activity>
+        <activity android:name=".ServeurActivity"><intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter></activity>
         <activity android:name=".ApercuActivity" />
         <activity android:name=".LstStockActivity" />
         <activity android:name=".EquationActivity" />
@@ -56,14 +60,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.tron.andgestion.ServeurActivity" />
+
         </activity>
         <activity android:name=".ChangePassword" />
         <activity android:name=".PrintDemon">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".DeviceListActivity"></activity>
     </application>

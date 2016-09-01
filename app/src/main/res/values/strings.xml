@@ -15,15 +15,18 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
 
-    <string name="btn_conn">Connect USB Printer</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="scanning">scanning for devices...</string>
+    <string name="select_device">select a device to connect</string>
+    <string name="none_found">No devices found</string>
+    <string name="btnSearch">Connect  Bluetooth  Printer</string>
     <string name="btnSend">Print</string>
     <string name="btn_test">Print  Test  Page</string>
     <string name="btnClose">Close</string>
     <string name="txt_content">&quot;&quot;</string>
     <string name="menu_settings">set</string>
     <string name="strLang">en</string>
-    <string name="msg_getpermission">obtaining USB device access permissions success</string>
-    <string name="msg_conn_state">USB device can not access, please re-connect</string>
+    <string name="button_scan">Scan for devices</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
