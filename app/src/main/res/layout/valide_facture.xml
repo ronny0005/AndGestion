@@ -12,7 +12,7 @@
 
         <GridLayout
             android:layout_width="192dp"
-            android:layout_height="289dp"
+            android:layout_height="338dp"
             android:layout_weight="0.65">
 
             <TextView
@@ -167,8 +167,8 @@
                 android:layout_column="1" />
 
             <Button
-                android:layout_width="101dp"
-                android:layout_height="wrap_content"
+                android:layout_width="118dp"
+                android:layout_height="59dp"
                 android:text="IMPRIMER"
                 android:id="@+id/imprime_v"
                 android:layout_row="9"
