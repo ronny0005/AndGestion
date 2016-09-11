@@ -11,7 +11,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.tron.andgestion.Main2Activity;
-import com.google.android.gms.nearby.bootstrap.request.EnableTargetRequest;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

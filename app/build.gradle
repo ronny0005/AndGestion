@@ -2,13 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '24.0.2'
     defaultConfig {
         applicationId "com.example.tron.andgestion"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -23,14 +24,12 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile files('libs/android-support-v4.jar')
-    compile files('libs/usbsdk.jar')
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:design:24.2.0'
-    compile 'com.google.android.gms:play-services:9.4.0'
     compile 'com.android.support:support-v4:24.2.0'
-    compile 'com.google.android.gms:play-services-ads:9.4.0'
-    compile 'com.google.android.gms:play-services-auth:9.4.0'
-    compile 'com.google.android.gms:play-services-gcm:9.4.0'
-    compile files('libs/btsdk.jar')
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.android.gms:play-services:9.4.0'
+    compile files('src/main/java/com/example/tron/andgestion/libs/android-support-v4.jar')
+    compile files('src/main/java/com/example/tron/andgestion/libs/btsdk.jar')
+    compile files('src/main/java/com/example/tron/andgestion/libs/usbsdk.jar')
 }
