@@ -109,10 +109,7 @@ public class ValideActivity extends AppCompatActivity {
         }
         try {
 
-            imprime = (Button) findViewById(R.id.valide_imprime);
             imprime_v = (Button) findViewById(R.id.imprime_v);
-            imprime_v.setEnabled(false);
-            imprime.setOnClickListener(new ClickEvent());
             imprime_v.setOnClickListener(new ClickEvent());
 
         } catch (Exception ex) {
@@ -129,7 +126,6 @@ public class ValideActivity extends AppCompatActivity {
                         case BluetoothService.STATE_CONNECTED:
                             Toast.makeText(getApplicationContext(), "Connect successful",
                                     Toast.LENGTH_SHORT).show();
-                            imprime_v.setEnabled(true);
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             Log.d("STATE_CONNECTING","STATE_CONNECTING");
@@ -295,11 +291,11 @@ public class ValideActivity extends AppCompatActivity {
 
         htmlDocument +="\n Total HT : "+ttcformat.format(total_ht)+"\n";
         htmlDocument +="TVA : "+ttcformat.format(total_tva)+"\n";
-        htmlDocument +="Précompte : "+ttcformat.format(total_precompte)+"\n";
+        htmlDocument +="Precompte : "+ttcformat.format(total_precompte)+"\n";
         htmlDocument +="Acompte : "+ttcformat.format(facture.getMtt_avance())+"\n";
         htmlDocument +="Total TTC : "+ttcformat.format(total_ttc)+"\n";
-        htmlDocument +="Montant payé : "+ttcformat.format(facture.getMtt_avance())+"\n";
-        htmlDocument +="Reste à payer : "+ ttcformat.format((total_ttc-facture.getMtt_avance())) +"\n";
+        htmlDocument +="Montant paye : "+ttcformat.format(facture.getMtt_avance())+"\n";
+        htmlDocument +="Reste a payer : "+ ttcformat.format((total_ttc-facture.getMtt_avance())) +"\n";
         htmlDocument +="-----------------\n";
         htmlDocument +="Nous vous remercions\n de votre fidelite\n";
 
@@ -307,20 +303,22 @@ public class ValideActivity extends AppCompatActivity {
 
     class ClickEvent implements View.OnClickListener {
         public void onClick(View v) {
-            if (v == imprime) {
-                Intent serverIntent = new Intent(ValideActivity.this, DeviceListActivity.class);
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
-            }else if (v == imprime_v) {
-                imprime();
-                mService.sendMessage(htmlDocument+"\n", "GBK");
-                Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
-                intent.putExtra("liste_facture", liste_facture);
-                intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                intent.putExtra("outils", ou);
-                startActivity(intent);
+            if (v == imprime_v) {
+                if(mService.getPairedDev().size()==0) {
+                    Intent serverIntent = new Intent(ValideActivity.this, DeviceListActivity.class);
+                    startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+                }else {
+                    imprime();
+                    mService.sendMessage(htmlDocument + "\n", "GBK");
+                    Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
+                    intent.putExtra("liste_facture", liste_facture);
+                    intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+                    intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
+                    intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+                    intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+                    intent.putExtra("outils", ou);
+                    startActivity(intent);
+                }
             }
         }
     }
@@ -385,7 +383,6 @@ public class ValideActivity extends AppCompatActivity {
                     String address = data.getExtras()
                             .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
                     con_dev = mService.getDevByMac(address);
-
                     mService.connect(con_dev);
                 }
                 break;
@@ -398,7 +395,6 @@ public class ValideActivity extends AppCompatActivity {
         setContentView(R.layout.valide_facture);
 
         mService = new BluetoothService(this, mHandler);
-
         if( mService.isAvailable() == false ){
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
