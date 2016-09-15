@@ -59,7 +59,7 @@ public class ValideActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 2;
     BluetoothService mService = null;
     BluetoothDevice con_dev = null;
-    private static final int REQUEST_CONNECT_DEVICE = 1;  //»ñÈ¡Éè±¸ÏûÏ¢
+    private static final int REQUEST_CONNECT_DEVICE = 1;
     private int[][] u_infor;
     UsbController usbCtrl = null;
     UsbDevice dev = null;
@@ -102,7 +102,6 @@ public class ValideActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        //À¶ÑÀÎ´´ò¿ª£¬´ò¿ªÀ¶ÑÀ
         if( mService.isBTopen() == false)
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -127,25 +126,25 @@ public class ValideActivity extends AppCompatActivity {
             switch (msg.what) {
                 case BluetoothService.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:   //ÒÑÁ¬½Ó
+                        case BluetoothService.STATE_CONNECTED:
                             Toast.makeText(getApplicationContext(), "Connect successful",
                                     Toast.LENGTH_SHORT).show();
                             imprime_v.setEnabled(true);
                             break;
-                        case BluetoothService.STATE_CONNECTING:  //ÕýÔÚÁ¬½Ó
-                            Log.d("À¶ÑÀµ÷ÊÔ","ÕýÔÚÁ¬½Ó.....");
+                        case BluetoothService.STATE_CONNECTING:
+                            Log.d("STATE_CONNECTING","STATE_CONNECTING");
                             break;
-                        case BluetoothService.STATE_LISTEN:     //¼àÌýÁ¬½ÓµÄµ½À´
+                        case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
-                            Log.d("À¶ÑÀµ÷ÊÔ","µÈ´ýÁ¬½Ó.....");
+                            Log.d("STATE_NONE","STATE_NONE");
                             break;
                     }
                     break;
-                case BluetoothService.MESSAGE_CONNECTION_LOST:    //À¶ÑÀÒÑ¶Ï¿ªÁ¬½Ó
+                case BluetoothService.MESSAGE_CONNECTION_LOST:
                     Toast.makeText(getApplicationContext(), "Device connection was lost",
                             Toast.LENGTH_SHORT).show();
                     break;
-                case BluetoothService.MESSAGE_UNABLE_CONNECT:     //ÎÞ·¨Á¬½ÓÉè±¸
+                case BluetoothService.MESSAGE_UNABLE_CONNECT:
                     Toast.makeText(getApplicationContext(), "Unable to connect device",
                             Toast.LENGTH_SHORT).show();
                     break;
@@ -309,7 +308,7 @@ public class ValideActivity extends AppCompatActivity {
     class ClickEvent implements View.OnClickListener {
         public void onClick(View v) {
             if (v == imprime) {
-                Intent serverIntent = new Intent(ValideActivity.this, DeviceListActivity.class);      //ÔËÐÐÁíÍâÒ»¸öÀàµÄ»î¶¯
+                Intent serverIntent = new Intent(ValideActivity.this, DeviceListActivity.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
             }else if (v == imprime_v) {
                 imprime();
@@ -374,17 +373,17 @@ public class ValideActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_ENABLE_BT:      //ÇëÇó´ò¿ªÀ¶ÑÀ
-                if (resultCode == Activity.RESULT_OK) {   //À¶ÑÀÒÑ¾­´ò¿ª
+            case REQUEST_ENABLE_BT:
+                if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(this, "Bluetooth open successful", Toast.LENGTH_LONG).show();
-                } else {                 //ÓÃ»§²»ÔÊÐí´ò¿ªÀ¶ÑÀ
+                } else {
                     finish();
                 }
                 break;
-            case  REQUEST_CONNECT_DEVICE:     //ÇëÇóÁ¬½ÓÄ³Ò»À¶ÑÀÉè±¸
-                if (resultCode == Activity.RESULT_OK) {   //ÒÑµã»÷ËÑË÷ÁÐ±íÖÐµÄÄ³¸öÉè±¸Ïî
+            case  REQUEST_CONNECT_DEVICE:
+                if (resultCode == Activity.RESULT_OK) {
                     String address = data.getExtras()
-                            .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);  //»ñÈ¡ÁÐ±íÏîÖÐÉè±¸µÄmacµØÖ·
+                            .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
                     con_dev = mService.getDevByMac(address);
 
                     mService.connect(con_dev);
@@ -399,7 +398,7 @@ public class ValideActivity extends AppCompatActivity {
         setContentView(R.layout.valide_facture);
 
         mService = new BluetoothService(this, mHandler);
-        //À¶ÑÀ²»¿ÉÓÃÍË³ö³ÌÐò
+
         if( mService.isAvailable() == false ){
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();

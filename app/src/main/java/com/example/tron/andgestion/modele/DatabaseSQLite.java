@@ -10,8 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.tron.andgestion.Main2Activity;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

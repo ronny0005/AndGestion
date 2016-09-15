@@ -54,20 +54,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".Main2Activity"
-            android:label="@string/title_activity_main2"
-            android:parentActivityName=".ServeurActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.tron.andgestion.ServeurActivity" />
-
-        </activity>
         <activity android:name=".ChangePassword" />
-        <activity android:name=".PrintDemon">
-
-        </activity>
         <activity android:name=".DeviceListActivity"></activity>
     </application>
 
