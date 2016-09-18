@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 DateFormat format = new SimpleDateFormat("yyyy-dd-mm", Locale.FRENCH);
                 ou.passeVariable(intent, MainActivity.this,ou.listeFacture(parametre.getCo_no(),
-                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()) ),parametre,ou,liste_recouvrement,liste_client,liste_article);
+                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()), new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()) ),parametre,ou,liste_recouvrement,liste_client,liste_article,"");
 
             }
             }

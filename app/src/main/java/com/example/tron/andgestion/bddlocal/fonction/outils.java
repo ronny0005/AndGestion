@@ -61,8 +61,9 @@ public class outils implements Serializable{
         try{
             return getParametre(login,mdp);
         }catch (IOException e ){
-            return data.getParametreWithUser(login,mdp);
+//            return data.getParametreWithUser(login,mdp);
         }
+        return null;
     }
 
    public static void commit(Parametre parametre){
@@ -778,13 +779,14 @@ public class outils implements Serializable{
         return cr;
     }
 
-    public static void passeVariable(Intent intent,Activity act,ArrayList<Facture> lfact,Parametre parametre,outils ou,ArrayList<Facture> lrecouvrement,ArrayList<Client> lclient,ArrayList<ArticleServeur> lart){
+    public static void passeVariable(Intent intent,Activity act,ArrayList<Facture> lfact,Parametre parametre,outils ou,ArrayList<Facture> lrecouvrement,ArrayList<Client> lclient,ArrayList<ArticleServeur> lart,String device){
         intent.putExtra("liste_facture", lfact);
         intent.putExtra("parametre", parametre);
         intent.putExtra("outils", ou);
         intent.putExtra("liste_recouvrement", lrecouvrement);
         intent.putExtra("liste_client", lclient);
         intent.putExtra("liste_article", lart);
+        intent.putExtra("device_address", device);
         act.startActivity(intent);
     }
 

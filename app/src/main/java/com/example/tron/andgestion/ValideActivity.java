@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.usb.UsbDevice;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,10 +42,12 @@ import com.zj.usbsdk.PrintPic;
 import com.zj.usbsdk.UsbController;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by T.Ron on 19/03/2016.
@@ -60,9 +63,6 @@ public class ValideActivity extends AppCompatActivity {
     BluetoothService mService = null;
     BluetoothDevice con_dev = null;
     private static final int REQUEST_CONNECT_DEVICE = 1;
-    private int[][] u_infor;
-    UsbController usbCtrl = null;
-    UsbDevice dev = null;
     TextView t_marge;
     TextView t_ht;
     TextView t_tva;
@@ -88,6 +88,7 @@ public class ValideActivity extends AppCompatActivity {
     private DecimalFormat ttcformat = new DecimalFormat("#");
     private WebView myWebView;
     private String ref;
+    String valblue="";
 
     public void active_avance(boolean active){
         if(active) {
@@ -102,6 +103,8 @@ public class ValideActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        System.out.println("address "+valblue+" d:  b: "+mService.isBTopen());
         if( mService.isBTopen() == false)
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -126,11 +129,15 @@ public class ValideActivity extends AppCompatActivity {
                         case BluetoothService.STATE_CONNECTED:
                             Toast.makeText(getApplicationContext(), "Connect successful",
                                     Toast.LENGTH_SHORT).show();
+                            Log.d("STATE_CONNECTED","STATE_CONNECTED");
+                            valide_impression();
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             Log.d("STATE_CONNECTING","STATE_CONNECTING");
                             break;
                         case BluetoothService.STATE_LISTEN:
+                            Log.d("STATE_LISTEN","STATE_LISTEN");
+                            break;
                         case BluetoothService.STATE_NONE:
                             Log.d("STATE_NONE","STATE_NONE");
                             break;
@@ -148,23 +155,6 @@ public class ValideActivity extends AppCompatActivity {
         }
 
     };
-
-    private void createWebPrintJob(WebView webView) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
-            PrintManager printManager = (PrintManager) this
-                .getSystemService(Context.PRINT_SERVICE);
-
-            PrintDocumentAdapter printAdapter =
-                    webView.createPrintDocumentAdapter();
-
-            String jobName = getString(R.string.app_name) + " Print Test";
-
-            printManager.print(jobName, printAdapter,
-                    new PrintAttributes.Builder().build());
-        }
-    }
-
 
     public void calcule(boolean press){
         DecimalFormat decim = new DecimalFormat("#.##");
@@ -201,12 +191,10 @@ public class ValideActivity extends AppCompatActivity {
                         facture.setEntete(entete);
                         b_entete.setCommit("oui");
                         b_entete.setEntete(entete);
-            //            ou.data.insertEntete(b_entete);
                     }catch(IOException e){
                         b_entete.setEntete(ref);
                         b_entete.setCommit("non");
 						facture.setCommit(false);
-            //            ou.data.insertEntete(b_entete);
                     }
 
                     for (int i = 0; i < facture.getListe_article().size(); i++) {
@@ -216,13 +204,7 @@ public class ValideActivity extends AppCompatActivity {
                         try{
                             ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * (i+1), article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
                             ligne.setEntete(entete);
-            //                ou.data.insertLigne(ligne);
                         }catch(IOException e){
-            //                ou.data.insertLigne(ligne);
-            //                ligne.setEntete(ref);
-            //                QteStock stock = ou.data.getStockWithARRef(article.getAr_ref());
-            //                stock.setAS_QteSto(String.valueOf(Integer.parseInt(stock.getAS_QteSto())-article.getQte_vendue()));
-            //                ou.data.updateStock(article.getAr_ref(),stock);
                         }
                     }
                     facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
@@ -232,7 +214,6 @@ public class ValideActivity extends AppCompatActivity {
                     montant = "0";
                     if(comptant.isChecked()) {
                         montant = ttcformat.format(total_ttc);
-                        //ou.reglerEntete(facture.getEntete(), facture.getRef(), montant);
                     }
                         else
                         if (!mtt_avance.getText().toString().equals(""))
@@ -262,6 +243,7 @@ public class ValideActivity extends AppCompatActivity {
         if(press)
             imprime();
     }
+
     public void imprime(){
         htmlDocument =   "CAMLAIT S.A. \n" +
                 "tel : 237 33400093 \n" +
@@ -294,7 +276,7 @@ public class ValideActivity extends AppCompatActivity {
         htmlDocument +="Precompte : "+ttcformat.format(total_precompte)+"\n";
         htmlDocument +="Acompte : "+ttcformat.format(facture.getMtt_avance())+"\n";
         htmlDocument +="Total TTC : "+ttcformat.format(total_ttc)+"\n";
-        htmlDocument +="Montant paye : "+ttcformat.format(facture.getMtt_avance())+"\n";
+        htmlDocument +="Montant payer : "+ttcformat.format(facture.getMtt_avance())+"\n";
         htmlDocument +="Reste a payer : "+ ttcformat.format((total_ttc-facture.getMtt_avance())) +"\n";
         htmlDocument +="-----------------\n";
         htmlDocument +="Nous vous remercions\n de votre fidelite\n";
@@ -304,62 +286,32 @@ public class ValideActivity extends AppCompatActivity {
     class ClickEvent implements View.OnClickListener {
         public void onClick(View v) {
             if (v == imprime_v) {
-                if(mService.getPairedDev().size()==0) {
+                if(valblue.equals("") ) {
                     Intent serverIntent = new Intent(ValideActivity.this, DeviceListActivity.class);
                     startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+                    imprime_v.setEnabled(false);
+                    valider.setEnabled(false);
                 }else {
-                    imprime();
-                    mService.sendMessage(htmlDocument + "\n", "GBK");
-                    Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
-                    intent.putExtra("liste_facture", liste_facture);
-                    intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
-                    intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-                    intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
-                    intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
-                    intent.putExtra("outils", ou);
-                    startActivity(intent);
+                    valide_impression();
                 }
             }
         }
     }
 
-    private void printImage() {
-      /*  int i = 0,s = 0,j = 0,index = 0;
-        byte[] temp = new byte[56];
-        byte[] sendData = null;
-        PrintPic pg = new PrintPic();
-        pg.initCanvas(384);
-        pg.initPaint();
-        pg.drawImage(0, 0, "/mnt/sdcard/icon.jpg");
-        sendData = pg.printDraw();
-
-        for( i = 0 ; i < pg.getLength() ; i++ ){
-            s = 0;
-            temp[s++] = 0x1D;
-            temp[s++] = 0x76;
-            temp[s++] = 0x30;
-            temp[s++] = 0x00;
-            temp[s++] = (byte)(pg.getWidth() / 8);
-            temp[s++] = 0x00;
-            temp[s++] = 0x01;
-            temp[s++] = 0x00;
-            for( j = 0 ; j < (pg.getWidth() / 8) ; j++ )
-                temp[s++] = sendData[index++];
-            usbCtrl.sendByte(temp, dev);
-        }*/
+    public void valide_impression(){
+        calcule(true);
+        mService.sendMessage(htmlDocument + "\n", "UTF-8");
+        mService.stop();
+        Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
+        intent.putExtra("liste_facture", liste_facture);
+        intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
+        intent.putExtra("device_address", valblue);
+        intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
+        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+        intent.putExtra("outils", ou);
+        startActivity(intent);
     }
-
-    public boolean CheckUsbPermission(){
-        if( dev != null ){
-            if( usbCtrl.isHasPermission(dev)){
-                return true;
-            }
-        }
-        Toast.makeText(getApplicationContext(), "connexion",
-                Toast.LENGTH_SHORT).show();
-        return false;
-    }
-
     public void bloqueBox(){
         if(!facture.getNouveau()) {
             credit.setEnabled(false);
@@ -384,6 +336,7 @@ public class ValideActivity extends AppCompatActivity {
                             .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
                     con_dev = mService.getDevByMac(address);
                     mService.connect(con_dev);
+                    valblue=address;
                 }
                 break;
         }
@@ -393,7 +346,6 @@ public class ValideActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.valide_facture);
-
         mService = new BluetoothService(this, mHandler);
         if( mService.isAvailable() == false ){
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
@@ -439,12 +391,12 @@ public class ValideActivity extends AppCompatActivity {
         comptant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                if (comptant.isChecked()) {
-                    credit.setChecked(false);
-                    active_avance(false);
-                    facture.setStatut("comptant");
-                }
+            // TODO Auto-generated method stub
+            if (comptant.isChecked()) {
+                credit.setChecked(false);
+                active_avance(false);
+                facture.setStatut("comptant");
+            }
             }
         });
 
