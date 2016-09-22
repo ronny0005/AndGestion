@@ -52,7 +52,7 @@ public class TableauMapActivity extends AppCompatActivity {
             DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
             Date deb = format.parse(dt_deb.getText().toString());
             Date fin = format.parse(dt_fin.getText().toString());
-            liste_facture=ou.listeFacture(param.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(param.getDo_souche(),param.getCt_num()));
+            liste_facture=ou.listeFacture(param.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(param.getDo_souche(),param.getCt_num()),(ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -87,7 +87,7 @@ public class RecouvrementActivity extends AppCompatActivity {
     }
 
     public void valideFacture(String ct_num){
-        liste_recouvrement=ou.listeFacture(parametre.getCo_no(),"0","0",ct_num,ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
+        liste_recouvrement=ou.listeFacture(parametre.getCo_no(),"0","0",ct_num,ou.getVille(parametre.getDo_souche(),parametre.getCt_num()),lst_client);
         ajoutListe();
     }
 

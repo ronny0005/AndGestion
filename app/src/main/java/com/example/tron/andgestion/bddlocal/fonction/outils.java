@@ -290,7 +290,7 @@ public class outils implements Serializable{
         return "";
     }
 
-    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient,String ville) {
+    public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient,String ville,ArrayList<Client> listClient) {
         ArrayList<Facture> list = new ArrayList<Facture>();
         JSONObject json = null;
         try {
@@ -301,8 +301,11 @@ public class outils implements Serializable{
                 JSONObject json_data = jArray.getJSONObject(i);
                 facture = new Facture();
                 facture.setNouveau(false);
-                ArrayList<Client> lclient = listeClientServeur(ville);
-
+                ArrayList<Client> lclient;
+                if(listClient!=null)
+                    lclient= listClient;
+                else
+                    lclient= listeClientServeur(ville);
                 for (int c = 0; c < lclient.size(); c++)
                     if (lclient.get(c).getNum().compareTo(json_data.getString("CT_Num")) == 0)
                         facture.setId_client(lclient.get(c));
@@ -310,7 +313,8 @@ public class outils implements Serializable{
                 facture.setDO_Date(json_data.getString("DO_Date"));
                 facture.setTotalTTC((int) Math.round(json_data.getDouble("ttc")));
                 facture.setMtt_avance((int) Math.round(json_data.getDouble("avance")));
-                if ((int) facture.getMtt_avance() >= (int) facture.getTotalTTC() && (int) facture.getMtt_avance() > 0) {
+                // +10 Arrondi sage
+                if (((int) facture.getMtt_avance()+10) >= (int) facture.getTotalTTC() && (int) facture.getMtt_avance() > 0) {
                     facture.setStatut("comptant");
                 } else if ((int) facture.getMtt_avance() > 0)
                     facture.setStatut("avance");

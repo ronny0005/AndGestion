@@ -25,7 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ApercuActivity" />
         <activity android:name=".LstStockActivity" />
         <activity android:name=".EquationActivity" />
         <activity android:name=".StockActivity" />

@@ -76,7 +76,7 @@ public class LstFactureActivity extends AppCompatActivity {
             Date fin = format.parse(datefin.getText().toString());
             liste_facture=ou.listeFacture(parametre.getCo_no(),
                     new SimpleDateFormat("yyyy-MM-dd").format(deb),
-                    new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
+                    new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()),(ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
             ajoutListe();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -152,8 +152,6 @@ public class LstFactureActivity extends AppCompatActivity {
 
         datedeb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         datefin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
-        liste_facture=ou.listeFacture(parametre.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
-                new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
         ajoutListe();
         initVariable();
         System.out.println(liste_facture.size()+" taille");
