@@ -50,7 +50,7 @@ import static android.text.Html.escapeHtml;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien="http://192.168.1.14:8083/api/";
+    public static String lien = "http://192.168.1.14:8083/api/";
     public static DatabaseSQLite data;
 
     public static void demarreBase(Context context){
