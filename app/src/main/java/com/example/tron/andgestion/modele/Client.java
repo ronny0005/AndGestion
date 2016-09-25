@@ -3,6 +3,7 @@ package com.example.tron.andgestion.modele;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -16,6 +17,7 @@ public class Client implements Serializable{
     private String numprinc;
     private int cattarif;
     private int catcompta;
+    private ArrayList<PrixClient> prixArticle;
 
     public Client(String intitule, String num) {
         this.intitule = intitule;
@@ -78,6 +80,14 @@ public class Client implements Serializable{
         this.catcompta = catcompta;
     }
 
+    public ArrayList<PrixClient> getPrixArticle() {
+        return prixArticle;
+    }
+
+    public void setPrixArticle(ArrayList<PrixClient> prixArticle) {
+        this.prixArticle = prixArticle;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -87,6 +97,7 @@ public class Client implements Serializable{
                 ", numprinc='" + numprinc + '\'' +
                 ", cattarif=" + cattarif +
                 ", catcompta=" + catcompta +
+                ", prixArticle=" + prixArticle +
                 '}';
     }
 }

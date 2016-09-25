@@ -843,8 +843,8 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         //Sinon on se place sur le premier élément
         c.moveToFirst();
         //On créé un livre
-        QteStock stock= new QteStock(c.getString(c.getColumnIndex(stock_AS_MontSto)), c.getString(c.getColumnIndex(stock_DE_No)), c.getString(c.getColumnIndex(stock_AR_Ref)),
-                c.getString(c.getColumnIndex(stock_AS_QteSto)));
+        QteStock stock= new QteStock(c.getString(c.getColumnIndex(stock_AS_MontSto)), c.getInt(c.getColumnIndex(stock_DE_No)), c.getString(c.getColumnIndex(stock_AR_Ref)),
+                c.getInt(c.getColumnIndex(stock_AS_QteSto)));
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
         c.close();

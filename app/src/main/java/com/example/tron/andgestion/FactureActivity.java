@@ -24,6 +24,7 @@ import com.example.tron.andgestion.modele.Client;
 import com.example.tron.andgestion.modele.Facture;
 import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.Parametre;
+import com.example.tron.andgestion.modele.PrixClient;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -77,6 +78,7 @@ public class FactureActivity extends AppCompatActivity{
         }
     }
 
+    // Alimente la liste d'article
     public void ajoutListe() {
         data = new ArrayList<Map<String, String>>();
         for (int i = 0; i < facture.getListe_article().size(); i++) {
@@ -109,11 +111,13 @@ public class FactureActivity extends AppCompatActivity{
             client.setText(facture.getId_client().getIntitule());
     }
 
+    // Vide la qte et la designation
     public void clear() {
         qte.setText("");
         designation.setText("");
     }
 
+    //Calcul le les totaux de la facture
     public String calculPrix() {
         double total_tva = 0, total_precompte = 0, total_marge = 0, total_ht = 0, total_ttc;
         for (int i = 0; i < facture.getListe_article().size(); i++) {
@@ -201,6 +205,12 @@ public class FactureActivity extends AppCompatActivity{
                     ajoutListe();
                     clear();
                     total.setText(calculPrix());
+
+                    for(int i=0;i<facture.getListe_article().size();i++)
+                        for(int j=0;j<liste_article.size();j++)
+                            if(facture.getListe_article().get(i).getAr_ref().equals(liste_article.get(j).getAr_ref()))
+                            liste_article.get(j).getQteStock().setAS_QteSto(liste_article.get(j).getQteStock().getAS_QteSto()+ facture.getListe_article().get(i).getQte_vendue());
+
                     facture.setListe_ligne(new ArrayList<Integer>());
                     facture.setListe_article(new ArrayList<ArticleServeur>());
                     annule=true;
@@ -235,6 +245,9 @@ public class FactureActivity extends AppCompatActivity{
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with delete
                                     facture.getListe_article().remove(i);
+                                    for(int i=0;i<liste_article.size();i++)
+                                        if(facture.getListe_article().get(i).getAr_ref().equals(liste_article.get(i).getAr_ref()))
+                                            liste_article.get(i).getQteStock().setAS_QteSto(liste_article.get(i).getQteStock().getAS_QteSto()+ facture.getListe_article().get(i).getQte_vendue());
                                     ajoutListe();
                                     clear();
                                     total.setText(calculPrix());
@@ -273,8 +286,8 @@ public class FactureActivity extends AppCompatActivity{
                                 if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))
                                     id_article = i;
 
-                            int qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
-
+                            //int qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
+                            int qteart = liste_article.get(id_article).getQteStock().getAS_QteSto();
                             if (!qte.getText().toString().equals("0") && qteart > 0) {
                                 if (qteart >= Integer.parseInt(qte.getText().toString())) {
                                     if (facture.getEntete().equals("")) {
@@ -309,8 +322,23 @@ public class FactureActivity extends AppCompatActivity{
                                             }
                                         }
                                     }
+                                    if(modif)
+                                        liste_article.get(id_article).getQteStock().setAS_QteSto(qteart+art.getQte_vendue()-Integer.parseInt(qte.getText().toString()));
+
                                     art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
-                                    ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
+                                    liste_article.get(id_article).getQteStock().setAS_QteSto(qteart-Integer.parseInt(qte.getText().toString()));
+
+                                    for(int i=0;i<lst_client.size();i++)
+                                        if(art.getAr_ref().equals(lst_client.get(id_client).getPrixArticle().get(i).getAR_Ref())) {
+                                            PrixClient p = lst_client.get(id_client).getPrixArticle().get(i);
+                                            art.setAr_prixach(p.getPrixAch());
+                                            art.setAr_prixven((float) p.getPrixVen());
+                                            art.setTaxe1(p.getTaxe1());
+                                            art.setTaxe2(p.getTaxe2());
+                                            art.setTaxe3(p.getTaxe3());
+                                        }
+                                    //ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
+
                                     if (!modif) {
                                         try {
                                             facture.getListe_article().add((ArticleServeur)art.clone());
@@ -327,7 +355,6 @@ public class FactureActivity extends AppCompatActivity{
                                     designation.requestFocus();
                                     annule=false;
                                 } else {
-
                                     DecimalFormat ttcformat = new DecimalFormat("#");
                                     Toast.makeText(FactureActivity.this, "Saisie impossible. Il reste en stock " + ttcformat.format(qteart) + " éléments.", Toast.LENGTH_SHORT).show();
                                 }
@@ -355,7 +382,7 @@ public class FactureActivity extends AppCompatActivity{
                         System.out.println("facture address "+getIntent().getSerializableExtra("device_address"));
                         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
                         intent.putExtra("device_address", getIntent().getSerializableExtra("device_address"));
-                        intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+                        intent.putExtra("liste_article", liste_article);
                         startActivity(intent);
                     }
             }

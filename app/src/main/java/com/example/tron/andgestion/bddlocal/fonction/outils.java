@@ -16,6 +16,7 @@ import com.example.tron.andgestion.modele.CompteA;
 import com.example.tron.andgestion.modele.DatabaseSQLite;
 import com.example.tron.andgestion.modele.Entete;
 import com.example.tron.andgestion.modele.Ligne;
+import com.example.tron.andgestion.modele.PrixClient;
 import com.example.tron.andgestion.modele.ReglementModele;
 import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Caisse;
@@ -653,7 +654,7 @@ public class outils implements Serializable{
             e.printStackTrace();
         } catch (IOException e) {
             System.out.println(ref_art+" reecchhhh");
-            return Integer.parseInt(data.getStockWithARRef(ref_art).getAS_QteSto());
+            return data.getStockWithARRef(ref_art).getAS_QteSto();
         }
         return qte;
     }
@@ -755,6 +756,23 @@ public class outils implements Serializable{
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static PrixClient getPrixclientMain(String ref_art, int cat_tarif, int cat_compta){
+        JSONObject json = null;
+        int qte=0;
+        try {
+            String url="getPrixClient?AR_Ref="+ref_art+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta;
+            json = new JSONObject(getJsonFromServer(url));
+            PrixClient prix = new PrixClient(ref_art,json.getJSONObject("data").getDouble("AR_PrixVen"), json.getJSONObject("data").getDouble("AR_PrixAch")
+                    ,json.getJSONObject("data").getDouble("taxe1"),json.getJSONObject("data").getDouble("taxe2"),json.getJSONObject("data").getDouble("taxe3"));
+            return prix;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

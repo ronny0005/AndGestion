@@ -21,7 +21,7 @@ public class ArticleServeur implements Serializable,Cloneable {
     private double taxe3;
     private String vehicule;
     private String cr;
-
+    private QteStock qteStock;
 
     public ArticleServeur(String ar_ref, String ar_design,double ar_prixach,double taxe1,double taxe2,double taxe3) {
         this.ar_ref = ar_ref;
@@ -40,6 +40,14 @@ public class ArticleServeur implements Serializable,Cloneable {
         this.ar_prixach = ar_prixach;
         this.fa_codefamille = fa_codefamille;
         this.ar_prixven = ar_prixven;
+    }
+
+    public QteStock getQteStock() {
+        return qteStock;
+    }
+
+    public void setQteStock(QteStock qteStock) {
+        this.qteStock = qteStock;
     }
 
     public String getVehicule() {

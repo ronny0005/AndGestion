@@ -1,16 +1,18 @@
 package com.example.tron.andgestion.modele;
 
+import java.io.Serializable;
+
 /**
  * Created by T.Ron on 12/06/2016.
  */
-public class QteStock {
+public class QteStock implements Cloneable, Serializable{
 
-    private String AS_MontSto,DE_No,AR_Ref,AS_QteSto;
-
+    private String AS_MontSto,AR_Ref;
+    private int DE_No,AS_QteSto;
     public QteStock() {
     }
 
-    public QteStock(String AS_MontSto, String DE_No, String AR_Ref, String AS_QteSto) {
+    public QteStock(String AS_MontSto, int DE_No, String AR_Ref, int AS_QteSto) {
         this.AS_MontSto = AS_MontSto;
         this.DE_No = DE_No;
         this.AR_Ref = AR_Ref;
@@ -25,11 +27,11 @@ public class QteStock {
         this.AS_MontSto = AS_MontSto;
     }
 
-    public String getDE_No() {
+    public int getDE_No() {
         return DE_No;
     }
 
-    public void setDE_No(String DE_No) {
+    public void setDE_No(int DE_No) {
         this.DE_No = DE_No;
     }
 
@@ -41,11 +43,11 @@ public class QteStock {
         this.AR_Ref = AR_Ref;
     }
 
-    public String getAS_QteSto() {
+    public int getAS_QteSto() {
         return AS_QteSto;
     }
 
-    public void setAS_QteSto(String AS_QteSto) {
+    public void setAS_QteSto(int AS_QteSto) {
         this.AS_QteSto = AS_QteSto;
     }
 
