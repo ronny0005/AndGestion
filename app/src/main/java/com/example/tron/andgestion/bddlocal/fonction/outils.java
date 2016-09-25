@@ -394,13 +394,38 @@ public class outils implements Serializable{
         JSONObject json = null;
         ArrayList<Client> ldep=null;
         try {
-//            json = new JSONObject(getJsonFromServer("http://genzy.esy.es/client.html"));
             json = new JSONObject(getJsonFromServer("clients?op=" + param));
             JSONArray jArray = json.getJSONArray("data");
             ldep= new ArrayList<Client>();
             for(int i=0; i<jArray.length(); i++){
                 JSONObject json_data = jArray.getJSONObject(i);
                 ldep.add(new Client(json_data.getString("CT_Intitule"),json_data.getString("CT_Num"), json_data.getString("CG_NumPrinc"), json_data.getInt("n_CatTarif"), json_data.getInt("n_CatCompta")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
+    public static ArrayList<Client> listeClientServeur(String param,ArrayList<ArticleServeur> larticle){
+        JSONObject json = null;
+        ArrayList<Client> ldep=null;
+        try {
+            json = new JSONObject(getJsonFromServer("clients?op=" + param));
+            JSONArray jArray = json.getJSONArray("data");
+            ldep= new ArrayList<Client>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                Client client = new Client(json_data.getString("CT_Intitule"),json_data.getString("CT_Num"), json_data.getString("CG_NumPrinc"), json_data.getInt("n_CatTarif"), json_data.getInt("n_CatCompta"));
+                client.setPrixArticle(new ArrayList<PrixClient>());
+                for(int j=0;j<larticle.size();j++) {
+                    PrixClient p = getPrixclientMain(larticle.get(j).getAr_ref(), client.getCattarif(), client.getCatcompta());
+                    p.setCT_Num(client.getNum());
+                    client.getPrixArticle().add(p);
+                }
+                ldep.add(client);
             }
         } catch (JSONException e) {
             e.printStackTrace();

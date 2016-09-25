@@ -324,20 +324,19 @@ public class FactureActivity extends AppCompatActivity{
                                     }
                                     if(modif)
                                         liste_article.get(id_article).getQteStock().setAS_QteSto(qteart+art.getQte_vendue()-Integer.parseInt(qte.getText().toString()));
-
-                                    art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
-                                    liste_article.get(id_article).getQteStock().setAS_QteSto(qteart-Integer.parseInt(qte.getText().toString()));
-
-                                    for(int i=0;i<lst_client.size();i++)
-                                        if(art.getAr_ref().equals(lst_client.get(id_client).getPrixArticle().get(i).getAR_Ref())) {
-                                            PrixClient p = lst_client.get(id_client).getPrixArticle().get(i);
-                                            art.setAr_prixach(p.getPrixAch());
-                                            art.setAr_prixven((float) p.getPrixVen());
-                                            art.setTaxe1(p.getTaxe1());
-                                            art.setTaxe2(p.getTaxe2());
-                                            art.setTaxe3(p.getTaxe3());
-                                        }
-                                    //ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
+                                        art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
+                                        liste_article.get(id_article).getQteStock().setAS_QteSto(qteart-Integer.parseInt(qte.getText().toString()));
+/*
+                                        for(int i=0;i<lst_client.size();i++)
+                                            if(art.getAr_ref().equals(lst_client.get(id_client).getPrixArticle().get(i).getAR_Ref())) {
+                                                PrixClient p = lst_client.get(id_client).getPrixArticle().get(i);
+                                                art.setAr_prixach(p.getPrixAch());
+                                                art.setAr_prixven((float) p.getPrixVen());
+                                                art.setTaxe1(p.getTaxe1());
+                                                art.setTaxe2(p.getTaxe2());
+                                                art.setTaxe3(p.getTaxe3());
+                                            }*/
+                                    ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
 
                                     if (!modif) {
                                         try {

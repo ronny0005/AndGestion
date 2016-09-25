@@ -71,22 +71,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
             if(parametre != null){
-                liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
                 liste_article = ou.listeArticleDispo(String.valueOf(parametre.getDe_no()));
+                liste_client = ou.listeClientServeur(ou.getVille(parametre.getDo_souche(),parametre.getCt_num()));
 
-                for(int i=0;i<liste_client.size();i++) {
-                    ArrayList<PrixClient> lartPrix= new ArrayList<PrixClient>();
-                    liste_client.get(i).setPrixArticle(lartPrix);
-                    for(int j=0;j<liste_article.size();j++) {
-                        PrixClient p = ou.getPrixclientMain(liste_article.get(j).getAr_ref(), liste_client.get(i).getCattarif(), liste_client.get(i).getCatcompta());
-                        p.setCT_Num(liste_client.get(i).getNum());
-                        liste_client.get(i).getPrixArticle().add(p);
-                    }
-
-                    //lartPrix.add(new )
-                    liste_client.get(i).setPrixArticle(lartPrix);
-        //          ou.data.insertClient(liste_client.get(i));
-                }
                 for(int i=0;i<liste_article.size();i++) {
          //         ou.data.insertArticle(liste_article.get(i));
                     QteStock qte = new QteStock();

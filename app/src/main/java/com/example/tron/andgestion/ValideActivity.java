@@ -189,21 +189,20 @@ public class ValideActivity extends AppCompatActivity {
                     try {
                         entete = ou.ajoutEnteteServeur(parametre.getCo_no(), facture.getId_client().getNum(), facture.getRef(), "1",(float)facture.getLatitude(),(float)facture.getLongitude(),facture.getDO_Date());
                         facture.setEntete(entete);
-                        b_entete.setCommit("oui");
-                        b_entete.setEntete(entete);
                     }catch(IOException e){
-                        b_entete.setEntete(ref);
-                        b_entete.setCommit("non");
-						facture.setCommit(false);
                     }
 
                     for (int i = 0; i < facture.getListe_article().size(); i++) {
                         ArticleServeur article = facture.getListe_article().get(i);
+                        for(int j=0;j<liste_article.size();j++)
+                            if(liste_article.get(j).getAr_ref().equals(article.getAr_ref()))
+                                liste_article.get(j).getQteStock().setAS_QteSto(ou.articleDisponibleServeur(article.getAr_ref(), parametre.getDe_no()));
                         Ligne ligne = new Ligne(b_entete.getEntete(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()), article.getAr_ref(), article.getAr_design(),String.valueOf(article.getQte_vendue()),String.valueOf(article.getAr_prixven()),String.valueOf(article.getTaxe1())
                                 , String.valueOf(article.getTaxe2()),String.valueOf(article.getTaxe3()),"", i+"0000",String.valueOf(article.getAr_prixven()));
                         try{
                             ou.ajoutLigneServeur(entete, String.valueOf(facture.getListe_article().get(i).getAr_ref()), 10000 * (i+1), article.getQte_vendue(), 0,facture.getVehicule(),facture.getCr());
                             ligne.setEntete(entete);
+
                         }catch(IOException e){
                         }
                     }
@@ -229,7 +228,7 @@ public class ValideActivity extends AppCompatActivity {
                 intent.putExtra("liste_facture", liste_facture);
                 intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                 intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-                intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+                intent.putExtra("liste_article", liste_article);
                 intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                 intent.putExtra("outils", ou);
                 startActivity(intent);
