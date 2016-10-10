@@ -54,7 +54,7 @@ public class EtatReglementActivity extends AppCompatActivity {
             DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
             Date deb = format.parse(dt_deb.getText().toString());
             Date fin = format.parse(dt_fin.getText().toString());
-            liste_reglement=ou.listeReglement(new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),param.getCo_no());
+       //     liste_reglement=ou.listeReglement(new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),param.getCo_no());
         } catch (ParseException e) {
             e.printStackTrace();
         }

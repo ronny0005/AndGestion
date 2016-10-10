@@ -41,7 +41,7 @@ public class ServeurActivity extends AppCompatActivity {
 
             public void onClick(View v) {
 
-                ou.lien="http://"+adresse.getText().toString()+":8083/api/";
+                ou.lien="http://"+adresse.getText().toString()+":8083/?";
                 data=ou.lien;
                 editor.putString(DATA_TAG, data);
                 editor.commit();

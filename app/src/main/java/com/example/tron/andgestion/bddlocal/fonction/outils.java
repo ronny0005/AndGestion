@@ -6,27 +6,26 @@ import android.content.Intent;
 import android.os.StrictMode;
 import android.widget.Toast;
 
-
 import com.example.tron.andgestion.Stock.BmqModele;
 import com.example.tron.andgestion.Stock.Stock;
 import com.example.tron.andgestion.Stock.StockEqVendeur;
 import com.example.tron.andgestion.modele.Affaire;
 import com.example.tron.andgestion.modele.ArticleServeur;
-import com.example.tron.andgestion.modele.CompteA;
-import com.example.tron.andgestion.modele.DatabaseSQLite;
-import com.example.tron.andgestion.modele.Entete;
-import com.example.tron.andgestion.modele.Ligne;
-import com.example.tron.andgestion.modele.PrixClient;
-import com.example.tron.andgestion.modele.ReglementModele;
-import com.example.tron.andgestion.modele.cReglement;
 import com.example.tron.andgestion.modele.Caisse;
 import com.example.tron.andgestion.modele.Client;
+import com.example.tron.andgestion.modele.CompteA;
+import com.example.tron.andgestion.modele.DatabaseSQLite;
 import com.example.tron.andgestion.modele.Depot;
+import com.example.tron.andgestion.modele.Entete;
 import com.example.tron.andgestion.modele.Facture;
+import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.ManquantModele;
 import com.example.tron.andgestion.modele.Parametre;
+import com.example.tron.andgestion.modele.PrixClient;
+import com.example.tron.andgestion.modele.ReglementModele;
 import com.example.tron.andgestion.modele.Souche;
 import com.example.tron.andgestion.modele.Vehicule;
+import com.example.tron.andgestion.modele.cReglement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +50,7 @@ import static android.text.Html.escapeHtml;
 public class outils implements Serializable{
 
     public static Activity app=null;
-    public static String lien = "http://192.168.1.14:8083/api/";
+    public static String lien = "http://192.168.1.14:8083/?";
     public static DatabaseSQLite data;
 
     public static void demarreBase(Context context){
@@ -67,46 +66,14 @@ public class outils implements Serializable{
         return null;
     }
 
-   public static void commit(Parametre parametre){
-		String entete="";
-       // ArrayList<Entete> lentete=
-        data.getEnteteWithDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        ArrayList<Entete> lentete=
-                data.getEnteteWithDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-         Entete b_entete = lentete.get(0);
-        String old_entete=b_entete.getEntete();
-        if(b_entete.getCommit().equals("false")) {
-            try {
-                entete = ajoutEnteteServeur(parametre.getCo_no(), data.getClientWithId(b_entete.getId_client()).getNum(), b_entete.getRef(), "1", Float.parseFloat(b_entete.getLatitude()),Float.parseFloat(b_entete.getLongitude()),b_entete.getDO_Date());
-                b_entete.setCommit("oui");
-                b_entete.setEntete(entete);
-                data.updateEntete(b_entete.getEntete(), b_entete);
-            } catch (IOException e) {
-            }
-            ArrayList<Ligne> lligne = data.getLigneWithId(old_entete);
-            for (int i = 0; i < lligne.size(); i++) {
-                Ligne article = lligne.get(i);
-                try {
-                    ajoutLigneServeur(entete, article.getAR_Ref(), 10000 * (i + 1), Integer.parseInt(article.getDL_Qte()), 0, "","");
-                    Ligne l = lligne.get(i);
-                    l.setEntete(entete);
-                    data.updateLigne(String.valueOf(l.getId()), l);
-                } catch (IOException e) {
-                }
-            }
-            reglerEntete(b_entete.getEntete(), b_entete.getRef(), String.valueOf(b_entete
-                    .getMtt_avance()));
-        }
-	}
-	
+
     public static ArrayList<BmqModele> getBmq(int cono, String datedeb, String datefin) {
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<BmqModele> ldep = new ArrayList<BmqModele>();
         try {
-            json = new JSONObject(getJsonFromServer("getBmqVendeur?depot="+cono+"&datedeb=" + datedeb + "&datefin=" + datefin));
-            JSONArray jArray = json.getJSONArray("data");
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject json_data = jArray.getJSONObject(i);
+            json = new JSONArray(getJsonFromServerNouveau("page=getBmq&depot="+cono+"&date_deb=" + datedeb + "&date_fin=" + datefin));
+            for (int i = 0; i < json.length(); i++) {
+                JSONObject json_data = json.getJSONObject(i);
                 ldep.add(new BmqModele(json_data.getDouble("PR"),json_data.getDouble("RECU"),json_data.getDouble("RETOUR"),json_data.getDouble("AVARI"),json_data.getDouble("VENDU"),json_data.getDouble("VALEUR"),json_data.getDouble("TVA"),json_data.getDouble("PRECOMPTE"),json_data.getDouble("REMISE"),json_data.getDouble("VENTE_TTC"),json_data.getDouble("MANQUANT"),json_data.getString("AR_Ref"),json_data.getString("AR_Design"),1,json_data.getInt("MARGE"),json_data.getDouble("avance")));
             }
         } catch (JSONException e) {
@@ -118,13 +85,12 @@ public class outils implements Serializable{
     }
 
     public static ArrayList<ManquantModele> getManquant(int cono,String datedeb,String datefin) {
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<ManquantModele> ldep = new ArrayList<ManquantModele>();
         try {
-            json = new JSONObject(getJsonFromServer("manquantVendeur?collaborateur_deb="+cono+"&debut="+datedeb+"&fin="+datefin));
-            JSONArray jArray = json.getJSONArray("data");
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject json_data = jArray.getJSONObject(i);
+            json = new JSONArray(getJsonFromServerNouveau("page=getManquantVendeur&CT_Num="+cono+"&date_deb="+datedeb+"&date_fin="+datefin));
+            for (int i = 0; i < json.length(); i++) {
+                JSONObject json_data = json.getJSONObject(i);
                 ldep.add(new ManquantModele(formatDate(convertirDate(json_data.getString("RG_Date"), "yyyy-MM-dd"), "dd/MM/yyyy"), json_data.getString("CT_NumPayeur"), json_data.getString("RG_Libelle"), json_data.getDouble("RG_Montant")));
             }
         } catch (JSONException e) {
@@ -137,14 +103,12 @@ public class outils implements Serializable{
     }
 
     public static ArrayList<Stock> getStock(int de_no) {
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<Stock> ldep = new ArrayList<Stock>();
-        ldep.add(new Stock("10111","ARTICLE",22,2000,20));
         try {
-            json = new JSONObject(getJsonFromServer("stock?DE_No=" + de_no));
-            JSONArray jArray = json.getJSONArray("data");
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject json_data = jArray.getJSONObject(i);
+            json = new JSONArray(getJsonFromServerNouveau("page=getStock&DE_No=" + de_no));
+            for (int i = 0; i < json.length(); i++) {
+                JSONObject json_data = json.getJSONObject(i);
                 ldep.add(new Stock(json_data.getString("AR_Ref"), json_data.getString("AR_Design"), json_data.getInt("DE_No"), json_data.getDouble("AS_MontSto"),json_data.getDouble("AS_QteSto")));
             }
         } catch (JSONException e) {
@@ -157,7 +121,7 @@ public class outils implements Serializable{
 
     public static Date convertirDate(String dateString, String dateFormat) {
         Date date = null;
-        java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat(dateFormat);
+        SimpleDateFormat formater = new SimpleDateFormat(dateFormat);
         try {
             date = formater.parse(dateString);
         } catch (ParseException ex) {
@@ -168,40 +132,96 @@ public class outils implements Serializable{
     public static String formatDate(Date date, String pattern) {
 
         String d = null;
-        java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat(pattern);
+        SimpleDateFormat formater = new SimpleDateFormat(pattern);
         d = formater.format(date);
         return d;
     }
 
     public static String getJsonFromServer(String url) throws IOException {
         //try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            System.out.println(lien + url);
-            InputStream is = (InputStream) new URL(lien+url).getContent();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String result, line = reader.readLine();
-            result = line;
-            while ((line = reader.readLine()) != null) {
-                result += line;
-            }
-            return result;
-       // }catch(IOException e){
-         //   Toast.makeText(app,"Problème de connexion! Veuillez réessayer plus tard !", Toast.LENGTH_SHORT).show();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        System.out.println(lien + url);
+        InputStream is = (InputStream) new URL(lien+url).getContent();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        String result, line = reader.readLine();
+        result = line;
+        while ((line = reader.readLine()) != null) {
+            result += line;
+        }
+        return result;
+        // }catch(IOException e){
+        //   Toast.makeText(app,"Problème de connexion! Veuillez réessayer plus tard !", Toast.LENGTH_SHORT).show();
+        //}
+        //return "oups";
+    }
+
+    public static String getJsonFromServerNouveau(String url) throws IOException {
+        //try {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        System.out.println(lien+ url);
+        InputStream is = (InputStream) new URL(lien+url).getContent();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        String result, line = reader.readLine();
+        result = line;
+        while ((line = reader.readLine()) != null) {
+            result += line;
+        }
+        return result;
+        // }catch(IOException e){
+        //   Toast.makeText(app,"Problème de connexion! Veuillez réessayer plus tard !", Toast.LENGTH_SHORT).show();
         //}
         //return "oups";
     }
 
     public static ArrayList<Depot> listeDepotServeur(){
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<Depot> ldep=null;
         try {
-            String url = "depot";
-            json = new JSONObject(getJsonFromServer(url));
-            JSONArray jArray = json.getJSONArray("data");
+            String url = "page=depot";
+            json = new JSONArray(getJsonFromServerNouveau(url));
             ldep= new ArrayList<Depot>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
+                ldep.add(new Depot(json_data.getInt("DE_No"),json_data.getString("DE_Intitule")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
+    public static ArrayList<Depot> listeDepotVendeurServeur(int param){
+        JSONArray json = null;
+        ArrayList<Depot> ldep=null;
+        try {
+            String url = "page=getDepotVendeur&DE_No="+param;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            ldep= new ArrayList<Depot>();
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
+                ldep.add(new Depot(json_data.getInt("DE_No"),json_data.getString("DE_Intitule")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
+    public static ArrayList<Depot> listeDepotAvarieServeur(int param){
+        JSONArray json = null;
+        ArrayList<Depot> ldep=null;
+        try {
+            String url = "page=getDepotAvarie&DE_No="+param;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            ldep= new ArrayList<Depot>();
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
                 ldep.add(new Depot(json_data.getInt("DE_No"),json_data.getString("DE_Intitule")));
             }
         } catch (JSONException e) {
@@ -214,21 +234,20 @@ public class outils implements Serializable{
 
 
     public static ArrayList<CompteA> listePlanCR(){
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<CompteA> ldep=null;
         try {
-            String url = "getPlanCR";
-            json = new JSONObject(getJsonFromServer(url));
-            JSONArray jArray = json.getJSONArray("data");
+            String url = "page=getPlanCR";
+            json = new JSONArray(getJsonFromServerNouveau(url));
             ldep= new ArrayList<CompteA>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
                 CompteA c = new CompteA();
                 c.setCbMarq(json_data.getInt("cbMarq"));
                 c.setCA_Achat(json_data.getDouble("CA_Achat"));
                 c.setCA_Num(json_data.getString("CA_Num"));
                 c.setCA_Intitule(json_data.getString("CA_Intitule"));
-                c.setN_Analytique(json_data.getInt("n_Analytique"));
+                c.setN_Analytique(json_data.getInt("N_Analytique"));
                 c.setCA_Type(json_data.getInt("CA_Type"));
                 c.setCA_Report(json_data.getInt("CA_Report"));
                 c.setN_Analyse(json_data.getInt("n_Analyse"));
@@ -248,15 +267,16 @@ public class outils implements Serializable{
         return false;
     }
     public static ArrayList<ArticleServeur> listeArticleDispo(String DE_No){
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<ArticleServeur> lart=null;
         try {
-            json = new JSONObject(getJsonFromServer("getAllArticleDispoByArRef?DE_No=" + DE_No));
-            JSONArray jArray = json.getJSONArray("data");
+            json = new JSONArray(getJsonFromServerNouveau("page=getAllArticleDispoByArRef&DE_No=" + DE_No));
             lart= new ArrayList<ArticleServeur>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
+                ArticleServeur article =new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),0,0,0);
+                article.setAr_prixven((float) json_data.getDouble("AR_PrixVen"));
+                lart.add(article);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -291,15 +311,33 @@ public class outils implements Serializable{
         return "";
     }
 
+    public static ArrayList<Client> listeClientServeur(String param){
+        JSONArray json = null;
+        ArrayList<Client> ldep=null;
+        try {
+//            json = new JSONObject(getJsonFromServer("http://genzy.esy.es/client.html"));
+            json = new JSONArray(getJsonFromServerNouveau("page=clients&op=" + param));
+            ldep= new ArrayList<Client>();
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
+                ldep.add(new Client(json_data.getString("CT_Intitule"),json_data.getString("CT_Num"), json_data.getString("CG_NumPrinc"), json_data.getInt("N_CatTarif"), json_data.getInt("N_CatCompta")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
     public static ArrayList<Facture> listeFacture(int CO_No,String datedeb,String datefin,String numClient,String ville,ArrayList<Client> listClient) {
         ArrayList<Facture> list = new ArrayList<Facture>();
-        JSONObject json = null;
+        JSONArray json = null;
         try {
-            json = new JSONObject(getJsonFromServer("getFactureCO?CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
-            JSONArray jArray = json.getJSONArray("data");
+            json = new JSONArray(getJsonFromServerNouveau("page=getFacture&CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
             Facture facture = null;
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject json_data = jArray.getJSONObject(i);
+            for (int i = 0; i < json.length(); i++) {
+                JSONObject json_data = json.getJSONObject(i);
                 facture = new Facture();
                 facture.setNouveau(false);
                 ArrayList<Client> lclient;
@@ -313,7 +351,10 @@ public class outils implements Serializable{
                 facture.setStatut("");
                 facture.setDO_Date(json_data.getString("DO_Date"));
                 facture.setTotalTTC((int) Math.round(json_data.getDouble("ttc")));
-                facture.setMtt_avance((int) Math.round(json_data.getDouble("avance")));
+                if(json_data.getString("avance").equals("null"))
+                    facture.setMtt_avance(0);
+                else
+                    facture.setMtt_avance((int) Math.round(json_data.getDouble("avance")));
                 // +10 Arrondi sage
                 if (((int) facture.getMtt_avance()+10) >= (int) facture.getTotalTTC() && (int) facture.getMtt_avance() > 0) {
                     facture.setStatut("comptant");
@@ -330,36 +371,82 @@ public class outils implements Serializable{
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            
+
         }
         return list;
     }
 
+    public static ArrayList<Facture> listeFactureClient(int CO_No,String datedeb,String datefin,String numClient,String ville,ArrayList<Client> listClient) {
+        ArrayList<Facture> list = new ArrayList<Facture>();
+        JSONArray json = null;
+        try {
+            json = new JSONArray(getJsonFromServerNouveau("page=getFactureCLient&CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
+            Facture facture = null;
+            for (int i = 0; i < json.length(); i++) {
+                JSONObject json_data = json.getJSONObject(i);
+                facture = new Facture();
+                facture.setNouveau(false);
+                ArrayList<Client> lclient;
+                if(listClient!=null)
+                    lclient= listClient;
+                else
+                    lclient= listeClientServeur(ville);
+                for (int c = 0; c < lclient.size(); c++)
+                    if (lclient.get(c).getNum().compareTo(json_data.getString("CT_Num")) == 0)
+                        facture.setId_client(lclient.get(c));
+                facture.setStatut("");
+                facture.setDO_Date(json_data.getString("DO_Date"));
+                facture.setTotalTTC((int) Math.round(json_data.getDouble("ttc")));
+                if(json_data.getString("avance").equals("null"))
+                    facture.setMtt_avance(0);
+                else
+                    facture.setMtt_avance((int) Math.round(json_data.getDouble("avance")));
+                // +10 Arrondi sage
+                if (((int) facture.getMtt_avance()+10) >= (int) facture.getTotalTTC() && (int) facture.getMtt_avance() > 0) {
+                    facture.setStatut("comptant");
+                } else if ((int) facture.getMtt_avance() > 0)
+                    facture.setStatut("avance");
+                else
+                    facture.setStatut("credit");
+                facture.setRef(json_data.getString("DO_Ref"));
+                facture.setEntete(json_data.getString("DO_Piece"));
+                facture.setLatitude(Double.parseDouble(json_data.getString("latitude")));
+                facture.setLongitude(Double.parseDouble(json_data.getString("longitude")));
+                list.add(facture);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+
+        }
+        return list;
+    }
+
+
+
     public static void LigneFacture(Facture facture) throws IOException, JSONException {
-        JSONObject json = new JSONObject(getJsonFromServer("getLigneFacture?DO_Piece=" +facture.getEntete()));
-        JSONArray jArrayFacture = json.getJSONArray("data");
-        for (int j = 0; j < jArrayFacture.length(); j++) {
-            JSONObject json_datafact = jArrayFacture.getJSONObject(j);
+        JSONArray json = new JSONArray(getJsonFromServerNouveau("page=getLigneFacture&DO_Piece=" +facture.getEntete()));
+        for (int j = 0; j < json.length(); j++) {
+            JSONObject json_datafact = json.getJSONObject(j);
             ArticleServeur art = new ArticleServeur(json_datafact.getString("AR_Ref"), json_datafact.getString("DL_Design")
                     , json_datafact.getDouble("DL_PrixUnitaire"), json_datafact.getDouble("DL_Taxe1"), json_datafact.getDouble("DL_Taxe2"),
                     json_datafact.getDouble("DL_Taxe3"));
             art.setQte_vendue(json_datafact.getInt("DL_Qte"));
             art.setAr_prixven((float) json_datafact.getDouble("DL_PrixUnitaire"));
             facture.getListe_article().add(art);
+            System.out.println(art);
         }
     }
-    
+
     public static ArrayList<StockEqVendeur> eqStkVendeur(String depot,String date_deb,String date_fin) {
-        JSONObject json = null;
-        System.out.println(escapeHtml(depot));
+        JSONArray json = null;
         ArrayList<StockEqVendeur> ldep = null;
         try {
             String url = "getAllArticleDispoByArRef";
-            json = new JSONObject(getJsonFromServer("getEqStock?depot="+depot+"&date_deb="+date_deb+"&date_fin="+date_fin));
-            JSONArray jArray = json.getJSONArray("data");
+            json = new JSONArray(getJsonFromServerNouveau("page=getEqStock&depot="+depot+"&date_deb="+date_deb+"&date_fin="+date_fin));
             ldep= new ArrayList<StockEqVendeur>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
                 ldep.add(new StockEqVendeur(json_data.getString("AR_Design"), json_data.getInt("STOCKS"), json_data.getInt("ENTREES"), json_data.getInt("RETOURS"), json_data.getInt("AVARIS"), json_data.getInt("STOCK_FINAL"), json_data.getInt("QTE_VENDUES"), json_data.getInt("STOCK_RESTANTS")));
             }
         } catch (JSONException e) {
@@ -370,97 +457,34 @@ public class outils implements Serializable{
         return ldep;
     }
 
-    public static ArrayList<ReglementModele> listeReglement(String date_deb, String date_fin,int co_no) {
-        JSONObject json = null;
-        ArrayList<ReglementModele> ldep = null;
+    public static int ajoutLigneServeur (String AR_Ref,String mvtStock,String DL_Qte,String CT_Num,String DO_Piece,String DE_No,String CA_Num,String vehicule,String cr) throws IOException {
+        JSONArray json = null;
+        int qte=0;
         try {
-            String url = "getAllArticleDispoByArRef";
-            json = new JSONObject(getJsonFromServer("getReglement?CO_No="+co_no+"&datedeb="+date_deb+"&datefin="+date_fin));
-            JSONArray jArray = json.getJSONArray("data");
-            ldep= new ArrayList<ReglementModele>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                ldep.add(new ReglementModele(json_data.getString("RG_No"), json_data.getString("RG_Date"), json_data.getString("CT_Intitule"), json_data.getString("RG_Libelle"), json_data.getDouble("montant")));
-            }
+            String res = "page=addDocligneMagasin&AR_Ref="+AR_Ref+"&MvtStock="+mvtStock+"&DL_Qte=" + DL_Qte + "&CT_Num=" + CT_Num + "&DO_Piece=" + DO_Piece+"&DE_No=" + DE_No+"&CA_Num=" + CA_Num+"&vehicule=" + vehicule+"&cr=" + cr;
+            json = new JSONArray(getJsonFromServerNouveau(res));
+            qte = ((JSONObject)json.get(0)).getInt("cbMarq");
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return ldep;
+        return qte;
     }
 
-    public static ArrayList<Client> listeClientServeur(String param){
-        JSONObject json = null;
-        ArrayList<Client> ldep=null;
+    public static void updateArtStock (String DE_No,String AR_Ref,String DL_Qte,String Montant) throws IOException {
+        JSONArray json = null;
         try {
-            json = new JSONObject(getJsonFromServer("clients?op=" + param));
-            JSONArray jArray = json.getJSONArray("data");
-            ldep= new ArrayList<Client>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                ldep.add(new Client(json_data.getString("CT_Intitule"),json_data.getString("CT_Num"), json_data.getString("CG_NumPrinc"), json_data.getInt("n_CatTarif"), json_data.getInt("n_CatCompta")));
-            }
+            String res = "page=updateArtStock&DE_No="+DE_No+"&AR_Ref="+AR_Ref+"&DL_Qte=" + DL_Qte + "&Montant=" + Montant;
+            json = new JSONArray(getJsonFromServerNouveau(res));
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return ldep;
     }
 
-    public static ArrayList<Client> listeClientServeur(String param,ArrayList<ArticleServeur> larticle){
-        JSONObject json = null;
-        ArrayList<Client> ldep=null;
-        try {
-            json = new JSONObject(getJsonFromServer("clients?op=" + param));
-            JSONArray jArray = json.getJSONArray("data");
-            ldep= new ArrayList<Client>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                Client client = new Client(json_data.getString("CT_Intitule"),json_data.getString("CT_Num"), json_data.getString("CG_NumPrinc"), json_data.getInt("n_CatTarif"), json_data.getInt("n_CatCompta"));
-                client.setPrixArticle(new ArrayList<PrixClient>());
-                for(int j=0;j<larticle.size();j++) {
-                    PrixClient p = getPrixclientMain(larticle.get(j).getAr_ref(), client.getCattarif(), client.getCatcompta());
-                    p.setCT_Num(client.getNum());
-                    client.getPrixArticle().add(p);
-                }
-                ldep.add(client);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ldep;
-    }
-
-    public static ArrayList<ArticleServeur> listeArticleServeur(){
-        JSONObject json = null;
-        ArrayList<ArticleServeur> lart=null;
-        try {
-            json = new JSONObject(getJsonFromServer("getAllArticle"));
-            //json = new JSONObject(getJsonFromServer("http://genzy.esy.es/article.html"));
-            JSONArray jArray = json.getJSONArray("data");
-            lart= new ArrayList<ArticleServeur>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),
-                        json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return lart;
-    }
-
-    public static int ajoutLigneServeur (String no_fac,String ref_fac,int no_ligne,int dl_qte,int dl_remise,String vehicule,String cr) throws IOException {
+    public static int ajoutLigneRetourServeur (String no_fac,String ref_fac,int no_ligne,int dl_qte,int dl_remise,String vehicule,String cr) throws IOException {
         JSONObject json = null;
         int qte=0;
         try {
-            String res = "addDocligne?DO_Piece=" + no_fac + "&AR_Ref=" + ref_fac + "&DL_Ligne=" + no_ligne+"&DL_Qte=" + dl_qte+"&DL_Remise=" + dl_remise+"&vehicule=" + vehicule+"&cr=" + cr;
+            String res = "addDocligneMagasin?DO_Piece=" + no_fac + "&AR_Ref=" + ref_fac + "&DL_Ligne=" + no_ligne+"&DL_Qte=" + dl_qte+"&DL_Remise=" + dl_remise+"&vehicule=" + vehicule+"&cr=" + cr;
             json = new JSONObject(getJsonFromServer(res));
             JSONObject jArray = json.getJSONObject("data");
             qte = jArray.getInt("id");
@@ -470,174 +494,15 @@ public class outils implements Serializable{
         return qte;
     }
 
-    public static void ajoutVehicule(String intitule,String vehicule,String cr){
-        JSONObject json = null;
-        try {
-            String res = "addCompteA?intitule="+intitule+"&vehicule="+vehicule+"&cr="+cr;
-            json = new JSONObject(getJsonFromServer(res));
-            JSONObject jArray = json.getJSONObject("data");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void SupprLigneServeur(String entete){
-        JSONObject json = null;
-        try {
-            String res = "delLigne?DO_Piece=" +entete;
-            json = new JSONObject(getJsonFromServer(res));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void SupprEnteteServeur(String entete){
-        JSONObject json = null;
-        try {
-            String res = "delEntete?DO_Piece=" +entete;
-            json = new JSONObject(getJsonFromServer(res));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static cReglement UpdateEntete(String entete, String ref, int montant){
-        JSONObject json = null;
-        cReglement cr =null;
-        try {
-            String url="regleDocentete?DO_Piece="+entete+"&ref="+ref+"&avance="+montant;
-            json = new JSONObject(getJsonFromServer(url));
-            JSONObject jArray = json.getJSONObject("data");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return cr;
-    }
-
-    public static void ModifLigneServeur(int idLigne,int qte){
-        JSONObject json = null;
-        try {
-            String res = "modifLigne?CbMarq=" +idLigne+"&qte="+qte;
-            json = new JSONObject(getJsonFromServer(res));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public static void reglerEntete(int idEntete,String ref){
-        JSONObject json = null;
-        ArrayList<ArticleServeur> lart=null;
-        try {
-            json = new JSONObject(getJsonFromServer("regleDocentete?idEntete="+idEntete+"&ref="+ref));
-            JSONArray jArray = json.getJSONArray("data");
-            lart= new ArrayList<ArticleServeur>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // return lart;
-    }
-
-    public static ArrayList<String> listeArticleServeurTexte(){
-        ArrayList<String> lart= new ArrayList<String>();
-        ArrayList<ArticleServeur> art =listeArticleServeur();
-        for(int i=0;i<art.size();i++)
-            lart.add(art.get(i).getAr_design());
-        return lart;
-    }
-
-    public static ArrayList<String> listeDepotServeurTexte(){
-        ArrayList<String> ldep= new ArrayList<String>();
-        ArrayList<Depot> dep =listeDepotServeur();
-        for(int i=0;i<dep.size();i++)
-            ldep.add(dep.get(i).getNom());
-        return ldep;
-    }
-
-    public static ArrayList<Affaire> listeAffaireServeur(){
-        JSONObject json = null;
-        ArrayList<Affaire> lart=null;
-        try {
-//            json = new JSONObject(getJsonFromServer("http://genzy.esy.es/affaire.html"));
-            json = new JSONObject(getJsonFromServer("affaire"));
-            JSONArray jArray = json.getJSONArray("data");
-            lart= new ArrayList<Affaire>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new Affaire(json_data.getInt("CA_Num"),json_data.getString("CA_Intitule"),json_data.getInt("n_Analytique")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return lart;
-    }
-
-    public static ArrayList<String> listeAffaireTexte(){
-        ArrayList<String> ldep= new ArrayList<String>();
-        ArrayList<Affaire> dep =listeAffaireServeur();
-        for(int i=0;i<dep.size();i++)
-            ldep.add(dep.get(i).getCa_intitule());
-        return ldep;
-    }
-
     public static ArrayList<Vehicule> listeVehiculeServeur(){
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<Vehicule> lart=null;
         try {
-//            json = new JSONObject(getJsonFromServer("http://genzy.esy.es/vehicule.html"));
-            json = new JSONObject(getJsonFromServer("vehicule"));
-            JSONArray jArray = json.getJSONArray("data");
+            json = new JSONArray(getJsonFromServerNouveau("page=vehicule"));
             lart= new ArrayList<Vehicule>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new Vehicule(json_data.getString("CA_Num"),json_data.getString("CA_Intitule"),json_data.getInt("n_Analytique")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return lart;
-    }
-
-    public static ArrayList<String> listeVehiculeTexte(){
-        ArrayList<String> ldep= new ArrayList<String>();
-        ArrayList<Vehicule> dep =listeVehiculeServeur();
-        for(int i=0;i<dep.size();i++)
-            ldep.add(dep.get(i).getCa_intitule());
-        return ldep;
-    }
-    public static ArrayList<ArticleServeur> listePrixProduitClient(String ref,String cat_compta,String cat_tarif){
-        JSONObject json = null;
-        ArrayList<ArticleServeur> lart=null;
-        try {
-            json = new JSONObject(getJsonFromServer("getPrixClient?AR_Ref="+ref+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta));
-            //json = new JSONObject(getJsonFromServer("http://genzy.esy.es/article.html"));
-            JSONArray jArray = json.getJSONArray("data");
-            lart= new ArrayList<ArticleServeur>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
-                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
+                lart.add(new Vehicule(json_data.getString("CA_Num"),json_data.getString("CA_Intitule"),json_data.getInt("N_Analytique")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -648,16 +513,14 @@ public class outils implements Serializable{
     }
 
     public static ArrayList<Caisse> listeCaisseServeur(){
-        JSONObject json = null;
+        JSONArray json = null;
         ArrayList<Caisse> lart=null;
         try {
-            String url="caisse";
-  //          String url="http://genzy.esy.es/caisse.html";
-            json = new JSONObject(getJsonFromServer(url));
-            JSONArray jArray = json.getJSONArray("data");
+            String url="page=caisse";
+            json = new JSONArray(getJsonFromServerNouveau(url));
             lart= new ArrayList<Caisse>();
-            for(int i=0; i<jArray.length(); i++){
-                JSONObject json_data = jArray.getJSONObject(i);
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
                 lart.add(new Caisse(json_data.getString("JO_Num"),json_data.getString("CA_Intitule"),json_data.getInt("CA_No"),json_data.getInt("CO_NoCaissier")));
             }
         } catch (JSONException e) {
@@ -669,16 +532,15 @@ public class outils implements Serializable{
     }
 
     public static int articleDisponibleServeur(String ref_art,int depot){
-        JSONObject json = null;
+        JSONArray json = null;
         int qte=0;
         try {
-            String url = "isStock?AR_Ref="+ref_art+"&DE_No="+depot;
-            json = new JSONObject(getJsonFromServer(url));
-            return json.getJSONObject("data").getInt("AS_QteSto");
+            String url = "page=isStock&AR_Ref="+ref_art+"&DE_No="+depot;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            return (int) ((JSONObject)json.get(0)).getInt("AS_QteSto");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println(ref_art+" reecchhhh");
             return data.getStockWithARRef(ref_art).getAS_QteSto();
         }
         return qte;
@@ -686,23 +548,26 @@ public class outils implements Serializable{
 
 
     public static Parametre getParametre(String nomUser,String password) throws IOException{
-        JSONObject json = null;
+        JSONArray json = null;
         int qte=0;
         try {
-            String url="connect?NomUser="+nomUser+"&Password="+password;
-            json = new JSONObject(getJsonFromServer(url));
-            JSONObject ob =json.getJSONObject("data");
-            ArrayList<Caisse> lcaisse = listeCaisseServeur();
-            Caisse c =null;
-            if(ob.getInt("id_parametre")!=0) {
-                for (int i = 0; i < lcaisse.size(); i++)
-                    if (lcaisse.get(i).getCa_no() == ob.getInt("CA_No"))
-                        c = lcaisse.get(i);
-                return new Parametre(ob.getInt("DE_No"), ob.getString("CT_Num"), ob.getInt("CO_No"), ob.getInt("DO_Souche"),
-                        ob.getString("affaire"), ob.getString("numDoc"), ob.getString("vehicule"),
-                        nomUser, password, c,ob.getString("date_facture"),ob.getInt("r_Facture"),ob.getInt("ID_Facture"));
-            }else {
-                Toast.makeText(app, "Login ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
+            String url="page=connect&NomUser="+nomUser+"&Password="+password;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            JSONObject ob =null;
+            if(json.length()>0) {
+                ob = (JSONObject) json.get(0);
+                ArrayList<Caisse> lcaisse = listeCaisseServeur();
+                Caisse c = null;
+                if (ob.getInt("id_parametre") != 0) {
+                    for (int i = 0; i < lcaisse.size(); i++)
+                        if (lcaisse.get(i).getCa_no() == ob.getInt("CA_No"))
+                            c = lcaisse.get(i);
+                    return new Parametre(ob.getInt("DE_No"), ob.getString("CT_Num"), ob.getInt("CO_No"), ob.getInt("DO_Souche"),
+                            ob.getString("Affaire"), ob.getString("NumDoc"), ob.getString("Vehicule"),
+                            nomUser, password, c, ob.getString("Date_Facture"), ob.getInt("R_Facture"), ob.getInt("ID_Facture"));
+                } else {
+                    Toast.makeText(app, "Login ou mot de passe incorrect", Toast.LENGTH_SHORT).show();
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -736,27 +601,14 @@ public class outils implements Serializable{
         return null;
     }
 
-    public static void setParametre(String password,String nomUser,String date_Facture,String ID_Facture) {
-        JSONObject json = null;
-        try {
-            String url="setParametre?NomUser="+nomUser+"&Password="+password+"&Date_facture="+date_Facture+"&ID_facture="+ID_Facture;
-            System.out.println(url);
-            json = new JSONObject(getJsonFromServer(url));
-            JSONObject ob =json.getJSONObject("data");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon,String date) throws IOException {
-        JSONObject json = null;
+    public static String ajoutEnteteServeur(String date,String ref_fac,String do_tiers,String de_no,float lat,float lon) throws IOException {
+        JSONArray json = null;
         int qte=0;
         try {
-            String url="addDocentete?CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac+"&N_Reglement="+reg+"&Latitude=" + lat+"&Longitude=" + lon+"&date=" + date;
-            json = new JSONObject(getJsonFromServer(url));
-            return json.getJSONObject("data").getString("DO_Piece");
+            String url="page=addDocenteteMagasin&DO_Date="+date+"&DO_Ref="+ref_fac.replace(" ","%20")+"&DO_Tiers="+do_tiers+"&DE_No="+de_no+"&latitude=" + lat+"&longitude=" + lon;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            if(json.length()>0)
+                return ((JSONObject)json.get(0)).getString("DO_Piece");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -764,16 +616,16 @@ public class outils implements Serializable{
     }
 
     public static String getPrixclient(String ref_art,int cat_tarif,int cat_compta,ArticleServeur art){
-        JSONObject json = null;
+        JSONArray json = null;
         int qte=0;
         try {
-            String url="getPrixClient?AR_Ref="+ref_art+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta;
-            json = new JSONObject(getJsonFromServer(url));
-            art.setAr_prixven((float) json.getJSONObject("data").getDouble("AR_PrixVen"));
-            art.setAr_prixach((float) json.getJSONObject("data").getDouble("AR_PrixAch"));
-            art.setTaxe1(json.getJSONObject("data").getDouble("taxe1"));
-            art.setTaxe2(json.getJSONObject("data").getDouble("taxe2"));
-            art.setTaxe3(json.getJSONObject("data").getDouble("taxe3"));
+            String url="page=getPrixClient&AR_Ref="+ref_art+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            art.setAr_prixven((float) ((JSONObject)json.get(0)).getDouble("AR_PrixVen"));
+            art.setAr_prixach((float) ((JSONObject)json.get(0)).getDouble("AR_PrixAch"));
+            art.setTaxe1(((JSONObject)json.get(0)).getDouble("taxe1"));
+            art.setTaxe2(((JSONObject)json.get(0)).getDouble("taxe2"));
+            art.setTaxe3(((JSONObject)json.get(0)).getDouble("taxe3"));
             return "";
         } catch (JSONException e) {
             e.printStackTrace();
@@ -784,13 +636,13 @@ public class outils implements Serializable{
     }
 
     public static PrixClient getPrixclientMain(String ref_art, int cat_tarif, int cat_compta){
-        JSONObject json = null;
+        JSONArray json = null;
         int qte=0;
         try {
-            String url="getPrixClient?AR_Ref="+ref_art+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta;
-            json = new JSONObject(getJsonFromServer(url));
-            PrixClient prix = new PrixClient(ref_art,json.getJSONObject("data").getDouble("AR_PrixVen"), json.getJSONObject("data").getDouble("AR_PrixAch")
-                    ,json.getJSONObject("data").getDouble("taxe1"),json.getJSONObject("data").getDouble("taxe2"),json.getJSONObject("data").getDouble("taxe3"));
+            String url="page=getPrixClient&AR_Ref="+ref_art+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            PrixClient prix = new PrixClient(ref_art,((JSONObject)json.get(0)).getDouble("AR_PrixVen"), ((JSONObject)json.get(0)).getDouble("AR_PrixAch")
+                    ,((JSONObject)json.get(0)).getDouble("taxe1"),((JSONObject)json.get(0)).getDouble("taxe2"),((JSONObject)json.get(0)).getDouble("taxe3"));
             return prix;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -802,31 +654,28 @@ public class outils implements Serializable{
 
 
 
-    public static ArrayList<String> listeCaisseServeurTexte(){
-        ArrayList<String> ldep= new ArrayList<String>();
-        ArrayList<Caisse> dep =listeCaisseServeur();
-        for(int i=0;i<dep.size();i++)
-            ldep.add(dep.get(i).getCa_intitule());
-        return ldep;
-    }
-
-    public static cReglement reglerEntete(String do_piece,String ref,String avance){
-        JSONObject json = null;
-        cReglement cr = null;
+    public static ArrayList<PrixClient> getPrixclientMain(int de_no,int cat_tarif, int cat_compta,String ct_num){
+        JSONArray json = null;
+        ArrayList<PrixClient> lart=null;
         try {
-            String url="regleDocentete?DO_Piece="+do_piece+"&ref="+ref+"&avance="+avance;
-            json = new JSONObject(getJsonFromServer(url));
-            JSONObject jArray = json.getJSONObject("data");
-            cr = new cReglement(jArray.getInt("RG_No"));
+            json = new JSONArray(getJsonFromServerNouveau("page=getArticlePrixClient&DE_No="+de_no+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta));
+            lart= new ArrayList<PrixClient>();
+            for(int i=0; i<json.length(); i++){
+                JSONObject json_data = json.getJSONObject(i);
+                PrixClient prix = new PrixClient(json_data.getString("AR_Ref"),json_data.getDouble("AR_PrixVen"), json_data.getDouble("AR_PrixAch")
+                        ,json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3"));
+                prix.setCT_Num(ct_num);
+                lart.add(prix);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return cr;
+        return lart;
     }
 
-    public static void passeVariable(Intent intent,Activity act,ArrayList<Facture> lfact,Parametre parametre,outils ou,ArrayList<Facture> lrecouvrement,ArrayList<Client> lclient,ArrayList<ArticleServeur> lart,String device){
+    public static void passeVariable(Intent intent, Activity act, ArrayList<Facture> lfact, Parametre parametre, outils ou, ArrayList<Facture> lrecouvrement, ArrayList<Client> lclient, ArrayList<ArticleServeur> lart, String device){
         intent.putExtra("liste_facture", lfact);
         intent.putExtra("parametre", parametre);
         intent.putExtra("outils", ou);
@@ -834,18 +683,6 @@ public class outils implements Serializable{
         intent.putExtra("liste_client", lclient);
         intent.putExtra("liste_article", lart);
         intent.putExtra("device_address", device);
-        act.startActivity(intent);
-    }
-
-    public static void passeVariableCarburant(Intent intent,Activity act,ArrayList<Facture> lfact,Parametre parametre,outils ou,ArrayList<Facture> lrecouvrement,ArrayList<Client> lclient,ArrayList<ArticleServeur> lart,ArrayList<Vehicule> lvehicule,ArrayList<CompteA> lcr){
-        intent.putExtra("liste_facture", lfact);
-        intent.putExtra("parametre", parametre);
-        intent.putExtra("outils", ou);
-        intent.putExtra("liste_recouvrement", lrecouvrement);
-        intent.putExtra("liste_client", lclient);
-        intent.putExtra("liste_article", lart);
-        intent.putExtra("liste_vehicule", lvehicule);
-        intent.putExtra("liste_cr", lcr);
         act.startActivity(intent);
     }
 
@@ -885,12 +722,70 @@ public class outils implements Serializable{
         }
     }
 
+    public static String ajoutEnteteServeur(int co_no,String ct_num,String ref_fac,String reg,float lat,float lon,String date) throws IOException {
+        JSONArray json = null;
+        int qte=0;
+        try {
+            String url="page=addDocenteteFacture&CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac+"&N_Reglement="+reg+"&Latitude=" + lat+"&Longitude=" + lon+"&date=" + date;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            return ((JSONObject)json.get(0)).getString("DO_Piece");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static int ajoutLigneServeur (String no_fac,String ref_fac,int no_ligne,int dl_qte,int dl_remise,String vehicule,String cr) throws IOException {
+        JSONArray json = null;
+        int qte=0;
+        try {
+            String res = "page=addDocligneFacture&DO_Piece=" + no_fac + "&AR_Ref=" + ref_fac + "&DL_Ligne=" + no_ligne+"&DL_Qte=" + dl_qte+"&remise=" + dl_remise+"&vehicule=" + vehicule+"&cr=" + cr;
+            json = new JSONArray(getJsonFromServerNouveau(res));
+            qte = ((JSONObject)json.get(0)).getInt("cbMarq");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return qte;
+    }
+
+    public static void reglerEntete(int idEntete,String ref){
+        JSONObject json = null;
+        ArrayList<ArticleServeur> lart=null;
+        try {
+            json = new JSONObject(getJsonFromServer("regleDocentete?idEntete="+idEntete+"&ref="+ref));
+            JSONArray jArray = json.getJSONArray("data");
+            lart= new ArrayList<ArticleServeur>();
+            for(int i=0; i<jArray.length(); i++){
+                JSONObject json_data = jArray.getJSONObject(i);
+                lart.add(new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),json_data.getDouble("taxe1"),json_data.getDouble("taxe2"),json_data.getDouble("taxe3")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // return lart;
+    }
+
+    public static cReglement reglerEntete(String do_piece,String ref,String avance){
+        JSONArray json = null;
+        cReglement cr = null;
+        try {
+            String url="page=addCReglementFacture&DO_Piece="+do_piece+"&ref="+ref+"&montant="+avance;
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            cr = new cReglement(((JSONObject)json.get(0)).getInt("RG_No"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cr;
+    }
     public static ArrayList<Souche> listeSoucheServeur(){
         JSONObject json = null;
         ArrayList<Souche> lart=null;
         try {
             json = new JSONObject(getJsonFromServer("souche"));
-            //json = new JSONObject(getJsonFromServer("http://genzy.esy.es/souche.html"));
             JSONArray jArray = json.getJSONArray("data");
             lart= new ArrayList<Souche>();
             for(int i=0; i<jArray.length(); i++){
@@ -904,14 +799,4 @@ public class outils implements Serializable{
         }
         return lart;
     }
-
-    public static ArrayList<String> listeSoucheServeurTexte(){
-        ArrayList<String> ldep= new ArrayList<String>();
-        ArrayList<Souche> dep =listeSoucheServeur();
-        for(int i=0;i<dep.size();i++)
-            ldep.add(dep.get(i).getS_intitule());
-        return ldep;
-    }
-
-
 }

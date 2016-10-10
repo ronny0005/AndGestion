@@ -64,7 +64,7 @@ public class TableauMapClientActivity extends AppCompatActivity {
                 if(lst_client.get(i).getIntitule().equals(client.getText().toString()))
                     nom_client=lst_client.get(i).getNum();
 
-            liste_facture=ou.listeFacture(param.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),nom_client,ou.getVille(param.getDo_souche(),param.getCt_num()),lst_client);
+            liste_facture=ou.listeFactureClient(param.getCo_no(),new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),nom_client,ou.getVille(param.getDo_souche(),param.getCt_num()),lst_client);
         } catch (ParseException e) {
             e.printStackTrace();
         }

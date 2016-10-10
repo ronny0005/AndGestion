@@ -65,16 +65,10 @@ public class MenuActivity extends AppCompatActivity {
         });
         recouvrement.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this, RecouvrementActivity.class);
-                passeVariable(intent);
+                //Intent intent = new Intent(MenuActivity.this, RecouvrementActivity.class);
+                //passeVariable(intent);
             }
         });
-        //parametre.setOnClickListener(new View.OnClickListener() {
-          //  public void onClick(View v) {
-               /// Intent intent = new Intent(MenuActivity.this, ParametresActivity.class);
-              //  passeVariable(intent);
-          //  }
-       // });
     }
 
     @Override

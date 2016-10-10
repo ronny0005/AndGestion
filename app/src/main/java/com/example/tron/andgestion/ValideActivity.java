@@ -103,8 +103,7 @@ public class ValideActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        System.out.println("address "+valblue+" d:  b: "+mService.isBTopen());
+/*
         if( mService.isBTopen() == false)
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -117,7 +116,7 @@ public class ValideActivity extends AppCompatActivity {
 
         } catch (Exception ex) {
             Log.e("³ö´íÐÅÏ¢",ex.getMessage());
-        }
+        }*/
     }
 
     private final  Handler mHandler = new Handler() {
@@ -163,7 +162,7 @@ public class ValideActivity extends AppCompatActivity {
             d = Double.MIN_VALUE;
         else d = Double.parseDouble(mtt_avance.getText().toString());
 
-        if (Double.compare(total_ttc, d) >= 0) {
+        if (Double.compare(total_ttc, d) >= 0 || !facture.getNouveau()) {
             if (comptant.isChecked() || credit.isChecked()) {
                 if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty() && Double.compare(total_ttc, d) >= 0) {
                     facture.setStatut("avance");
@@ -326,7 +325,7 @@ public class ValideActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(this, "Bluetooth open successful", Toast.LENGTH_LONG).show();
                 } else {
-                    finish();
+                   // finish();
                 }
                 break;
             case  REQUEST_CONNECT_DEVICE:
@@ -348,7 +347,7 @@ public class ValideActivity extends AppCompatActivity {
         mService = new BluetoothService(this, mHandler);
         if( mService.isAvailable() == false ){
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            finish();
+            //finish();
         }
         parametre = (Parametre) getIntent().getSerializableExtra("parametre");
         liste_article = (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");

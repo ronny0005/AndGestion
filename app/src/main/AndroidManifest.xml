@@ -32,7 +32,6 @@
         <activity android:name=".LstFactureActivity" />
         <activity android:name=".EtatReglementActivity" />
         <activity android:name=".MenuActivity" />
-        <activity android:name=".ParametresActivity" />
         <activity android:name=".ValideActivity" />
         <activity android:name=".ManquantActivity" />
         <activity android:name=".BmqActivity" />
