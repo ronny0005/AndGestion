@@ -164,6 +164,7 @@ public class LstFactureActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     Facture fact = liste_facture.get(position);
+                    if(fact.getListe_article().size()==0)
                     outils.LigneFacture(fact);
                     Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
                     itemCommun(intent,fact,position);

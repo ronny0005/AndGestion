@@ -155,13 +155,15 @@ public class FactureActivity extends AppCompatActivity{
         date.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
 
 
-        liste_article =  (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
 
-        if (facture.getNouveau())
+        if (facture.getNouveau()) {
             this.setTitle("Facture");
-        else
-            this.setTitle(facture.getRef()+" - "+facture.getEntete());
-
+            liste_article =  (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
+        }
+        else {
+            this.setTitle(facture.getRef() + " - " + facture.getEntete());
+            liste_article= new ArrayList<ArticleServeur>();
+        }
         lv = (ListView) findViewById(R.id.facture_liste);
         ajouter = (Button) findViewById(R.id.facture_ajouter);
         for (int i = 0; i < lst_client.size(); i++)
@@ -324,7 +326,6 @@ public class FactureActivity extends AppCompatActivity{
                                     }
                                     if(modif)
                                         liste_article.get(id_article).getQteStock().setAS_QteSto(qteart+art.getQte_vendue()-Integer.parseInt(qte.getText().toString()));
-<<<<<<< Updated upstream
                                         art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
                                         liste_article.get(id_article).getQteStock().setAS_QteSto(qteart-Integer.parseInt(qte.getText().toString()));
 /*
@@ -337,7 +338,6 @@ public class FactureActivity extends AppCompatActivity{
                                                 art.setTaxe2(p.getTaxe2());
                                                 art.setTaxe3(p.getTaxe3());
                                             }*/
-=======
 
                                     art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
                                     liste_article.get(id_article).getQteStock().setAS_QteSto(qteart-Integer.parseInt(qte.getText().toString()));
@@ -351,7 +351,7 @@ public class FactureActivity extends AppCompatActivity{
                                             art.setTaxe2(p.getTaxe2());
                                             art.setTaxe3(p.getTaxe3());
                                         }*/
->>>>>>> Stashed changes
+
                                     ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
 
                                     if (!modif) {
