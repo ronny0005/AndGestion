@@ -60,7 +60,6 @@ public class LstFactureActivity extends AppCompatActivity {
         intent.putExtra("id_facture", String.valueOf(idfacture));
         intent.putExtra("parametre", parametre);
         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-        System.out.println("liste address "+getIntent().getSerializableExtra("device_address"));
         intent.putExtra("device_address",getIntent().getSerializableExtra("device_address"));
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
@@ -101,7 +100,6 @@ public class LstFactureActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(compteur);
     }
 
     private Map<String, ?> createRow(String value1, String value2) {
@@ -114,10 +112,8 @@ public class LstFactureActivity extends AppCompatActivity {
     public void ajoutListe() {
         data = new ArrayList<Map<String, String>>();
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
-        System.out.println(liste_facture.size()+" liste");
         for (int i = 0; i < liste_facture.size(); i++) {
             Facture fac = liste_facture.get(i);
-            System.out.println(fac);
             String val="";
             DecimalFormat ttcformat = new DecimalFormat("#");
             if(fac.getStatut().equals("avance"))
@@ -147,14 +143,12 @@ public class LstFactureActivity extends AppCompatActivity {
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
         datedeb = (TextView) findViewById(R.id.lstfac_deb);
         datefin = (TextView) findViewById(R.id.lstfac_fin);
-        System.out.println("taille liste facture : "+liste_facture.size());
         lst_fact = (ListView) findViewById(R.id.liste_facture);
 
         datedeb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         datefin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         ajoutListe();
         initVariable();
-        System.out.println(liste_facture.size()+" taille");
     //    if(ou.data.getEnteteWithDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date())).size()>0)
     //   for(int i=0;i<liste_facture.size();i++)
     //       ou.commit(parametre);
