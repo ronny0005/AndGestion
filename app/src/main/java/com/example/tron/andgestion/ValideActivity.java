@@ -37,6 +37,7 @@ import com.example.tron.andgestion.bddlocal.fonction.outils;
 import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.QteStock;
+import com.example.tron.andgestion.modele.cReglement;
 import com.zj.btsdk.BluetoothService;
 import com.zj.usbsdk.PrintPic;
 import com.zj.usbsdk.UsbController;
@@ -103,8 +104,8 @@ public class ValideActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        /*if( mService.isBTopen() == false)
+/*
+        if( mService.isBTopen() == false)
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
@@ -220,8 +221,9 @@ public class ValideActivity extends AppCompatActivity {
                             nouv = "true";
                         else
                             nouv = "false";
-                        if (!mtt_avance.getText().toString().equals(""))
-                            ou.reglerEntete(facture.getEntete(), facture.getRef(), montant);
+                    cReglement cr = ou.reglerEntete(facture.getEntete(), facture.getRef(), montant);
+                    if(comptant.isChecked())
+                        ou.updateRgImpute(String.valueOf(cr.getCbMarq()));
                    }
                 Intent intent = new Intent(ValideActivity.this, LstFactureActivity.class);
                 intent.putExtra("liste_facture", liste_facture);

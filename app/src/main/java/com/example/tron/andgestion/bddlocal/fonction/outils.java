@@ -715,8 +715,8 @@ public class outils implements Serializable{
     public static void updateRgImpute(String cr){
         JSONObject json = null;
         try {
-            String url="updateRgImpute?RG_No="+cr;
-            getJsonFromServer(url);
+            String url="page=updateDrRegle&RG_No="+cr;
+            getJsonFromServerNouveau(url);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -726,7 +726,7 @@ public class outils implements Serializable{
         JSONArray json = null;
         int qte=0;
         try {
-            String url="page=addDocenteteFacture&CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac+"&N_Reglement="+reg+"&Latitude=" + lat+"&Longitude=" + lon+"&date=" + date;
+            String url="page=addDocenteteFacture&CO_No="+co_no+"&CT_Num="+ct_num+"&ref="+ref_fac.replace(" ","%20")+"&N_Reglement="+reg+"&Latitude=" + lat+"&Longitude=" + lon+"&date=" + date;
             json = new JSONArray(getJsonFromServerNouveau(url));
             return ((JSONObject)json.get(0)).getString("DO_Piece");
         } catch (JSONException e) {
@@ -773,7 +773,7 @@ public class outils implements Serializable{
         try {
             String url="page=addCReglementFacture&DO_Piece="+do_piece+"&ref="+ref+"&montant="+avance;
             json = new JSONArray(getJsonFromServerNouveau(url));
-            cr = new cReglement(((JSONObject)json.get(0)).getInt("RG_No"));
+            cr = new cReglement(((JSONObject)json.get(0)).getInt("DR_No"));
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {

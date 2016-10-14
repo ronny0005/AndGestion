@@ -114,6 +114,26 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
+        android:layout_height="44dp">
+
+        <TextView
+            android:text="Référence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView32" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/facture_ref"
+            android:layout_weight="0.15" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button

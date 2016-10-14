@@ -49,6 +49,7 @@ public class FactureActivity extends AppCompatActivity{
     AutoCompleteTextView client;
     AutoCompleteTextView designation;
     TextView qte;
+    TextView reference;
 
     ArrayList<ArticleServeur> liste_article;
     ArrayList<String> lstr;
@@ -147,6 +148,7 @@ public class FactureActivity extends AppCompatActivity{
         annuler = (Button) findViewById(R.id.facture_annuler);
         caisse = (TextView) findViewById(R.id.facture_caisse);
         total = (TextView) findViewById(R.id.facture_ttc);
+        reference = (TextView) findViewById(R.id.facture_ref);
         final GPSTracker gps=new GPSTracker(this);
 
         caisse.setText(parametre.getCa_no().getCa_intitule());
@@ -387,6 +389,7 @@ public class FactureActivity extends AppCompatActivity{
         valider.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                     if (facture.getListe_article().size() > 0) {
+                        facture.setRef(reference.getText().toString());
                         Intent intent = new Intent(FactureActivity.this, ValideActivity.class);
                         intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
                         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
