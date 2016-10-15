@@ -34,6 +34,7 @@ public class LstStockActivity extends AppCompatActivity {
         intent.putExtra("position", 0);
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
+        intent.putExtra("ncontribuable", (String)getIntent().getSerializableExtra("ncontribuable"));
         intent.putExtra("device_address", getIntent().getSerializableExtra("device_address"));
         startActivity(intent);
     }

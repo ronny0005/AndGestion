@@ -61,6 +61,7 @@ public class LstFactureActivity extends AppCompatActivity {
         intent.putExtra("parametre", parametre);
         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
         intent.putExtra("device_address",getIntent().getSerializableExtra("device_address"));
+        intent.putExtra("ncontribuable", (String)getIntent().getSerializableExtra("ncontribuable"));
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
         intent.putExtra("liste_vehicule", (ArrayList<Vehicule>) getIntent().getSerializableExtra("liste_vehicule"));

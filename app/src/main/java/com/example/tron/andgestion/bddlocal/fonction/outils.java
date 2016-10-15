@@ -545,6 +545,18 @@ public class outils implements Serializable{
         }
         return qte;
     }
+    public static String NumeroContribuable(){
+        JSONArray json = null;
+        try {
+            String url = "page=getNumContribuable";
+            json = new JSONArray(getJsonFromServerNouveau(url));
+            return ((JSONObject)json.get(0)).getString("D_Identifiant");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+        }
+        return "";
+    }
 
 
     public static Parametre getParametre(String nomUser,String password) throws IOException{
@@ -675,7 +687,7 @@ public class outils implements Serializable{
         return lart;
     }
 
-    public static void passeVariable(Intent intent, Activity act, ArrayList<Facture> lfact, Parametre parametre, outils ou, ArrayList<Facture> lrecouvrement, ArrayList<Client> lclient, ArrayList<ArticleServeur> lart, String device){
+    public static void passeVariable(Intent intent, Activity act, ArrayList<Facture> lfact, Parametre parametre, outils ou, ArrayList<Facture> lrecouvrement, ArrayList<Client> lclient, ArrayList<ArticleServeur> lart, String device,String ncontribuable){
         intent.putExtra("liste_facture", lfact);
         intent.putExtra("parametre", parametre);
         intent.putExtra("outils", ou);
@@ -683,6 +695,7 @@ public class outils implements Serializable{
         intent.putExtra("liste_client", lclient);
         intent.putExtra("liste_article", lart);
         intent.putExtra("device_address", device);
+        intent.putExtra("ncontribuable", ncontribuable);
         act.startActivity(intent);
     }
 

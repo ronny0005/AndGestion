@@ -83,12 +83,12 @@ public class FactureActivity extends AppCompatActivity{
     public void ajoutListe() {
         data = new ArrayList<Map<String, String>>();
         for (int i = 0; i < facture.getListe_article().size(); i++) {
-            DecimalFormat decim = new DecimalFormat("#.##");
+            DecimalFormat decim = new DecimalFormat("#");
             double px_achat = (facture.getListe_article().get(i).getAr_prixven() * facture.getListe_article().get(i).getQte_vendue());
             Map<String, String> datum = new HashMap<String, String>(2);
             datum.put("First Line", facture.getListe_article().get(i).getAr_design());
-            datum.put("Second Line", "Qte : " + ((int) facture.getListe_article().get(i).getQte_vendue())
-                    + " Prix de vente : " + decim.format(px_achat));
+            datum.put("Second Line", facture.getListe_article().get(i).getAr_prixven()+" x " + ((int) facture.getListe_article().get(i).getQte_vendue())
+                    + " = " + decim.format(px_achat));
             data.add(datum);
         }
         SimpleAdapter adapter = new SimpleAdapter(this, data,
@@ -393,6 +393,7 @@ public class FactureActivity extends AppCompatActivity{
                         Intent intent = new Intent(FactureActivity.this, ValideActivity.class);
                         intent.putExtra("liste_facture", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"));
                         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+                        intent.putExtra("ncontribuable", (String)getIntent().getSerializableExtra("ncontribuable"));
                         intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                         intent.putExtra("id_facture", String.valueOf(id_facture));
                         intent.putExtra("outils", ou);

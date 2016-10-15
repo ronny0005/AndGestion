@@ -35,7 +35,7 @@ public class MenuActivity extends AppCompatActivity {
     private void passeVariable(Intent intent){
         ou.passeVariable(intent, MenuActivity.this,(ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture"),
               (Parametre) getIntent().getSerializableExtra("parametre"),ou,(ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"),
-            (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"),(ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"),"");
+            (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"),(ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"),"",(String)getIntent().getSerializableExtra("ncontribuable"));
     }
 
     @Override

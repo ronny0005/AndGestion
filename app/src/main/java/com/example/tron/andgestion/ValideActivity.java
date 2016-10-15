@@ -104,7 +104,6 @@ public class ValideActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-/*
         if( mService.isBTopen() == false)
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -117,7 +116,7 @@ public class ValideActivity extends AppCompatActivity {
 
         } catch (Exception ex) {
             Log.e("³ö´íÐÅÏ¢",ex.getMessage());
-        }*/
+        }
     }
 
     private final  Handler mHandler = new Handler() {
@@ -229,6 +228,7 @@ public class ValideActivity extends AppCompatActivity {
                 intent.putExtra("liste_facture", liste_facture);
                 intent.putExtra("parametre", (Parametre) getIntent().getSerializableExtra("parametre"));
                 intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
+                intent.putExtra("ncontribuable", (String)getIntent().getSerializableExtra("ncontribuable"));
                 intent.putExtra("liste_article", liste_article);
                 intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
                 intent.putExtra("outils", ou);
@@ -248,6 +248,7 @@ public class ValideActivity extends AppCompatActivity {
         htmlDocument =   "CAMLAIT S.A. \n" +
                 "tel : 237 33400093 \n" +
                 "bp : BP 1838 DOUALA \n" +
+                "n° Contribuable"+(String)getIntent().getSerializableExtra("ncontribuable") +"\n"+
                 "vendeur : "+parametre.getUser()+"\n";
         htmlDocument+="Fact N = "+facture.getEntete()+"\n";
         htmlDocument+=facture.getDO_Date()+"\n";
@@ -309,6 +310,8 @@ public class ValideActivity extends AppCompatActivity {
         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
+        intent.putExtra("ncontribuable", (String)getIntent().getSerializableExtra("ncontribuable"));
+
         intent.putExtra("outils", ou);
         startActivity(intent);
     }
