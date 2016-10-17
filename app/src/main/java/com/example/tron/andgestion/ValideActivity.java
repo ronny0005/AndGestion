@@ -171,9 +171,10 @@ public class ValideActivity extends AppCompatActivity {
 
                 if (facture.getNouveau()) {
                     String montant = "0";
-                    if(comptant.isChecked())
-                        montant=ttcformat.format(total_ttc);
-                    else
+                    if(comptant.isChecked()) {
+                        montant = ttcformat.format(total_ttc);
+                        facture.setMtt_avance(Double.parseDouble(ttcformat.format(total_ttc)));
+                    }else
                     if(!mtt_avance.getText().toString().equals(""))
                         montant=mtt_avance.getText().toString();
                     String nouv="";
@@ -248,7 +249,7 @@ public class ValideActivity extends AppCompatActivity {
         htmlDocument =   "CAMLAIT S.A. \n" +
                 "tel : 237 33400093 \n" +
                 "bp : BP 1838 DOUALA \n" +
-                "n° Contribuable"+(String)getIntent().getSerializableExtra("ncontribuable") +"\n"+
+                "n Contribuable "+(String)getIntent().getSerializableExtra("ncontribuable") +"\n"+
                 "vendeur : "+parametre.getUser()+"\n";
         htmlDocument+="Fact N = "+facture.getEntete()+"\n";
         htmlDocument+=facture.getDO_Date()+"\n";
@@ -269,7 +270,9 @@ public class ValideActivity extends AppCompatActivity {
             htmlDocument +=  article.getAr_design() + "\n" +
                     article.getAr_prixven() + " x " + article.getQte_vendue() + " = "+prix+"\n";
         }
-
+        int reste =(int)(total_ttc-facture.getMtt_avance());
+        if(reste>=5 && reste <=5)
+            reste = 0;
         total_ttc = total_ht + total_tva + total_precompte + total_marge;
 
         htmlDocument +="\n Total HT : "+ttcformat.format(total_ht)+"\n";
@@ -278,7 +281,7 @@ public class ValideActivity extends AppCompatActivity {
         htmlDocument +="Acompte : "+ttcformat.format(facture.getMtt_avance())+"\n";
         htmlDocument +="Total TTC : "+ttcformat.format(total_ttc)+"\n";
         htmlDocument +="Montant payer : "+ttcformat.format(facture.getMtt_avance())+"\n";
-        htmlDocument +="Reste a payer : "+ ttcformat.format((total_ttc-facture.getMtt_avance())) +"\n";
+        htmlDocument +="Reste a payer : "+ ttcformat.format(reste) +"\n";
         htmlDocument +="-----------------\n";
         htmlDocument +="Nous vous remercions\n de votre fidelite\n";
 

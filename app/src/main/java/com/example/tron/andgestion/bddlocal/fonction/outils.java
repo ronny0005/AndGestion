@@ -784,7 +784,7 @@ public class outils implements Serializable{
         JSONArray json = null;
         cReglement cr = null;
         try {
-            String url="page=addCReglementFacture&DO_Piece="+do_piece+"&ref="+ref+"&montant="+avance;
+            String url="page=addCReglementFacture&DO_Piece="+do_piece+"&ref="+ref.replace(" ","%20")+"&montant="+avance;
             json = new JSONArray(getJsonFromServerNouveau(url));
             cr = new cReglement(((JSONObject)json.get(0)).getInt("DR_No"));
         } catch (JSONException e) {
