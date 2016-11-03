@@ -50,6 +50,9 @@ public class FactureActivity extends AppCompatActivity{
     AutoCompleteTextView designation;
     TextView qte;
     TextView reference;
+    TextView pv;
+    TextView ccompta;
+    TextView ctarif;
 
     ArrayList<ArticleServeur> liste_article;
     ArrayList<String> lstr;
@@ -149,6 +152,9 @@ public class FactureActivity extends AppCompatActivity{
         caisse = (TextView) findViewById(R.id.facture_caisse);
         total = (TextView) findViewById(R.id.facture_ttc);
         reference = (TextView) findViewById(R.id.facture_ref);
+        pv = (TextView) findViewById(R.id.facture_pv);
+        ccompta = (TextView) findViewById(R.id.facture_ccompta);
+        ctarif = (TextView) findViewById(R.id.facture_ctarif);
         final GPSTracker gps=new GPSTracker(this);
 
         caisse.setText(parametre.getCa_no().getCa_intitule());
@@ -218,6 +224,30 @@ public class FactureActivity extends AppCompatActivity{
                     facture.setListe_ligne(new ArrayList<Integer>());
                     facture.setListe_article(new ArrayList<ArticleServeur>());
                     annule=true;
+                }
+            }
+        });
+
+        designation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    ArticleServeur art = null;
+                    for (int i = 0; i < liste_article.size(); i++)
+                        if (liste_article.get(i).getAr_design().equals(designation.getText().toString())){
+                            art=liste_article.get(i);
+
+                        }
+                    Client clientRech = null;
+                    for (int i = 0; i < lst_client.size(); i++)
+                        if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
+                            clientRech=lst_client.get(i);
+                        }
+                    ou.getPrixclient(art.getAr_ref(), clientRech.getCattarif(), clientRech.getCatcompta(), art);
+                    if(art!=null)
+                    pv.setText(String.valueOf(art.getAr_prixven()));
+                    ccompta.setText(String.valueOf(clientRech.getCatcompta()));
+                    ctarif.setText(String.valueOf(clientRech.getCattarif()));
                 }
             }
         });

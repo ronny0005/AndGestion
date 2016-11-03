@@ -334,7 +334,7 @@ public class outils implements Serializable{
         ArrayList<Facture> list = new ArrayList<Facture>();
         JSONArray json = null;
         try {
-            json = new JSONArray(getJsonFromServerNouveau("page=getFacture&CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
+                                                    json = new JSONArray(getJsonFromServerNouveau("page=getFacture&CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
             Facture facture = null;
             for (int i = 0; i < json.length(); i++) {
                 JSONObject json_data = json.getJSONObject(i);

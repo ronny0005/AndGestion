@@ -284,7 +284,6 @@ public class ValideActivity extends AppCompatActivity {
         htmlDocument +="Reste a payer : "+ ttcformat.format(reste) +"\n";
         htmlDocument +="-----------------\n";
         htmlDocument +="Nous vous remercions\n de votre fidelite\n";
-
         }
 
     class ClickEvent implements View.OnClickListener {
