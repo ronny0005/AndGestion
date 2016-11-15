@@ -17,6 +17,8 @@ public class Client implements Serializable{
     private String numprinc;
     private int cattarif;
     private int catcompta;
+    private String lib_cattarif;
+    private String lib_catcompta;
     private ArrayList<PrixClient> prixArticle;
 
     public Client(String intitule, String num) {
@@ -24,12 +26,14 @@ public class Client implements Serializable{
         this.num = num;
     }
 
-    public Client(String intitule, String num, String numprinc, int cattarif, int catcompta) {
+    public Client(String intitule, String num, String numprinc, int cattarif, int catcompta,String lib_catcompta,String lib_cattarif) {
         this.intitule = intitule;
         this.num = num;
         this.numprinc = numprinc;
         this.cattarif = cattarif;
         this.catcompta = catcompta;
+        this.lib_catcompta=lib_catcompta;
+        this.lib_cattarif=lib_cattarif;
     }
 
     public int getId() {
@@ -88,6 +92,22 @@ public class Client implements Serializable{
         this.prixArticle = prixArticle;
     }
 
+    public String getLib_cattarif() {
+        return lib_cattarif;
+    }
+
+    public void setLib_cattarif(String lib_cattarif) {
+        this.lib_cattarif = lib_cattarif;
+    }
+
+    public String getLib_catcompta() {
+        return lib_catcompta;
+    }
+
+    public void setLib_catcompta(String lib_catcompta) {
+        this.lib_catcompta = lib_catcompta;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -97,6 +117,8 @@ public class Client implements Serializable{
                 ", numprinc='" + numprinc + '\'' +
                 ", cattarif=" + cattarif +
                 ", catcompta=" + catcompta +
+                ", lib_cattarif='" + lib_cattarif + '\'' +
+                ", lib_catcompta='" + lib_catcompta + '\'' +
                 ", prixArticle=" + prixArticle +
                 '}';
     }

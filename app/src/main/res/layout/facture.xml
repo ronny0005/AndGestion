@@ -109,25 +109,14 @@
             android:ems="10"
             android:id="@+id/facture_qte" />
 
-        <TextView
-            android:text="C_Tarif"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView35" />
-
         <EditText
-            android:layout_width="55dp"
+            android:layout_width="104dp"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/facture_ctarif"
-            android:enabled="false" />
-
-        <TextView
-            android:text="C_Compta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView34" />
+            android:enabled="false"
+            android:text="Cat.tarif" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -136,7 +125,8 @@
             android:ems="10"
             android:id="@+id/facture_ccompta"
             android:layout_weight="1"
-            android:enabled="false" />
+            android:enabled="false"
+            android:text="Cat. Comptabe" />
 
     </LinearLayout>
 
@@ -176,7 +166,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="Name"
+            android:text="PRIX DE VENTE"
             android:ems="10"
             android:id="@+id/facture_pv"
             android:layout_weight="1"

@@ -111,8 +111,12 @@ public class FactureActivity extends AppCompatActivity{
     }
 
     public void initialise() {
-        if (!facture.getNouveau())
+        if (!facture.getNouveau()) {
+            System.out.println(facture.getId_client());
             client.setText(facture.getId_client().getIntitule());
+            ccompta.setText(facture.getId_client().getLib_catcompta());
+            ctarif.setText(facture.getId_client().getLib_cattarif());
+        }
     }
 
     // Vide la qte et la designation
@@ -236,7 +240,6 @@ public class FactureActivity extends AppCompatActivity{
                     for (int i = 0; i < liste_article.size(); i++)
                         if (liste_article.get(i).getAr_design().equals(designation.getText().toString())){
                             art=liste_article.get(i);
-
                         }
                     Client clientRech = null;
                     for (int i = 0; i < lst_client.size(); i++)
@@ -245,9 +248,22 @@ public class FactureActivity extends AppCompatActivity{
                         }
                     ou.getPrixclient(art.getAr_ref(), clientRech.getCattarif(), clientRech.getCatcompta(), art);
                     if(art!=null)
-                    pv.setText(String.valueOf(art.getAr_prixven()));
-                    ccompta.setText(String.valueOf(clientRech.getCatcompta()));
-                    ctarif.setText(String.valueOf(clientRech.getCattarif()));
+                        pv.setText(String.valueOf(art.getAr_prixven()));
+                }
+            }
+        });
+
+        client.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    Client clientRech = null;
+                    for (int i = 0; i < lst_client.size(); i++)
+                        if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
+                            clientRech=lst_client.get(i);
+                        }
+                    ccompta.setText(String.valueOf(clientRech.getLib_catcompta()));
+                    ctarif.setText(String.valueOf(clientRech.getLib_cattarif()));
                 }
             }
         });

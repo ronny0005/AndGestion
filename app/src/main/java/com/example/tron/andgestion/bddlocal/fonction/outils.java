@@ -320,7 +320,7 @@ public class outils implements Serializable{
             ldep= new ArrayList<Client>();
             for(int i=0; i<json.length(); i++){
                 JSONObject json_data = json.getJSONObject(i);
-                ldep.add(new Client(json_data.getString("CT_Intitule"),json_data.getString("CT_Num"), json_data.getString("CG_NumPrinc"), json_data.getInt("N_CatTarif"), json_data.getInt("N_CatCompta")));
+                ldep.add(new Client(json_data.getString("CT_Intitule"),json_data.getString("CT_Num"), json_data.getString("CG_NumPrinc"), json_data.getInt("N_CatTarif"), json_data.getInt("N_CatCompta"), json_data.getString("LibCatCompta"), json_data.getString("LibCatTarif")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -334,7 +334,7 @@ public class outils implements Serializable{
         ArrayList<Facture> list = new ArrayList<Facture>();
         JSONArray json = null;
         try {
-                                                    json = new JSONArray(getJsonFromServerNouveau("page=getFacture&CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
+            json = new JSONArray(getJsonFromServerNouveau("page=getFacture&CO_No=" + CO_No + "&datedeb=" + datedeb + "&datefin=" + datefin + "&CT_Num=" + numClient));
             Facture facture = null;
             for (int i = 0; i < json.length(); i++) {
                 JSONObject json_data = json.getJSONObject(i);
@@ -633,7 +633,7 @@ public class outils implements Serializable{
         try {
             String url="page=getPrixClient&AR_Ref="+ref_art+"&N_CatTarif="+cat_tarif+"&N_CatCompta="+cat_compta;
             json = new JSONArray(getJsonFromServerNouveau(url));
-            art.setAr_prixven((float) ((JSONObject)json.get(0)).getDouble("AR_PrixVen"));
+            art.setAr_prixven((float) ((JSONObject)json.get(0)).getDouble("PrixVente"));
             art.setAr_prixach((float) ((JSONObject)json.get(0)).getDouble("AR_PrixAch"));
             art.setTaxe1(((JSONObject)json.get(0)).getDouble("taxe1"));
             art.setTaxe2(((JSONObject)json.get(0)).getDouble("taxe2"));

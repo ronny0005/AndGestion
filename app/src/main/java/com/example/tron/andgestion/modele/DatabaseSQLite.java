@@ -528,7 +528,7 @@ public class DatabaseSQLite extends SQLiteOpenHelper {
         c.moveToFirst();
         //On créé un livre
         Client client = new Client (c.getString(c.getColumnIndex(client_intitule)),c.getString(c.getColumnIndex(client_num)), c.getString(c.getColumnIndex(client_numprinc)),
-                c.getInt(c.getColumnIndex(client_cattarif)),c.getInt(c.getColumnIndex(client_catcompta)));
+                c.getInt(c.getColumnIndex(client_cattarif)),c.getInt(c.getColumnIndex(client_catcompta)),"","");
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         //On ferme le cursor
         c.close();
