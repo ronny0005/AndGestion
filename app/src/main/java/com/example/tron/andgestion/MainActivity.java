@@ -48,9 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ou = (outils) getIntent().getSerializableExtra("outils");
-
         ou.app=MainActivity.this;
         connexion = (Button) findViewById(R.id.connexion_button);
         login =(TextView) findViewById(R.id.connexion_login);
@@ -61,12 +59,7 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<Depot> list = ou.listeDepotServeur();
             Parametre parametre=null;
                 if(!login.getText().toString().isEmpty() && !mdp.getText().toString().isEmpty()) {
-//                        ou.demarreBase(getApplicationContext());
-
                     parametre = ou.connexion(login.getText().toString(), mdp.getText().toString());
-          //
-                    System.out.println(parametre);
-                    // ou.data.insertParametre(parametre);
                 }else {
                     Toast.makeText(MainActivity.this, "Veuillez saisir le login et mot de passe",Toast.LENGTH_SHORT).show();
                 }
@@ -77,24 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0;i<liste_client.size();i++) {
                     ArrayList<PrixClient> lartPrix= new ArrayList<PrixClient>();
                     liste_client.get(i).setPrixArticle(lartPrix);
-                    /*for(int j=0;j<liste_article.size();j++) {
-                        ArrayList<PrixClient> p = ou.getPrixclientMain(parametre.getDe_no(), liste_client.get(i).getCattarif(), liste_client.get(i).getCatcompta(),liste_client.get(i).getNum());
-                        liste_client.get(i).setPrixArticle(p);
-                    }*/
-
-                    //lartPrix.add(new )
-                    liste_client.get(i).setPrixArticle(lartPrix);
-        //          ou.data.insertClient(liste_client.get(i));
-                }
-                for(int i=0;i<liste_article.size();i++) {
-         //         ou.data.insertArticle(liste_article.get(i));
-                    QteStock qte = new QteStock();
-                    qte.setAS_QteSto(ou.articleDisponibleServeur(liste_article.get(i).getAr_ref(),parametre.getDe_no()));
-                    qte.setAR_Ref(liste_article.get(i).getAr_ref());
-                    qte.setDE_No(parametre.getDe_no());
-                    qte.setAS_MontSto("");
-                    liste_article.get(i).setQteStock(qte);
-         //           ou.data.insertStock(qte);
                 }
                 liste_vehicule = ou.listeVehiculeServeur();
                 liste_cr = ou.listePlanCR();
@@ -107,7 +82,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
 }

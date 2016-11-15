@@ -22,6 +22,7 @@ import com.example.tron.andgestion.modele.Ligne;
 import com.example.tron.andgestion.modele.ManquantModele;
 import com.example.tron.andgestion.modele.Parametre;
 import com.example.tron.andgestion.modele.PrixClient;
+import com.example.tron.andgestion.modele.QteStock;
 import com.example.tron.andgestion.modele.ReglementModele;
 import com.example.tron.andgestion.modele.Souche;
 import com.example.tron.andgestion.modele.Vehicule;
@@ -276,6 +277,12 @@ public class outils implements Serializable{
                 JSONObject json_data = json.getJSONObject(i);
                 ArticleServeur article =new ArticleServeur(json_data.getString("AR_Ref"),json_data.getString("AR_Design"),json_data.getDouble("AR_PrixAch"),0,0,0);
                 article.setAr_prixven((float) json_data.getDouble("AR_PrixVen"));
+                QteStock qte = new QteStock();
+                qte.setAS_QteSto(json_data.getInt("AS_QteSto"));
+                qte.setAR_Ref(json_data.getString("AR_Ref"));
+                qte.setDE_No(Integer.parseInt(DE_No));
+                qte.setAS_MontSto(json_data.getString("AS_MontSto"));
+                article.setQteStock(qte);
                 lart.add(article);
             }
         } catch (JSONException e) {
