@@ -246,9 +246,12 @@ public class FactureActivity extends AppCompatActivity{
                         if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
                             clientRech=lst_client.get(i);
                         }
-                    ou.getPrixclient(art.getAr_ref(), clientRech.getCattarif(), clientRech.getCatcompta(), art);
-                    if(art!=null)
+                    if(art!=null) {
                         pv.setText(String.valueOf(art.getAr_prixven()));
+                    }
+                    if(art!=null && clientRech!=null){
+                        ou.getPrixclient(art.getAr_ref(), clientRech.getCattarif(), clientRech.getCatcompta(), art);
+                    }
                 }
             }
         });
@@ -257,13 +260,11 @@ public class FactureActivity extends AppCompatActivity{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    Client clientRech = null;
                     for (int i = 0; i < lst_client.size(); i++)
                         if (lst_client.get(i).getIntitule().equals(client.getText().toString())) {
-                            clientRech=lst_client.get(i);
+                            ccompta.setText(String.valueOf(lst_client.get(i).getLib_catcompta()));
+                            ctarif.setText(String.valueOf(lst_client.get(i).getLib_cattarif()));
                         }
-                    ccompta.setText(String.valueOf(clientRech.getLib_catcompta()));
-                    ctarif.setText(String.valueOf(clientRech.getLib_cattarif()));
                 }
             }
         });
@@ -294,11 +295,13 @@ public class FactureActivity extends AppCompatActivity{
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with delete
-                                    facture.getListe_article().remove(i);
-                                    for(int i=0;i<liste_article.size();i++)
+                                    for(int i=0;i<facture.getListe_article().size();i++)
                                         if(facture.getListe_article().get(i).getAr_ref().equals(liste_article.get(i).getAr_ref()))
                                             liste_article.get(i).getQteStock().setAS_QteSto(liste_article.get(i).getQteStock().getAS_QteSto()+ facture.getListe_article().get(i).getQte_vendue());
+                                    facture.getListe_article().remove(i);
                                     ajoutListe();
+                                    modif = false;
+                                    ajouter.setText("Ajouter");
                                     clear();
                                     total.setText(calculPrix());
                                 }
