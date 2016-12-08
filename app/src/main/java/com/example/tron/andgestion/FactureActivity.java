@@ -301,6 +301,7 @@ public class FactureActivity extends AppCompatActivity{
                                     ajouter.setText("Ajouter");
                                     clear();
                                     total.setText(calculPrix());
+                                    designation.setEnabled(true);
                                 }
                             })
                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

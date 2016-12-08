@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
         outils Ou = new outils();
         Ou.app = MainActivity.this;
         Intent intent = new Intent(MainActivity.this, MainActivity.class);
-        super.onBackPressed();  // optional depending on your needs
+        startActivity(intent);
+        super.onBackPressed();
+          // optional depending on your needs
     }
 
 }
