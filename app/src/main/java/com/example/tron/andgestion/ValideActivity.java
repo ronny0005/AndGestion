@@ -104,6 +104,7 @@ public class ValideActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        /*
         if( mService.isBTopen() == false)
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -116,7 +117,7 @@ public class ValideActivity extends AppCompatActivity {
 
         } catch (Exception ex) {
             Log.e("³ö´íÐÅÏ¢",ex.getMessage());
-        }
+        }*/
     }
 
     private final  Handler mHandler = new Handler() {
@@ -224,6 +225,10 @@ public class ValideActivity extends AppCompatActivity {
                             nouv = "true";
                         else
                             nouv = "false";
+
+                    if(credit.isChecked() && !montant.equals("0"))
+                        ou.reglerEntete(facture.getEntete(), facture.getRef(), montant);
+
                     if(comptant.isChecked()) {
                         cReglement cr = ou.reglerEntete(facture.getEntete(), facture.getRef(), montant);
                         ou.updateRgImpute(String.valueOf(cr.getCbMarq()));

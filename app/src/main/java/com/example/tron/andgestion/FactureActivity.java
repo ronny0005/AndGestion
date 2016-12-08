@@ -275,6 +275,7 @@ public class FactureActivity extends AppCompatActivity{
                 if (facture.getNouveau()) {
                     ArticleServeur art = facture.getListe_article().get(position);
                     designation.setText(art.getAr_design());
+                    designation.setEnabled(false);
                     qte.setText(String.valueOf(art.getQte_vendue()));
                     modif = true;
                     ajouter.setText("Modifier");
@@ -321,7 +322,6 @@ public class FactureActivity extends AppCompatActivity{
         ajouter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (facture.getNouveau()) {
-
                     if (!qte.getText().toString().isEmpty() && !designation.getText().toString().isEmpty() && !client.getText().toString().isEmpty()) {
                         ArticleServeur art = null;
                         for (int i = 0; i < liste_article.size(); i++) {
@@ -339,7 +339,6 @@ public class FactureActivity extends AppCompatActivity{
                                 if (liste_article.get(i).getAr_design().equals(designation.getText().toString()))
                                     id_article = i;
 
-                            //int qteart = ou.articleDisponibleServeur(liste_article.get(id_article).getAr_ref(), parametre.getDe_no());
                             int qteart = liste_article.get(id_article).getQteStock().getAS_QteSto();
                             if (!qte.getText().toString().equals("0") && qteart > 0) {
                                 if (qteart >= Integer.parseInt(qte.getText().toString())) {
@@ -352,69 +351,36 @@ public class FactureActivity extends AppCompatActivity{
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
-
                                         facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(deb));
                                         if (ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FactureActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                         } else {
-
-                                            // check if GPS enabled
                                             if(gps.canGetLocation()){
-
                                                 double latitude = gps.getLatitude();
                                                 double longitude = gps.getLongitude();
                                                 facture.setLatitude(latitude);
                                                 facture.setLongitude(longitude);
-
-                                                // \n is for new line
-                                            //    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                                             }else{
-                                                // can't get location
-                                                // GPS or Network is not enabled
-                                                // Ask user to enable GPS/network in settings
                                                 gps.showSettingsAlert();
                                             }
                                         }
                                     }
-                                    if(modif)
-                                        liste_article.get(id_article).getQteStock().setAS_QteSto(qteart+art.getQte_vendue()-Integer.parseInt(qte.getText().toString()));
-                                        art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
-                                        liste_article.get(id_article).getQteStock().setAS_QteSto(qteart-Integer.parseInt(qte.getText().toString()));
-/*
-                                        for(int i=0;i<lst_client.size();i++)
-                                            if(art.getAr_ref().equals(lst_client.get(id_client).getPrixArticle().get(i).getAR_Ref())) {
-                                                PrixClient p = lst_client.get(id_client).getPrixArticle().get(i);
-                                                art.setAr_prixach(p.getPrixAch());
-                                                art.setAr_prixven((float) p.getPrixVen());
-                                                art.setTaxe1(p.getTaxe1());
-                                                art.setTaxe2(p.getTaxe2());
-                                                art.setTaxe3(p.getTaxe3());
-                                            }*/
-
-                                    art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
-                                    liste_article.get(id_article).getQteStock().setAS_QteSto(qteart-Integer.parseInt(qte.getText().toString()));
-
-                                    /*for(int i=0;i<lst_client.size();i++)
-                                        if(art.getAr_ref().equals(lst_client.get(id_client).getPrixArticle().get(i).getAR_Ref())) {
-                                            PrixClient p = lst_client.get(id_client).getPrixArticle().get(i);
-                                            art.setAr_prixach(p.getPrixAch());
-                                            art.setAr_prixven((float) p.getPrixVen());
-                                            art.setTaxe1(p.getTaxe1());
-                                            art.setTaxe2(p.getTaxe2());
-                                            art.setTaxe3(p.getTaxe3());
-                                        }*/
-
-                                    ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
-
-                                    if (!modif) {
+                                    if(modif) {
+                                        facture.getListe_article().get(position_modif).getQteStock().setAS_QteSto(qteart + art.getQte_vendue() - Integer.parseInt(qte.getText().toString()));
+                                        facture.getListe_article().get(position_modif).setQte_vendue(Integer.parseInt(qte.getText().toString()));
+                                        designation.setEnabled(true);
+                                        modif = false;
+                                        ajouter.setText("Ajouter");
+                                    }else{
+                                        modif = true;
                                         try {
+                                            art.setQte_vendue(Integer.parseInt(qte.getText().toString()));
+                                            ou.getPrixclient(liste_article.get(id_article).getAr_ref(), facture.getId_client().getCattarif(), facture.getId_client().getCatcompta(), art);
                                             facture.getListe_article().add((ArticleServeur)art.clone());
                                         } catch (CloneNotSupportedException e) {
                                             e.printStackTrace();
                                         }
-                                    } else {
-                                        modif = false;
-                                        ajouter.setText("Ajouter");
                                     }
+                                    System.out.println(facture.getListe_article());
                                     ajoutListe();
                                     total.setText(calculPrix());
                                     clear();
