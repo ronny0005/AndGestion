@@ -54,7 +54,7 @@ public class EtatReglementActivity extends AppCompatActivity {
             DateFormat format = new SimpleDateFormat("ddMMyy", Locale.FRENCH);
             Date deb = format.parse(dt_deb.getText().toString());
             Date fin = format.parse(dt_fin.getText().toString());
-       //     liste_reglement=ou.listeReglement(new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),param.getCo_no());
+            liste_reglement=ou.listeReglement(new SimpleDateFormat("yyyy-MM-dd").format(deb),new SimpleDateFormat("yyyy-MM-dd").format(fin),param.getCo_no());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -64,14 +64,23 @@ public class EtatReglementActivity extends AppCompatActivity {
         data = new ArrayList<Map<String, String>>();
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         valideFacture();
-        for(int i=0;i<liste_reglement.size();i++) {
-            data.add(createRow(liste_reglement.get(i).getRG_No(), "Date : " + liste_reglement.get(i).getRG_Date()
-            +"\nLibelle : " + liste_reglement.get(i).getRG_Libelle()+"\nClient : " + liste_reglement.get(i).getCT_Intitule()+"\nMontant : "+ liste_reglement.get(i).getMontant()));
+        if(liste_reglement!=null) {
+            for (int i = 0; i < liste_reglement.size(); i++) {
+                try {
+                    SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd");
+                    Date date = dt.parse(liste_reglement.get(i).getRG_Date());
+                    SimpleDateFormat dt1 = new SimpleDateFormat("dd-mm-yyyy");
+                    data.add(createRow(liste_reglement.get(i).getRG_No(), "Date : " + dt1.format(date)
+                            + "\nLibelle : " + liste_reglement.get(i).getRG_Libelle() + "\nClient : " + liste_reglement.get(i).getCT_Intitule() + "\nMontant : " + liste_reglement.get(i).getMontant()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                }
+            String[] from = {"value1", "value2"};
+            int[] to = {android.R.id.text1, android.R.id.text2};
+            SimpleAdapter adapter = new SimpleAdapter(this, data, android.R.layout.simple_list_item_2, from, to);
+            lst_equation.setAdapter(adapter);
         }
-        String[] from = {"value1", "value2"};
-        int[] to = {android.R.id.text1, android.R.id.text2};
-        SimpleAdapter adapter = new SimpleAdapter(this, data,android.R.layout.simple_list_item_2, from, to);
-        lst_equation.setAdapter(adapter);
     }
 
     private void affiche(){

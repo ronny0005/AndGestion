@@ -114,16 +114,25 @@ public class LstFactureActivity extends AppCompatActivity {
         data = new ArrayList<Map<String, String>>();
         List<Map<String, ?>> data = new ArrayList<Map<String, ?>>();
         for (int i = 0; i < liste_facture.size(); i++) {
-            Facture fac = liste_facture.get(i);
-            String val="";
-            DecimalFormat ttcformat = new DecimalFormat("#");
-            if(fac.getStatut().equals("avance"))
-                val=" ("+ttcformat.format(fac.getMtt_avance())+")";
+            try {
+                Facture fac = liste_facture.get(i);
+                String val="";
+                SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd");
+                Date date = dt.parse(fac.getDO_Date());
+                SimpleDateFormat dt1 = new SimpleDateFormat("dd-mm-yyyy");
 
-            String nomclient = fac.getId_client().getIntitule();
-            data.add(createRow(fac.getRef() + " - " + fac.getEntete()+" - " + fac.getStatut()+val ,
-                    "Client : " + nomclient+ "\nTotal TTC : "+ fac.getTotalTTC()
-                            +"\n"+fac.getDO_Date() ));
+                DecimalFormat ttcformat = new DecimalFormat("#");
+                if(fac.getStatut().equals("avance"))
+                    val=" ("+ttcformat.format(fac.getMtt_avance())+")";
+
+                String nomclient = fac.getId_client().getIntitule();
+                data.add(createRow(fac.getRef() + " - " + fac.getEntete()+" - " + fac.getStatut()+val ,
+                        "Client : " + nomclient+ "\nTotal TTC : "+ fac.getTotalTTC()
+                                +"\n"+ dt1.format(date)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
         }
         String[] from = {"value1", "value2"};
         int[] to = {android.R.id.text1, android.R.id.text2};

@@ -787,6 +787,27 @@ public class outils implements Serializable{
         // return lart;
     }
 
+
+    public static ArrayList<ReglementModele> listeReglement(String date_deb, String date_fin,int co_no) {
+        JSONArray json = null;
+        ArrayList<ReglementModele> ldep = null;
+        try {
+            json = new JSONArray(getJsonFromServerNouveau("page=getReglement&CO_No="+co_no+"&datedeb="+date_deb+"&datefin="+date_fin));
+            if(json.length()>0) {
+                ldep = new ArrayList<ReglementModele>();
+                for (int i = 0; i < json.length(); i++) {
+                    JSONObject json_data = json.getJSONObject(i);
+                    ldep.add(new ReglementModele(json_data.getString("RG_No"), json_data.getString("RG_Date"), json_data.getString("CT_Intitule"), json_data.getString("RG_Libelle"), json_data.getDouble("montant")));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ldep;
+    }
+
     public static cReglement reglerEntete(String do_piece,String ref,String avance){
         JSONArray json = null;
         cReglement cr = null;
