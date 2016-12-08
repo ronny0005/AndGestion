@@ -1,12 +1,10 @@
 package com.example.tron.andgestion;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -40,18 +38,11 @@ public class LstFactureActivity extends AppCompatActivity {
     Button valide;
     ArrayList<Facture> liste_facture;
     ListView lst_fact;
-    ArrayList<String> lstr;
-    ArrayList<ArticleServeur> liste_article;
-    ArrayAdapter<String> arrayAdapter;
     List<Map<String, String>> data;
     outils ou;
     TextView datedeb;
     TextView datefin;
-    Map<String, String> datum;
-    int compteur = 0;
-    Date datecmpt = new Date();
     Parametre parametre;
-    private static final String PREFS_NAME = "compteur";
 
     private void itemCommun(Intent intent,Facture facture,int idfacture){
         intent.putExtra("liste_facture", liste_facture);
@@ -60,7 +51,6 @@ public class LstFactureActivity extends AppCompatActivity {
         intent.putExtra("id_facture", String.valueOf(idfacture));
         intent.putExtra("parametre", parametre);
         intent.putExtra("liste_recouvrement", (ArrayList<Facture>) getIntent().getSerializableExtra("liste_recouvrement"));
-        intent.putExtra("device_address",getIntent().getSerializableExtra("device_address"));
         intent.putExtra("ncontribuable", (String)getIntent().getSerializableExtra("ncontribuable"));
         intent.putExtra("liste_client", (ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
         intent.putExtra("liste_article", (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article"));
@@ -78,26 +68,6 @@ public class LstFactureActivity extends AppCompatActivity {
                     new SimpleDateFormat("yyyy-MM-dd").format(deb),
                     new SimpleDateFormat("yyyy-MM-dd").format(fin),"0",ou.getVille(parametre.getDo_souche(),parametre.getCt_num()),(ArrayList<Client>) getIntent().getSerializableExtra("liste_client"));
             ajoutListe();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void initVariable() {
-        // Get from the SharedPreferences
-        try {
-            SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-            DateFormat format = new SimpleDateFormat("yyy-MM-dd", Locale.FRENCH);
-            String form = settings.getString("dateCmpt", null);
-            if (form == null)
-                form = format.format(new Date());
-            datecmpt = format.parse(form);
-            if (datecmpt.getDay() == (new Date()).getDay()) {
-                compteur = settings.getInt("compteur", 0);
-            } else {
-                compteur = 0;
-            }
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -158,10 +128,6 @@ public class LstFactureActivity extends AppCompatActivity {
         datedeb.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         datefin.setText(new SimpleDateFormat("ddMMyy").format(new Date()));
         ajoutListe();
-        initVariable();
-    //    if(ou.data.getEnteteWithDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date())).size()>0)
-    //   for(int i=0;i<liste_facture.size();i++)
-    //       ou.commit(parametre);
 
         lst_fact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -184,25 +150,17 @@ public class LstFactureActivity extends AppCompatActivity {
         nouveau.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             ArrayList<ArticleServeur> lart = (ArrayList<ArticleServeur>) getIntent().getSerializableExtra("liste_article");
-            Facture fact = new Facture("Fact" + compteur);
-            compteur++;
-            SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putInt("compteur", compteur);
-            editor.commit();
-            editor.putString("datecmpt", new SimpleDateFormat("dd/mm/yyyy").format(datecmpt));
-            editor.commit();
+            Facture fact = new Facture("Fact");
             Parametre param =(Parametre) getIntent().getSerializableExtra("parametre");
-
-                Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
-                itemCommun(intent,fact,liste_facture.size() - 1);
+            Intent intent = new Intent(LstFactureActivity.this, FactureActivity.class);
+            itemCommun(intent,fact,liste_facture.size() - 1);
             }
         });
 
         menu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(LstFactureActivity.this, MenuActivity.class);
-                itemCommun(intent,null,0);
+            Intent intent = new Intent(LstFactureActivity.this, MenuActivity.class);
+            itemCommun(intent,null,0);
             }
         });
 

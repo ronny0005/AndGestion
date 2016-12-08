@@ -3,8 +3,6 @@ package com.example.tron.andgestion;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -82,4 +80,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        outils Ou = new outils();
+        Ou.app = MainActivity.this;
+        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        super.onBackPressed();  // optional depending on your needs
+    }
+
 }

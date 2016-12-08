@@ -44,8 +44,6 @@ public class FactureActivity extends AppCompatActivity{
     ListView lv;
     Button ajouter;
     Button valider;
-    Button ouvrir;
-    Button supprimer;
     AutoCompleteTextView client;
     AutoCompleteTextView designation;
     TextView qte;
@@ -55,8 +53,6 @@ public class FactureActivity extends AppCompatActivity{
     TextView ctarif;
 
     ArrayList<ArticleServeur> liste_article;
-    ArrayList<String> lstr;
-    ArrayAdapter<String> arrayAdapter;
     ArrayList<String> lart;
     TextView caisse;
     TextView date;
