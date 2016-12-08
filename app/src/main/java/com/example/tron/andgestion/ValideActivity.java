@@ -162,6 +162,9 @@ public class ValideActivity extends AppCompatActivity {
             d = Double.MIN_VALUE;
         else d = Double.parseDouble(mtt_avance.getText().toString());
 
+        if(comptant.isChecked()) d = total_ttc;
+        facture.setMtt_avance(d);
+
         if (Double.compare(total_ttc, d) >= 0 || !facture.getNouveau()) {
             if (comptant.isChecked() || credit.isChecked()) {
                 if (credit.isChecked() && !mtt_avance.getText().toString().isEmpty() && Double.compare(total_ttc, d) >= 0) {
