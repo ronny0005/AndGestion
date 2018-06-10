@@ -37,7 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ou = (outils) getIntent().getSerializableExtra("outils");
         position = getIntent().getIntExtra("position",0);
 
-        liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");
+        liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_fact");
         final ArrayList<Client> lst_client = (ArrayList<Client>) getIntent().getSerializableExtra("liste_client");
     }
 

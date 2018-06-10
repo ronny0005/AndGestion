@@ -98,7 +98,7 @@ public class LstStockActivity extends AppCompatActivity {
 
         maps.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(LstStockActivity.this, MapsActivity.class);
+                Intent intent = new Intent(LstStockActivity.this, ChoixPeriodeActivity.class);
                 intent.putExtra("position",0);
                 passeVariable(intent);
             }

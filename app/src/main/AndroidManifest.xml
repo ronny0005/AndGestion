@@ -59,7 +59,9 @@
         <service
             android:name=".BluetoothDataService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".ChoixPeriodeActivity"></activity>
     </application>
 
 </manifest>

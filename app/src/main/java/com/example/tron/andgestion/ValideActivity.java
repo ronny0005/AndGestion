@@ -212,6 +212,7 @@ public class ValideActivity extends AppCompatActivity {
                     }
                     facture.setDO_Date(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                     liste_facture.add(facture);
+
                     facture.setNouveau(false);
                     facture.setTotalTTC(Integer.parseInt(t_ttc.getText().toString()));
                     montant = "0";
@@ -372,7 +373,6 @@ public class ValideActivity extends AppCompatActivity {
         id_facture= Integer.parseInt(getIntent().getStringExtra("id_facture"));
         ou = (outils) getIntent().getSerializableExtra("outils");
         ou.app = ValideActivity.this;
-        ref="AND000"+liste_facture.size();
         t_marge = (TextView) findViewById(R.id.valide_marge);
         t_ht = (TextView) findViewById(R.id.valide_ht);
         t_tva = (TextView) findViewById(R.id.valide_tva);

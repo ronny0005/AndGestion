@@ -110,7 +110,7 @@ public class EtatReglementActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.etat_map_tableau);
-        this.setTitle("Tableau map");
+        this.setTitle("Etat des reglements");
         ou = (outils) getIntent().getSerializableExtra("outils");
         param = (Parametre) getIntent().getSerializableExtra("parametre");
         liste_facture = (ArrayList<Facture>) getIntent().getSerializableExtra("liste_facture");

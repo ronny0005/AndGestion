@@ -56,13 +56,13 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-
         facture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, LstFactureActivity.class);
                 passeVariable(intent);
             }
         });
+
         recouvrement.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Intent intent = new Intent(MenuActivity.this, RecouvrementActivity.class);
